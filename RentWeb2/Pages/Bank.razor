@@ -1,0 +1,25 @@
+﻿@page "/Bank"
+
+
+@if (showPwd)
+{
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Введите пароль для доступа к банковской информации</span>
+        </div>
+        <input type="password" class="form-control" width="100" placeholder="пароль"
+               @oninput="@((ChangeEventArgs __e) => { if (__e.Value.ToString() == "200002167") { showPwd = false; showBank = true; } })">
+    </div>
+}
+
+@if (showBank)
+{
+    <iframe src= "@report"  style="width:100%;  height: 90vh; border: none"></iframe>
+}
+
+@code
+{
+    bool showPwd = false;
+    bool showBank = true;
+    private string report= ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fBank&rs:Command=Render";
+}

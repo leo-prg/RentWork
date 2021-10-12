@@ -1,0 +1,57 @@
+﻿@page "/settings"
+
+@using System.Diagnostics;
+
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+@inject Blazored.SessionStorage.ISyncSessionStorageService sessionStorage
+
+@inject Service svc
+
+@inject IAuthenticationService AuthenticationService
+
+@using GoogleMapsComponents.Maps
+
+
+@if (showPwd)
+{
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Введите пароль для разблокировки</span>
+        </div>
+        <input type="password" class="form-control" width="300" placeholder="пароль"
+               @oninput="@((ChangeEventArgs __e) => { if (__e.Value.ToString() == "200002167") { showPwd = false; showSettings = true; } })">
+    </div>
+}
+@if (showSettings)
+{
+    <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="allowedit" checked="@svc.allowEdit" @onchange="@( async (ChangeEventArgs e) => { await LocalStore.SetItemAsync("AllowEdit", e.Value); svc.allowEdit = (bool)e.Value; })">
+        <label class="custom-control-label" for="allowedit">Включить режим редактирования данных</label>
+    </div>
+
+    <br />
+    <button class="btn btn-danger btn-sm" @onclick="(() => ClearStorage() )">Очистить данные приложения</button>
+
+}
+@code {
+
+    //  bool isEditEnabled;
+
+    bool showPwd = false;
+    bool showSettings = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        showPwd = false;
+        showSettings = true;
+        svc.allowEdit = await LocalStore.GetItemAsync<bool>("AllowEdit");
+    }
+
+    private async void ClearStorage()
+    {
+       
+        await LocalStore.ClearAsync();
+        sessionStorage.Clear();
+
+    }
+}

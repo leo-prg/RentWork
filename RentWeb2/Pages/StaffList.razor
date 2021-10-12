@@ -1,0 +1,235 @@
+﻿@page "/staff"
+
+@using System.Diagnostics
+@using RentLibrary
+@using System.Text.Json;
+@using BlazorTable
+
+@inject IHttpService Http
+@inject Service svc
+
+@inject IToastService toastService
+
+@if (staffs == null)
+{
+    @*<p><em>Загрузка данных...</em></p>*@
+
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    // @error
+    @if (svc.allowEdit)
+    {
+        <div>
+            <button class="btn btn-primary mr-3 mb-3" @onclick="(() => OpenModal(new Staff()))">Новый</button>
+        </div>
+    }
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th width="200">Должноcть</th>
+                <th>Телефон (раб.)</th>
+                <th width="100">Телефон (внутр.)</th>
+                <th>Email</th>
+                <th>Телефон (дом., моб.)</th>
+                @if (svc.allowEdit)
+                {
+                    <th>Действия</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in staffs)
+            {
+                <tr>
+                    <td>@s.Name</td>
+                    <td width="200">@s.Duty</td>
+                    <td>@s.WorkPhone</td>
+                    <td width="150">@s.InternalPhone</td>
+                    <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
+                    <td>@s.HomePhone</td>
+                    @if (svc.allowEdit)
+                    {
+                        <td>
+                            <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil"/></button>
+                            <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash"/></button>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @*<Table TableItem="Staff" Items="staffs" PageSize="10" ColumnReorder="true" ShowSearchBar="true" ShowFooter="true"
+            >
+        <Column TableItem="Staff" Title="ФИО" Field="@(x => x.Name)" Sortable="true" />
+        <Column TableItem="Staff" Title="Должность" Field="@(x => x.Duty)" Sortable="true" />
+        <Column TableItem="Staff" Title="Email" Field="@(x => x.Email)" Sortable="true" />
+        <Column TableItem="Staff" Title="Телефон рабочий" Field="@(x => x.WorkPhone)" Sortable="true" />
+        <Column TableItem="Staff" Title="Телефон внутренний" Field="@(x => x.InternalPhone)" Sortable="true" />
+        <Column TableItem="Staff" Title="Телефон дом, моб." Field="@(x => x.HomePhone)" Sortable="true" />
+        <Pager ShowPageNumber="true" ShowTotalCount="true" AlwaysShow="true"/>
+    </Table>*@
+
+
+    @if (ShowModal)
+    {
+        <div class="modal show fade" style="display:block" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-top">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Редактирование сотрудника</h4>
+                        <button type="button" class="close" @onclick="CloseModal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">ФИО</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selStaff.Name">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Должность</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selStaff.Duty">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Рабочий телефон</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selStaff.WorkPhone">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Внутренний телефон</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selStaff.InternalPhone">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Email</span>
+                            </div>
+                            <textarea type="email" class="form-control" rows="1" @bind="selStaff.Email"></textarea>
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Домашний, мобильный телефон</span>
+                            </div>
+                            <textarea type="text" class="form-control" rows="3" @bind="selStaff.HomePhone"></textarea>
+                        </div>
+                        <br />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" @onclick="(() => SaveStaff(selStaff))">Сохранить</button>
+                        <button type="button" class="btn btn-danger btn-sm" @onclick="CloseModal">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+    @if (ShowConfirm)
+    {
+        <div class="modal show fade" style="display:block" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Подтверждение</h4>
+                        <button type="button" class="close" @onclick="( () => { ShowConfirm = !ShowConfirm ; })">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        Вы действительно хотите удалить <b>@selStaff.Name</b> ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" @onclick="( () => { ShowConfirm = !ShowConfirm ; })">Отмена</button>
+                        <button type="button" class="btn btn-danger" @onclick="( () => { DelStaff(selStaff.Id); })">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+}
+
+@code {
+    private IEnumerable<Staff> staffs { get; set; }
+
+    private Staff selStaff;
+
+    //  private string error;
+
+    bool ShowModal = false;
+    bool ShowConfirm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshList();
+    }
+
+    private async Task RefreshList()
+    {
+        staffs = await Http.Get<IEnumerable<Staff>>(ConnectAPI.apiUri + "/api/Staff");
+        StateHasChanged();
+    }
+
+    void OpenModal(Staff staff)
+    {
+        ShowModal = true;
+        selStaff = staff;
+    }
+
+    void CloseModal()
+    {
+        ShowModal = false;
+        selStaff = null;
+    }
+
+    async void DelStaff(int id)
+    {
+        ShowConfirm = false;
+        Debug.WriteLine($"Удаляем {id}");
+        await Http.Delete(ConnectAPI.apiUri + "/api/Staff/" + id);
+        await RefreshList();
+        toastService.ShowToast(ToastLevel.Warning, "Сотрудник удален!","Предупреждение");
+    }
+
+    async void SaveStaff(Staff staff)
+    {
+        ShowModal = false;
+        // проверить ИД если есть значит редактирование, если нету - значит новый арендатор
+        if (staff.Id > 0)
+        {
+            await Http.Put(ConnectAPI.apiUri + "/api/Staff", staff);
+        }
+        else
+        {
+            await Http.Post(ConnectAPI.apiUri + "/api/Staff", staff);
+        }
+        await RefreshList();
+
+
+        toastService.ShowToast(ToastLevel.Success, "Сотрудник сохранен!", "Успешно");
+
+    }
+
+    void Confirm(Staff staff)
+    {
+        ShowConfirm = true;
+        selStaff = staff;
+        Debug.WriteLine(selStaff.Id);
+    }
+}

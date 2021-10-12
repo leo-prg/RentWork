@@ -1,0 +1,500 @@
+﻿@page "/editareas"
+
+@using System.Diagnostics
+@using RentLibrary
+@inject IHttpService Http
+@inject IJSRuntime JsRuntime
+
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+
+@inject Service svc
+
+@if (objects == null)
+{
+    @*<p><em>Загрузка данных...</em></p>*@
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+<form class="form-inline">
+    <label class="mr-sm-2">Обьект </label>
+    <select class="custom-select mr-sm-2" @onchange="OnChangeObject">
+        <option></option>
+        @foreach (var obj in objects)
+            {
+        <option value="@obj.Id" selected="@(SavedObject == obj.Id.ToString())">@obj.Name</option>
+            }
+    </select>
+    @if (layers != null)
+        {
+    <label class="mr-sm-2">Размещение </label>
+    <select class="custom-select mr-2" @onchange="OnChangeLayer">
+        <option></option>
+        @foreach (var obj in layers)
+                {
+        <option value="@obj.Id" selected="@(SavedLayer == obj.Id.ToString())">@obj.Name</option>
+                }
+    </select>
+        }
+
+    @if (areas != null)
+        {
+    <label class="mr-sm-2">Площадь </label>
+    <select class="custom-select mr-2" @onchange="OnChangeArea">
+        <option></option>
+        @foreach (var a in areas)
+                {
+                    <option value="@a.Id" >@a.AreaName</option>
+                }
+    </select>
+        }
+
+    @*Не показываем кнопки добавления и удаления, в них здесь нет смысла, здесь редактирование только области по точкам*@
+    @*<button class="btn btn-success" type="button" @onclick="AddArea">Добавить</button>
+    <button class="btn btn-danger  mr-2 ml-2" type="button" @onclick="() => { initpointno = 1; areaPoints.Clear(); area = null;  }">Удалить</button>*@
+
+</form>
+    <br />
+
+}
+
+
+@if (area != null)
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Наименование</th>
+                <th>Площадь,  м<sup>2</sup></th>
+                <th>Цена за м<sup>2</sup> с НДС, EUR</th>
+                <th>Стоимость с НДС, EUR</th>
+                <th>Арендуется</th>
+                <th>Дополнительно</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr valign="top">
+                <td>@area.Id</td>
+                <td>@area.AreaName</td>
+                <td>@area.Square</td>
+                <td>@area.Price.ToString("F2")</td>
+                <td>@area.Cost.ToString("F2")</td>
+                @if (area.isRented)
+        {
+            <td>Да</td>
+            <td>
+                <a href="/renterdetails/@renter.Id">(@renter.Contract) @renter.RenterName</a>
+                <a href="/rentrates/@area.Id">(ставки)</a>
+            </td>
+        }
+        else
+        {
+            <td>Нет</td>
+            <td></td>
+        }
+            </tr>
+        </tbody>
+    </table>
+}
+
+<div class="parent">
+    <p>(@x,@y)</p>
+    <div class="child">
+        <h5>Точки</h5>
+        <button class="btn btn-success btn-sm mb-2 mr-2" @onclick="AddPoint"><span class="oi oi-plus"></span></button>
+        <button class="btn btn-danger btn-sm mb-2" @onclick="DelPoints"><span class="oi oi-minus"></span></button>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Номер</th>
+                    <th>Координата X</th>
+                    <th>Координата Y</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (areaPoints != null)
+                {
+                    @foreach (AreaPoint p in areaPoints)
+                    {
+                        <tr>
+                            <td>@p.PointNo</td>
+                            <td>@p.PointX</td>
+                            <td>@p.PointY</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-info btn-sm mb-2" @onclick="SavePoints">Сохранить</button>
+    </div>
+    <div class="child" style="border:3px solid green;width:71%;height:70vh;overflow:scroll;">
+        <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG" height="@Height" width="@Width">
+            @if (img_code.Length != 0)
+            {
+                <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
+            }
+
+            @if (apoints != null)
+            {
+
+                @foreach (var a in apoints)
+                {
+
+                    @if (a.isRented)
+                    {
+                        <polygon points="@a.points"
+                                 style="        fill: lightgreen;
+                            fill-opacity: 0.5;stroke-width:2;
+                            stroke: rgb(0, 0, 255);
+                            stroke-dasharray: 5;
+                            stroke-dashoffset: 10;
+                            " />
+                    }
+                    else
+                    {
+                        <polygon points="@a.points"
+                                 style="        fill: red;
+        fill-opacity: 0.5;
+        stroke-width: 2;
+        stroke: rgb(0, 0, 255);
+        stroke-dasharray: 5;
+        stroke-dashoffset: 10;
+" />
+                    }
+                }
+            }
+        </svg>
+    </div>
+</div>
+
+<style>
+    .child {
+        padding: 10px;
+        float: left;
+        width: 23.5%;
+        margin-right: 2%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .svg {
+        width: auto;
+        height: auto;
+        /* border: dashed;*/
+        pointer-events: none;
+    }
+
+    .image {
+        cursor: pointer;
+        pointer-events: all;
+    }
+</style>
+
+@if (ShowModal)
+{
+    <div class="modal show fade" data-backdrop="false" style="display:block" aria-modal="true" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Создание площади в текущем слое размещения</h4>
+                    <button type="button" class="close" @onclick="CloseModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Наименование</span>
+                        </div>
+                        <input type="text" class="form-control" @bind="area.AreaName">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Площадь</span>
+                        </div>
+                        @*<input type="text" class="form-control" readonly @bind="selArea.Square">*@
+                        <input type="text" class="form-control" @bind="area.Square">
+                        <div class="input-group-append">
+                            <span class="input-group-text">м<sup>2</sup></span>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" @onclick="() => SaveArea()">Сохранить</button>
+                    <button type="button" class="btn btn-danger" @onclick="CloseModal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+
+
+    public class Pts
+    {
+        public bool isRented { get; set; }
+        public string points { get; set; }
+    }
+
+    private bool ShowModal = false;
+
+    private IEnumerable<ObjectRect> objects;
+
+    private LayerRect[] layers;
+
+    private IEnumerable<AreaRect> areas;
+
+    private List<AreaPoint> areaPoints;
+
+    int Width = 0;
+    int Height = 0;
+
+    string img_code = "";
+
+    bool pointadd = false;
+
+    List<Pts> apoints;
+
+    public string id_layer;
+    int x;
+    int y;
+    AreaRect area = null;
+    RenterRect renter = null;
+
+    int initpointno = 1;
+
+    // bool isEditEnabled;
+
+    ElementReference svgMain;
+
+    string SavedObject;
+    string SavedLayer;
+
+    // Инициализация
+    protected override async Task OnInitializedAsync()
+    {
+
+        SavedObject = await LocalStore.GetItemAsync<string>("Object");
+        SavedLayer = await LocalStore.GetItemAsync<string>("Layer");
+
+        objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
+
+        areaPoints = new List<AreaPoint>();
+
+        if (SavedObject != null)
+        {
+
+            layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + SavedObject);
+        }
+
+        if (SavedLayer != null)
+        {
+            img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == SavedLayer).LayerFile);
+            Height = layers.First(l => l.Id.ToString() == SavedLayer).Height;
+            Width = layers.First(l => l.Id.ToString() == SavedLayer).Width;
+            id_layer = SavedLayer;
+
+            areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+
+            apoints = new List<Pts>();
+            foreach (var a in areas)
+            {
+                apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+            }
+
+        }
+    }
+
+
+    // Смена объекта
+    async Task OnChangeObject(ChangeEventArgs e)
+    {
+        if (e.Value.ToString().Length > 0)
+        {
+            // при смене объекта чистим все зависящие параметры
+            img_code = "";
+            layers = null;
+            areas = null;
+            area = null;
+            apoints = null;
+            areaPoints = null;
+            layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + e.Value.ToString());
+            await LocalStore.SetItemAsync("Object", e.Value.ToString());
+        }
+    }
+
+    //Смена слоя
+    async Task OnChangeLayer(ChangeEventArgs e)
+    {
+        img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == e.Value.ToString()).LayerFile);
+        Height = layers.First(l => l.Id.ToString() == e.Value.ToString()).Height;
+        Width = layers.First(l => l.Id.ToString() == e.Value.ToString()).Width;
+        //Debug.WriteLine(img_code);
+        id_layer = e.Value.ToString();
+        await LocalStore.SetItemAsync("Layer", e.Value.ToString());
+
+        areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+
+        apoints = new List<Pts>();
+
+        foreach (var a in areas)
+        {
+            apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+        }
+    }
+
+    //Смена площади
+    async void  OnChangeArea(ChangeEventArgs e)
+    {
+
+       // Debug.WriteLine(e.Value);
+
+        area = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas/GetAreaById?id=" + e.Value.ToString() );
+
+
+        if (area != null)
+        {
+            if (area.isRented)
+            {
+                renter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + area.Id.ToString());
+            }
+            areaPoints = await Http.Get<List<AreaPoint>>(ConnectAPI.apiUri + "/api/Areas/GetAreaPoints?id=" + area.Id.ToString());
+        }
+        else
+        {
+            areaPoints = null;
+        }
+
+        //area = areas.First(a=>a.Id == Convert.ToInt32(e.Value.ToString()));
+        //areaPoints.Clear();
+        //areaPoints = new List<AreaPoint>();
+
+    }
+
+    //Слежение за курсором на картинке
+    async Task OnMoveSVG(MouseEventArgs e)
+    {
+        int[] pt = await JsRuntime.InvokeAsync<int[]>("GetRelativePos", svgMain, e);
+        x = pt[0];
+        y = pt[1];
+    }
+
+    //Нажатие на картинке
+    async Task OnClick()
+    {
+        if (pointadd)
+        {
+            areaPoints.Add(new AreaPoint() { PointNo = initpointno, PointX = x, PointY = y });
+            pointadd = !pointadd;
+            initpointno++;
+        }
+        else
+        {
+            area = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas?id=" + id_layer + "&x=" + x.ToString() + "&y=" + y.ToString());
+
+            if (area != null)
+            {
+                areaPoints = await Http.Get<List<AreaPoint>>(ConnectAPI.apiUri + "/api/Areas/GetAreaPoints?id=" + area.Id.ToString());
+
+                if (area.isRented)
+                {
+                    renter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + area.Id.ToString());
+                }
+            }
+
+            else { areaPoints = null; }
+
+
+        }
+    }
+
+    //Координаты точек для полигона через запятую
+    private async Task<string> GetAreaPointString(int areaid)
+    {
+        string ps = "";
+
+        List<AreaPoint> areaPs = new List<AreaPoint>();
+        areaPs = await Http.Get<List<AreaPoint>>(ConnectAPI.apiUri + "/api/Areas/GetAreaPoints?id=" + areaid.ToString());
+        foreach (AreaPoint point in areaPs)
+        {
+            ps += point.PointX + "," + point.PointY + " ";
+        }
+
+        return ps.Trim();
+    }
+
+    // Добавляем площадь -- пока не нужно, площадь добавляется в режиме объекты
+    public void AddArea()
+    {
+        area = new AreaRect() { AreaName = "", Square = 0 , x1 = 0, y1 = 0, x2 = 0,  y2 = 0, Price=0, Cost = 0, isRented = false};
+        areaPoints = null;
+        ShowModal = true;
+    }
+
+    //Добавляем точку
+    public void AddPoint()
+    {
+        pointadd = !pointadd;
+    }
+
+    //Удалить последнюю точку
+    public void DelPoints()
+    {
+        areaPoints.Remove(areaPoints.LastOrDefault());
+        initpointno--;
+    }
+
+    //Сохранить точки
+    async Task SavePoints()
+    {
+        await Http.Post(ConnectAPI.apiUri + "/api/Areas/AddAreaPoints?areaid=" + area.Id, areaPoints);
+
+        initpointno = areaPoints.Count == 0  ? 1 : areaPoints.Max(s => s.PointNo) + 1;
+
+        areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+
+        apoints = new List<Pts>();
+
+        foreach (var a in areas)
+        {
+            apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+        }
+    }
+
+    // Сохранить площадь -- не используется, создание через режим объектов и размещений
+    async Task SaveArea()
+    {
+        await Http.Post(ConnectAPI.apiUri + "/api/Areas/NewArea?layerid=" + id_layer, area);
+        ShowModal = false;
+
+        areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+
+        apoints = new List<Pts>();
+
+        foreach (var a in areas)
+        {
+            apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+        }
+
+
+    }
+
+    // Закрыть окно редактирования / добавления
+    void CloseModal()
+    {
+        area = null;
+        ShowModal = false;
+    }
+
+
+}

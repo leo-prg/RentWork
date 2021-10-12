@@ -1,0 +1,103 @@
+﻿@inject IAuthenticationService AuthenticationService
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">@CurDT</a>
+   
+</div>
+
+<div >
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Главная
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="orent">
+                <span class="oi oi-briefcase" aria-hidden="true"></span>Объекты
+            </NavLink>
+            <ul>
+                <li class="nav-item px-3 list-unstyled">
+                    <NavLink class="nav-link" href="areas">
+                        <span class="oi oi-layers" aria-hidden="true"></span>Схемы
+                    </NavLink>
+                </li>
+
+                <li class="nav-item px-3 list-unstyled">
+                    <NavLink class="nav-link" href="map">
+                        <span class="oi oi-globe" aria-hidden="true"></span>Геолокация
+                    </NavLink>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="renters">
+                <span class="oi oi-people" aria-hidden="true"></span>Арендаторы
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="reports">
+                <span class="oi oi-print" aria-hidden="true"></span>
+                Отчеты по аренде
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="freespaces">
+                <span class="oi oi-task" aria-hidden="true"></span>
+                Свободные площади
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="invoice">
+                <span class="oi oi-document" aria-hidden="true"></span>
+                Счета по аренде
+            </NavLink>
+        </li>
+
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="analysis">
+                <span class="oi oi-bar-chart" aria-hidden="true"></span>
+                Анализ доходов
+            </NavLink>
+        </li>
+        @if (accessBank.Contains(AuthenticationService.User.Username))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="bank">
+                    <span class="oi oi-dollar" aria-hidden="true"></span>
+                    Банк
+                </NavLink>
+            </li>
+        }
+
+        @if (accessAdmin.Contains(AuthenticationService.User.Username))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="users">
+                    <span class="oi oi-shield" aria-hidden="true"></span>
+                    Пользователи
+                </NavLink>
+            </li>
+        }
+
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="settings">
+                <span class="oi oi-wrench" aria-hidden="true"></span>
+                Настройки
+            </NavLink>
+        </li>
+
+
+    </ul>
+</div>
+
+@code {
+
+    private string[] accessBank = { "ivan", "leo", "tatjana"};
+    private string[] accessAdmin = { "leo" };
+
+    private string CurDT =  String.Format("{0:D}", DateTime.Now);
+
+}

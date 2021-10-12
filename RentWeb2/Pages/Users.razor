@@ -1,0 +1,261 @@
+﻿@page "/users"
+
+@using System.Diagnostics
+@using RentLibrary
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using System.ComponentModel.DataAnnotations;
+@using RentCommon;
+
+
+@inject IAuthenticationService AuthenticationService
+@inject IHttpService Http
+@inject Service svc
+
+
+@if (AuthenticationService.User.Username.Contains("leo"))
+{
+    @if (users == null)
+    {
+        @*<p><em>Загрузка данных...</em></p>*@
+
+        <div class="text-center">
+            <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+                <span class="sr-only">Загрузка...</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h4>Пользователи</h4>
+        @*@if (svc.allowEdit)
+        {*@
+            <div>
+                <button class="btn btn-primary mr-3 mb-3" @onclick="(() => OpenModal(new User()))">Новый</button>
+            </div>
+        @*}*@
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Электронная почта</th>
+                    <th>Логин</th>
+                    @if (svc.allowEdit)
+                    {
+                        <th>Действия</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in users)
+                {
+                    <tr>
+                        <td>@u.LastName</td>
+                        <td>@u.FirstName</td>
+                        <td>@u.Email</td>
+                        <td>@u.Username</td>
+                        @*@if (svc.allowEdit)
+                        {*@
+                            <td>
+                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(u))"><i class="oi oi-pencil" /></button>
+                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(u))"><i class="oi oi-trash" /></button>
+                            </td>
+                        @*}*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (ShowModal)
+        {
+            <div class="modal show fade" style="display:block" role="dialog">
+                <div class="modal-dialog modal-dialog-centered w-auto">
+                    <div class="modal-content rounded-top">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Редактирование пользователя</h4>
+                            <button type="button" class="close" @onclick="CloseModal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <EditForm Model="selUser">
+                                <DataAnnotationsValidator />
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Фамилия</span>
+                                    </div>
+                                    <InputText class="form-control" @bind-Value="selUser.LastName" />
+                                </div>
+                                <br />
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Имя</span>
+                                    </div>
+                                    <InputText class="form-control" @bind-Value="selUser.FirstName" />
+                                </div>
+                                <br />
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Электронная почта</span>
+                                    </div>
+                                    <InputText class="form-control" @bind-Value="selUser.Email" />
+                                </div>
+                                <ValidationMessage For="@(() => selUser.Email)" />
+                                <br />
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Логин</span>
+                                    </div>
+                                    <InputText class="form-control" @bind-Value="selUser.Username" />
+                                </div>
+                                <br />
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Пароль</span>
+                                    </div>
+                                    <InputText type="password" id="password" class="form-control" @bind-Value="selUser.Password" />
+                                </div>
+                                <ValidationMessage For="@(() => selUser.Password)" />
+                                <br />
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Подтверждение пароля</span>
+                                    </div>
+                                    <InputText type="password" id="password" class="form-control" @bind-Value="selUser.ConfirmPassword" />
+                                </div>
+                                <ValidationMessage For="@(() => selUser.ConfirmPassword)" />
+                                <br />
+
+                            </EditForm>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success btn-sm" @onclick="(() => SaveUser(selUser))">Сохранить</button>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick="CloseModal">Отмена</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-backdrop fade show"></div>
+        }
+
+        @if (ShowConfirm)
+        {
+            <div class="modal show fade" style="display:block" aria-modal="true" role="dialog">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Подтверждение</h4>
+                            <button type="button" class="close" @onclick="(() => { ShowConfirm = !ShowConfirm; })">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            Вы действительно хотите удалить <b>@selUser.Username</b> ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn" @onclick="(() => { ShowConfirm = !ShowConfirm; })">Отмена</button>
+                            <button type="button" class="btn btn-danger" @onclick="(() => { DelUser(selUser.Id); })">Удалить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-backdrop fade show"></div>
+        }
+
+    }
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        У вас нет доступа к этой странице! Обратитесь к администратору.
+    </div>
+}
+
+@code {
+
+    private class User
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        [EmailAddress(ErrorMessage = "Неверный формат адреса электронной почты")]
+        public string Email { get; set; }
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Введите пароль")]
+        public string Password { get; set; }
+
+        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+        [JsonIgnore]
+        public string ConfirmPassword { get; set; }
+    }
+
+
+    private IEnumerable<User> users { get; set; }
+
+    private User selUser;
+
+    //  private string error;
+
+    bool ShowModal = false;
+    bool ShowConfirm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshList();
+    }
+
+    private async Task RefreshList()
+    {
+        users = await Http.Get<IEnumerable<User>>(ConnectAPI.apiUri + "/api/Users");
+        StateHasChanged();
+    }
+
+    void OpenModal(User user)
+    {
+        ShowModal = true;
+        user.Password = PwdCrypt.Decrypt(user.Password);
+        user.ConfirmPassword = user.Password;
+        selUser = user;
+    }
+
+    void CloseModal()
+    {
+        ShowModal = false;
+        selUser = null;
+    }
+
+    async void DelUser(int id)
+    {
+        ShowConfirm = false;
+        Debug.WriteLine($"Удаляем {id}");
+        await Http.Delete(ConnectAPI.apiUri + "/api/Users/" + id);
+        await RefreshList();
+    }
+
+    async void SaveUser(User user)
+    {
+        ShowModal = false;
+        // проверить ИД если есть значит редактирование, если нету - значит новый арендатор
+        if (user.Id > 0)
+        {
+            await Http.Put(ConnectAPI.apiUri + "/api/Users", user);
+        }
+        else
+        {
+            await Http.Post(ConnectAPI.apiUri + "/api/Users", user);
+
+        }
+        await RefreshList();
+    }
+
+    void Confirm(User user)
+    {
+        ShowConfirm = true;
+        selUser = user;
+    }
+}

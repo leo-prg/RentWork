@@ -1,0 +1,387 @@
+﻿@page "/oareas/{id}"
+
+@using System.Diagnostics
+@using System.Threading
+@using RentLibrary
+@using RentCommon
+
+@inject IHttpService Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+@inject Service svc
+
+@if (areas == null && objectR == null)
+{
+    @*<p><em>Загрузка данных...</em></p>*@
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+<form class="form-check-inline">
+    <div class="form-group">
+        <h4 style="color:darkgreen">Площади объекта @objectR.Name</h4>
+    </div>
+    <div class="form-group" style="margin-left:50px">
+        <a href="layers/@objectR.Id">Размещение на объекте</a>
+    </div>
+</form>
+
+    
+
+    @if (svc.allowEdit)
+    {
+        <div>
+            <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenModal(new AreaRect()))">Добавить</button>
+        </div>
+    }
+
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr>
+                @if (svc.DevOrProd())
+                {
+                    <th>ID</th>
+                }
+                <th>Арендатор</th>
+                <th>Размещение</th>
+                <th>Наименование</th>
+                <th>Площадь,  м<sup>2</sup></th>
+                <th>Цена за м<sup>2</sup>, EUR </th>
+                <th>Стоимость, EUR</th>
+                <th>Цена за м<sup>2</sup> с НДС, EUR </th>
+                <th>Стоимость с НДС, EUR</th>
+                @*<th>Арендуется</th>*@
+                <th>Дополнительно</th>
+                @if (svc.allowEdit)
+                {
+                    <th>Действия</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var area in areas)
+            {
+            <tr valign="top">
+                @if (svc.DevOrProd())
+                {
+                    <td>@area.Id</td>
+                }
+                @if (area.isRented)
+                {
+                    @*<td>Да</td>*@
+                    <td>
+                        <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
+                        @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
+                    </td>
+                }
+                else
+                {
+                    @*<td>Нет</td>*@
+                    <td>-</td>
+                }
+                <td>@area.LayerName</td>
+                <td>@area.AreaName</td>
+                <td>@area.Square</td>
+                <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                <td>@area.Price.ToString("F2")</td>
+                <td>@area.Cost.ToString("F2")</td>
+                @if (area.isRented)
+                {
+                    @*<td>Да</td>*@
+                    <td>
+                        @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
+                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                    </td>
+                }
+                else
+                {
+                    @*<td>Нет</td>*@
+                    <td>-</td>
+                }
+                @if (svc.allowEdit)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
+                    </td>
+                }
+            </tr>
+
+            }
+        </tbody>
+        <tr>
+            <td colspan="1" align="left"><b>Итого</b></td>
+            <td></td>
+            <td></td>
+            <td><b>@Math.Round(@total_area, 2)</b></td>
+            <td></td>
+            <td><b>@total_sum.ToString("F2")</b></td>
+            <td></td>
+            @*<td><b>@Math.Round(total_sum * 1.2, 2)</b></td>*@
+            <td colspan="2"></td>
+
+        </tr>
+    </table>
+    <hr />
+    <h6 style="color:green">Свободные площади: @free_area м<sup>2</sup>.</h6>
+    <hr />
+
+    <p>
+        <button type="button" class="btn btn-outline-primary btn-link btn-sm" onclick="window.history.go(-1)">Назад</button>
+
+    </p>
+
+
+}
+
+@if (ShowModal)
+{
+    <div class="modal show fade" data-backdrop="false" style="display:block" aria-modal="true" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Редактирование площади</h4>
+                    <button type="button" class="close" @onclick="CloseModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Размещение</span>
+                        </div>
+                        <select @bind="@lId">
+                            <option></option>
+                            @foreach (var l in layers)
+                            {
+                                <option value="@l.Id">@l.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <br />
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Наименование</span>
+                        </div>
+                        <input type="text" class="form-control" @bind="selArea.AreaName">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Площадь</span>
+                        </div>
+                        @*<input type="text" class="form-control" readonly @bind="selArea.Square">*@
+                        <input type="text" class="form-control" @bind="selArea.Square">
+                        <div class="input-group-append">
+                            <span class="input-group-text">м<sup>2</sup></span>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Цена c НДС</span>
+                        </div>
+                        <input type="number" class="form-control" @bind="selArea.Price">
+                        <div class="input-group-append">
+                            <span class="input-group-text">EUR</span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Стоимость c НДС</span>
+                        </div>
+                        <input type="number" class="form-control" @bind="selArea.Cost">
+                        <div class="input-group-append">
+                            <span class="input-group-text">EUR</span>
+                        </div>
+                    </div>
+                    <br />
+                    @if (selArea.isRented == true)
+                    {
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Арендатор</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selAreaRenter.RenterName">
+                        </div>
+                        <br />
+                        <button type="button" class="btn btn-info" @onclick=" () => NoRenter(selArea)">Снять с аренды</button>
+                    }
+                    else
+                    {
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Арендатор</span>
+                            </div>
+                            <select @bind="@rId">
+                                <option></option>
+                                @foreach (var r in renters)
+                                {
+                                    <option value="@r.Id">@r.Contract @r.RenterName</option>
+                                }
+                            </select>
+                        </div>
+                        <br />
+                        <button type="button" class="btn btn-info" @onclick=" () => SetRenter(selArea)">Сдать в аренду</button>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" @onclick="() => SaveArea(selArea)">Сохранить</button>
+                    <button type="button" class="btn btn-danger" @onclick="CloseModal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    private ObjectRect objectR;
+
+    private AreaRect[] areas;
+
+    private AreaRect selArea;
+    private RenterRect selAreaRenter;
+
+    private RenterRect[] renters;
+    private LayerRect[] layers;
+
+    int lId; //?? параметр и есть идентификатор слоя
+    int rId;
+    string layerName;
+    private bool ShowModal = false;
+
+    RenterRect renter = null;
+    // string r_name;
+    // int r_id;
+    float total_area = 0;
+    float total_sum = 0;
+    float free_area = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshList();
+    }
+
+    private async Task RefreshList()
+    {
+        total_area = 0;
+        total_sum = 0;
+        free_area = 0;
+
+        areas = await Http.Get<AreaRect[]>(ConnectAPI.apiUri + "/api/Objects/" + id);
+
+        objectR = await Http.Get<ObjectRect>(ConnectAPI.apiUri + "/api/Objects/GetObjectById?id=" + id);
+
+
+        foreach (var ar in areas)
+        {
+            total_area += ar.Square;
+            total_sum += ar.Cost;
+            if (!ar.isRented)
+            {
+                free_area += ar.Square;
+            }
+        }
+
+        areas = areas.OrderBy(s => s.LayerName).ThenBy(r => r.AreaName).ToArray();
+        StateHasChanged();
+    }
+
+
+    async Task OnClickRenter(int id)
+    {
+        //Debug.WriteLine(id);
+        renter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + id);
+        NavigationManager.NavigateTo("/renterdetails/" + renter.Id);
+    }
+
+    void OnClickRates(int id)
+    {
+        //Debug.WriteLine(id);
+
+        NavigationManager.NavigateTo("/rentrates/" + id);
+    }
+
+
+
+    async void OpenModal(AreaRect area)
+    {
+        selArea = area;
+        //Debug.WriteLine(selArea.AreaName);
+        if (selArea.isRented) selAreaRenter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + selArea.Id);
+
+        else selAreaRenter = new RenterRect { RenterName = "нет арендатора" };
+
+        //Debug.WriteLine(selAreaRenter.RenterName);
+
+        renters = await Http.Get<RenterRect[]>(ConnectAPI.apiUri + "/api/Renters");
+        layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/ListLayers/" + objectR.Id);
+
+        rId = 0;
+        lId = selArea.LayerId;
+        layerName = selArea.LayerName;
+
+
+        ShowModal = true;
+        //Debug.WriteLine(ShowModal);
+        StateHasChanged();
+    }
+
+    void CloseModal()
+    {
+        ShowModal = false;
+        selArea = null;
+        selAreaRenter = null;
+    }
+
+    async void NoRenter(AreaRect area)
+    {
+        await Http.Put(ConnectAPI.apiUri + "/api/Areas/NoRenter?areaid=" + area.Id, null);
+        area.Price = 0;
+        area.Cost = 0;
+
+        StateHasChanged();
+        await RefreshList();
+    }
+
+    async void SetRenter(AreaRect area)
+    {
+        await Http.Put(ConnectAPI.apiUri + "/api/Areas/AddRenter?areaid=" + area.Id + "&id=" + rId.ToString(), null);
+        StateHasChanged();
+        await RefreshList();
+    }
+
+    async void SaveArea(AreaRect area)
+    {
+        if (area.Id > 0) // редактируем
+        {
+            await Http.Put(ConnectAPI.apiUri + "/api/Areas/", area);
+
+        }
+        else
+        {
+            area.LayerId = lId;
+            area.LayerName = layerName;
+            await Http.Post(ConnectAPI.apiUri + "/api/Areas/NewArea/", area);
+        }
+        await RefreshList();
+        CloseModal();
+        StateHasChanged();
+    }
+
+
+}

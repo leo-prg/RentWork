@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@inject Service svc
+
+
+
+@using Microsoft.AspNetCore.Authorization
+
+
+
+
+@if (AuthenticationService.User != null)
+{
+    <div class="sidebar overflow-hidden">
+        <NavMenu />
+    </div>
+}
+
+<div class="main overflow-auto">
+
+    <div class="top-row px-5">
+        <img src="logo.jpg" width="50" height="50" />
+        <h3 class="ml-3">Девелоперская компания ООО "Крок"</h3>
+
+        @if (AuthenticationService.User != null)
+        {
+            <h5 class="ml-md-auto" style="color:darkcyan">Добро пожаловать, @AuthenticationService.User.FirstName!</h5>
+            <a href="logout" class="ml-md-auto">Выход</a>
+
+        }
+        <a href="http://krokooo.by" target="_blank" class="ml-md-auto">Веб-сайт</a>
+    </div>
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+
+<BlazoredToasts />

@@ -1,0 +1,276 @@
+﻿@page "/layers/{id}"
+
+@using System.Diagnostics
+@using RentLibrary
+@using BlazorInputFile
+@using BlazorDownloadFile
+@using System.IO
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using Blazored.LocalStorage;
+@using SixLabors.ImageSharp;
+
+@inject IHttpService Http
+@inject NavigationManager NavigationManager
+@inject Service svc
+
+
+
+@if (layerList == null)
+{
+    @*<p><em>Loading...</em></p>*@
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    <h4 style="color:darkgreen">Размещения площадей на объекте @objectRect.Name</h4>
+
+    @if (svc.allowEdit)
+    {
+        <div>
+            <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="()=> OpenModal(new LayerRect())">Добавить</button>
+        </div>
+    }
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                @if (svc.DevOrProd())
+                {
+                    <th>ID</th>
+                }
+                <th>Наименование</th>
+                <th>Имя файла</th>
+                <th>Высота полотна</th>
+                <th>Ширина полотна</th>
+                @if (svc.allowEdit)
+                {
+                    <th>Действия</th>
+                }
+                </tr>
+        </thead>
+        <tbody>
+            @foreach (var l in layerList)
+            {
+                <tr @onclick="@(() => { selLayer = l;  ShowPicture(l); })">
+                    @if (svc.DevOrProd())
+                    {
+                        <td>@l.Id</td>
+                    }
+                    <td>@l.Name</td>
+                    <td>@l.FileName</td>
+                    <td>@l.Height</td>
+                    <td>@l.Width</td>
+                    <td>
+                        @if (svc.allowEdit)
+                        {
+                        <button class="btn btn-sm btn-success" type="button" @onclick="()=> OpenModal(new LayerRect())"><i class="oi oi-pencil" /></button>
+                        <button class="btn btn-sm btn-danger" type="button" @onclick="(() => { ShowConfirm = true; delId = l.Id; })"><i class="oi oi-trash" /></button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <div class="row">
+        <h5 class="ml-3">Предварительный просмотр эскиза размещения</h5>
+    </div>
+    <br/>
+    <svg xmlns="http://www.w3.org/2000/svg" version="2.0" height="@Height" width="@Width" style="border:dashed;width: 70%; height: 70%">
+        @if (img_code.Length != 0)
+        {
+            <image x="0" y="0" href=@img_code width="@Width" height="@Height" style="width: 70%; height: 70%"></image>
+        }
+    </svg>
+
+    <hr />
+    <p>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="window.history.go(-1)">Назад</button>
+    </p>
+
+
+    @if (ShowModal)
+    {
+        <div class="modal show fade" style="display:block" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-top">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Редактирование размещения</h4>
+                        <button type="button" class="close" @onclick="()=> { ShowModal = false; }">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Наименование</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selLayer.Name" />
+                        </div>
+                        <br />
+                        <InputFile OnChange="HandleSelection" />
+                        <br />
+                        <span>@status</span>
+                        <br />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success btn-sm" @onclick="() => Save(selLayer)">Сохранить</button>
+                        <button type="button" class="btn btn-danger btn-sm" @onclick="()=> { ShowModal = false; }">Отмена</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+
+    @if (ShowConfirm)
+    {
+        <div class="modal show fade" style="display:block" aria-modal="true" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Подтверждение</h4>
+                        <button type="button" class="close" @onclick="( () => { ShowConfirm = !ShowConfirm ; })">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+
+                        Вы действительно хотите удалить размещение ?
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn" @onclick="( () => { ShowConfirm = !ShowConfirm ; })">Отмена</button>
+                        <button type="button" class="btn btn-danger" @onclick=" async () =>  await KillLayer(delId) ">Удалить</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+}
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    //  private ILocalStorageService _localStorageService;
+    private ObjectRect objectRect;
+
+    private LayerRect[] layerList;
+
+    private LayerRect selLayer;
+
+    int delId;
+    string status;
+
+
+    private IFileListEntry file;
+
+    string img_code = "";
+    int Width = 0;
+    int Height = 0;
+
+
+    bool ShowModal = false;
+    bool ShowConfirm = false;
+
+    async void HandleSelection(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+        if (file != null)
+        {
+            status = $"Будет загружен файл {file.Name} размером {file.Size} байт, тип файла {file.Type}";
+
+            selLayer.FileName = file.Name;
+            MemoryStream ms = new MemoryStream();
+            await file.Data.CopyToAsync(ms);
+            selLayer.LayerFile = ms.ToArray();
+            var img = SixLabors.ImageSharp.Image.Load(selLayer.LayerFile);
+            selLayer.Width = img.Width;
+            selLayer.Height = img.Height;
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshList();
+    }
+
+    private void ShowPicture(LayerRect selLayer)
+    {
+        if (selLayer.LayerFile != null)
+        {
+            img_code = "data:image/png;base64," + Convert.ToBase64String(selLayer.LayerFile);
+            Height = selLayer.Height;
+            Width = selLayer.Width;
+        }
+        else
+        {
+            //img_code = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+            Height = 0;
+            Width = 0;
+        }
+    }
+
+    private async Task RefreshList()
+    {
+        objectRect = await Http.Get<ObjectRect>(ConnectAPI.apiUri + "/api/Objects/GetObjectById?id=" + id);
+        layerList = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + id);
+        StateHasChanged();
+    }
+
+    private void OpenModal(LayerRect lr)
+    {
+        selLayer = lr;
+        ShowModal = true;
+        status = "";
+    }
+
+    private async void Save(LayerRect lr)
+    {
+        Debug.WriteLine(lr.Id.ToString());
+        if (lr.Id == 0)
+        {
+            lr = selLayer;
+            await Http.Post(ConnectAPI.apiUri + "/api/Layers/AddLayer?id=" + id, lr);
+            ShowModal = false;
+            await RefreshList();
+        }
+        else
+        {
+            Debug.WriteLine(file);
+            lr = selLayer;
+            if (file == null)
+            {
+                lr.FileName = string.Empty;
+                lr.LayerFile = null;
+                lr.Width = 0;
+                lr.Height = 0;
+            }
+            await Http.Put(ConnectAPI.apiUri + "/api/Layers/UpdateLayer?id=" + lr.Id, lr);
+            ShowModal = false;
+            await RefreshList();
+
+        }
+        file = null;
+    }
+
+    async Task KillLayer(int id)
+    {
+        await Http.Delete(ConnectAPI.apiUri + "/api/Layers/" + id);
+        await RefreshList();
+        ShowConfirm = false;
+    }
+}

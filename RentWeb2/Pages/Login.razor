@@ -1,0 +1,100 @@
+﻿@page "/login"
+@using System.ComponentModel.DataAnnotations
+@using RentLibrary
+
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+@inject IHttpService Http
+
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="card">
+        <h4 class="card-header">Вход в систему</h4>
+        <div class="card-body">
+            <EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>ФИО</label>
+                    <select class="custom-select" @bind="model.Username">
+                        <option></option>
+                        @foreach (var obj in ul)
+                        {
+                            <option value="@obj.UserName" >@obj.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Пользователь</label>
+                    <InputText @bind-Value="model.Username" class="form-control" />
+                    <ValidationMessage For="@(() => model.Username)" />
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                    <ValidationMessage For="@(() => model.Password)" />
+                </div>
+                <button class="btn btn-primary">
+                    @if (loading)
+                    {
+                        <span class="spinner-border spinner-border-sm mr-1"></span>
+                    }
+                    Войти
+                </button>
+                @if (!string.IsNullOrEmpty(error))
+                {
+                    <div class="alert alert-danger mt-3 mb-0">@error</div>
+                }
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Model model = new Model();
+    private bool loading;
+    private string error;
+    private List<UserList> ul;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ul = new List<UserList>();
+        // redirect to home if already logged in
+        await AuthenticationService.Initialize();
+
+        if (AuthenticationService.User != null)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        ul = await Http.Get<List<UserList>>(ConnectAPI.apiUri + "/api/Users/List");
+
+    }
+
+    private async void HandleValidSubmit()
+    {
+        loading = true;
+        try
+        {
+            await AuthenticationService.Login(model.Username, model.Password);
+            var returnUrl = NavigationManager.QueryString("returnUrl") ?? "";
+            NavigationManager.NavigateTo(returnUrl);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    private class Model
+    {
+        [Required(ErrorMessage = "Введите имя")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "Введите пароль")]
+        public string Password { get; set; }
+    }
+}

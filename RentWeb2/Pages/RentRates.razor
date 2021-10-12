@@ -1,0 +1,366 @@
+﻿@page "/rentrates/{id}"
+
+@using System.Diagnostics
+@using System.Threading
+@using RentLibrary
+@using RentCommon
+@inject IHttpService Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+@inject Service svc
+
+@if (rates == null && areaR == null)
+{
+    @*<p><em>Загрузка данных...</em></p>*@
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+
+<h4 style="color:darkgreen">Ставки аренды: @areaR.ObjectName,  @areaR.LayerName, @areaR.AreaName - @areaR.Square м<sup>2</sup> : @areaR.RenterName</h4>
+
+    @if (svc.allowEdit)
+    {
+        <div>
+            <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenModal(new Rates { StartDate = DateTime.Today, EndDate = DateTime.Today }))">Добавить</button>
+        </div>
+    }
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr>
+                @if (svc.DevOrProd())
+                {
+                    <th>ID</th>
+                }
+                <th>Начало действия</th>
+                <th>Окончание действия</th>
+                <th>Ставка, EUR</th>
+                <th>Сумма, EUR </th>
+                <th>Ставка с НДС, EUR </th>
+                <th>Сумма с НДС, EUR </th>
+                <th>За объект</th>
+                <th>Примечание</th>
+                @if (svc.allowEdit)
+                {
+                    <th>Действия</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+
+
+            @*@if (r.EndDate < DateTime.Now)
+                    {
+                    <td style="color:red"><b>@r.EndDate.ToString("dd.MM.yyyy")</b></td>
+                }
+                else
+                {
+                    <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
+                }*@
+
+            @foreach (var rate in rates)
+            {
+                @if ((DateTime.Now.Date >= rate.StartDate.Date) && (DateTime.Now.Date <= rate.EndDate.Date))
+                {
+            <tr valign="top">
+                @if (svc.DevOrProd())
+                {
+                    <td style="background-color:lightgreen">@rate.Id</td>
+                }
+                <td style="background-color: lightgreen">@rate.StartDate.ToString("dd.MM.yyyy")</td>
+                <td style="background-color: lightgreen">@rate.EndDate.ToString("dd.MM.yyyy")</td>
+                <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+                @if (!rate.ForWholeArea)
+                {
+                    <td style="background-color: lightgreen">@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square), 2).ToString("F2")</td>
+                }
+                else
+                {
+                    <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+                }
+
+                <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
+                @if (!rate.ForWholeArea)
+                {
+                    <td style="background-color: lightgreen">@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
+                }
+                else
+                {
+                    <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
+                }
+                <td style="background-color: lightgreen"><input type="checkbox" disabled @bind="rate.ForWholeArea"></td>
+                <td style="background-color: lightgreen">@rate.Note</td>
+                @if (svc.allowEdit)
+                {
+                    <td style="background-color: lightgreen">
+                        <button class="btn btn-sm btn-success"
+                                @onclick="(() => OpenModal(rate))">
+                            <i class="oi oi-pencil" />
+                        </button>
+                        <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(rate))"><i class="oi oi-trash" /></button>
+                    </td>
+                }
+
+            </tr>
+                }
+                else
+                {
+        <tr valign="top">
+            @if (svc.DevOrProd())
+            {
+                <td>@rate.Id</td>
+            }
+            <td>@rate.StartDate.ToString("dd.MM.yyyy")</td>
+            <td>@rate.EndDate.ToString("dd.MM.yyyy")</td>
+            <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+            @if (!rate.ForWholeArea)
+            {
+                <td>@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square),2).ToString("F2")</td>
+            }
+            else
+            {
+                <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+            }
+
+            <td>@rate.Rate.ToString("F2")</td>
+            @if (!rate.ForWholeArea)
+            {
+                <td>@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
+            }
+            else
+            {
+                <td>@rate.Rate.ToString("F2")</td>
+            }
+
+            <td><input type="checkbox" disabled @bind="rate.ForWholeArea"></td>
+            <td>@rate.Note</td>
+            @if (svc.allowEdit)
+            {
+                <td>
+                    <button class="btn btn-sm btn-success"
+                            @onclick="(() => OpenModal(rate))">
+                        <i class="oi oi-pencil" />
+                    </button>
+                    <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(rate))"><i class="oi oi-trash" /></button>
+                </td>
+            }
+        </tr>
+                }
+
+
+            }
+        </tbody>
+    </table>
+    <p>
+        <button type="button" class="btn btn-outline-primary btn-link btn-sm" onclick="window.history.go(-1)">Назад</button>
+    </p>
+}
+
+@if (ShowModal)
+{
+    <div class="modal show fade" data-backdrop="false" style="display:block" aria-modal="true" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Редактирование ставки</h4>
+                    <button type="button" class="close" @onclick="CloseModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Начало действия</span>
+                        </div>
+                        <input type="date" class="form-control" @bind="selRate.StartDate">
+                    </div>
+                        @foreach (var z in bDates)
+                        {
+                            <button class="btn btn-sm btn-link" @onclick="() => selRate.StartDate = z">@z.ToString("dd.MM.yyyy")</button>
+                        }
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Окончание действия</span>
+                        </div>
+                        <input type="date" class="form-control" @bind="selRate.EndDate">
+                    </div>
+                        @foreach (var x in eDates)
+                        {
+                            <button class="btn btn-sm btn-link" @onclick="() => selRate.EndDate = x">@x.ToString("dd.MM.yyyy")</button>
+                        }
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Ставка c НДС</span>
+                        </div>
+                        <input type="number" class="form-control" @bind="selRate.Rate">
+                        <div class="input-group-append">
+                            <span class="input-group-text">EUR</span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">За объект</span>
+                        </div>
+                        <input type="checkbox" class="form-control small" @bind="selRate.ForWholeArea">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Примечание</span>
+                        </div>
+                        <input type="text" class="form-control" @bind="selRate.Note">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" @onclick="() => SaveRate(selRate, id)">Сохранить</button>
+                    <button type="button" class="btn btn-danger" @onclick="CloseModal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@if (ShowConfirm)
+{
+    <div class="modal show fade" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Подтверждение</h4>
+                    <button type="button" class="close" @onclick="( () => { ShowConfirm = !ShowConfirm ; })">&times;</button>
+                </div>
+                <div class="modal-body">
+                    Вы действительно хотите удалить выбранную ставку?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" @onclick="( () => { ShowConfirm = !ShowConfirm ; })">Отмена</button>
+                    <button type="button" class="btn btn-danger" @onclick="( () => { DelRate(selRate.Id); })">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    private Rates[] rates;
+
+    private Rates selRate;
+
+    private Rates originalRate;
+
+    private AreaRect areaR;
+
+    bool ShowConfirm = false;
+
+    private bool ShowModal = false;
+
+    // для подсказки
+    private List<DateTime> bDates = null;
+    private List<DateTime> eDates = null;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshList();
+    }
+
+    private async Task RefreshList()
+    {
+
+        rates = await Http.Get<Rates[]>(ConnectAPI.apiUri + "/api/RentRates/?id=" + id);
+
+        bDates = new List<DateTime>();
+        eDates = new List<DateTime>();
+        foreach (var r in rates)
+        {
+            bDates.Add(r.EndDate.AddDays(1));
+        }
+        foreach (var r in rates)
+        {
+            eDates.Add(r.StartDate.AddDays(-1));
+        }
+        areaR = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas/GetAreaById?id=" + id);
+
+        StateHasChanged();
+    }
+
+    void OpenModal(Rates r)
+    {
+
+        Debug.WriteLine(string.Join(",", bDates.Select(p => p.ToString()).ToArray()));
+
+        selRate = r;
+        originalRate = selRate;
+        ShowModal = true;
+        Debug.WriteLine(r.Note);
+        StateHasChanged();
+    }
+
+    void CloseModal()
+    {
+        selRate = originalRate;
+        ShowModal = false;
+        selRate = null;
+    }
+
+    async void SaveRate(Rates r, string aid)
+    {
+        ShowModal = false;
+        // проверить ИД если есть значит редактирование, если нету - значит новый арендатор
+        if (r.Id > 0)
+        {
+            await Http.Put(ConnectAPI.apiUri + "/api/RentRates/UpdateRate", r);
+            StateHasChanged();
+        }
+        else
+        {
+            await Http.Put(ConnectAPI.apiUri + "/api/RentRates/AddRate?area_id=" + aid, r);
+            StateHasChanged();
+        }
+
+        await RefreshList();
+
+    }
+
+    async void DelRate(int id)
+    {
+        ShowConfirm = false;
+        await Http.Delete(ConnectAPI.apiUri + "/api/RentRates?id=" + id);
+        StateHasChanged();
+        await RefreshList();
+    }
+
+
+    void Confirm(Rates rate)
+    {
+        ShowConfirm = true;
+        selRate = rate;
+        Debug.WriteLine(rate.Id);
+    }
+
+    //async void SaveRate(Rates r, int id)
+    //{
+    //    await Http.PutJsonAsync(ConnectAPI.apiUri() + "/api/Areas/", area);
+    //    await RefreshList();
+    //    CloseModal();
+    //    StateHasChanged();
+    //}
+
+
+}

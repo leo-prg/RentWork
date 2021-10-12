@@ -1,0 +1,76 @@
+﻿@page "/map"
+
+@using RentLibrary
+@inject IHttpService Http
+
+@using GoogleMapsComponents
+@using GoogleMapsComponents.Maps
+@using System.Diagnostics
+
+
+<GoogleMap @ref="@mapMain" Id="map1" Options="@mapOptions" Height="800px"></GoogleMap>
+<hr />
+<h6>При появлении надписей на карте "For development purpose only" добавить строку "maps.googleapis.com/maps/api/js/QuotaService.RecordEvent" в блокировщик рекламы.</h6>
+
+
+
+@functions {
+
+    private GoogleMap mapMain;
+
+    private MapOptions mapOptions;
+
+    private Stack<Marker> markers = new Stack<Marker>();
+
+    private async Task addMarker()
+    {
+        var objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
+
+        if (objects != null)
+        {
+            foreach (var o in objects)
+            {
+                Double.TryParse(o.Lat, out double _lat);
+
+                Double.TryParse(o.Lon, out double _lon);
+
+                var place = new LatLngLiteral() { Lat = _lat, Lng = _lon };
+
+                var mo = new MarkerOptions() { Position = place, Map = mapMain.InteropObject,
+                    Title = o.Name + (char)13 + (char)10 + o.Address,
+                    Icon = new Icon { Url = "logo_map.png", ScaledSize = new Size { Width = 50, Height = 50 } }
+                };
+
+                var marker = await Marker.CreateAsync(mapMain.JsRuntime, mo);
+
+                markers.Push(marker);
+
+            }
+
+            await MarkerClustering.CreateAsync(mapMain.JsRuntime, mapMain.InteropObject, markers);
+        }
+
+    }
+
+
+    protected override async void OnInitialized()
+    {
+        mapOptions = new MapOptions()
+        {
+            Zoom = 12,
+            Center = new LatLngLiteral()
+            {
+                Lat = 52.1040418,
+                Lng = 23.689813
+            },
+            MapTypeId = MapTypeId.Sattellite
+        };
+
+        await addMarker();
+    }
+
+
+
+}
+
+

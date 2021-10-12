@@ -1,0 +1,16 @@
+{
+  "name": "Rent Management App",
+  "short_name": "Rent Management App",
+  "start_url": "/",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#03173d",
+  "icons": [
+    {
+      "src": "icon-513.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+﻿
+Выполняется групповая операция установки.
+
+Начинается этап установки процедуры установки.
+См. файл журнала выполнения операция для сборки D:\Projects\IntelAudioService\IntelAudioService\bin\Release\IntelAudioService.exe.
+Данный файл находится в D:\Projects\IntelAudioService\IntelAudioService\bin\Release\IntelAudioService.InstallLog.
+
+На этапе установки возникло исключение.
+System.InvalidOperationException: Пользователь отменил установку служб в исполняемом файле D:\Projects\IntelAudioService\IntelAudioService\bin\Release\IntelAudioService.exe.
+
+Начинается этап отката процедуры установки.
+См. файл журнала выполнения операция для сборки D:\Projects\IntelAudioService\IntelAudioService\bin\Release\IntelAudioService.exe.
+Данный файл находится в D:\Projects\IntelAudioService\IntelAudioService\bin\Release\IntelAudioService.InstallLog.
+
+Этап отката выполнен успешно.
+
+Групповая операция установки выполнена.

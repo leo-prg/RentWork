@@ -1,0 +1,150 @@
+﻿@page "/rareas/{id}"
+
+@using System.Diagnostics
+@using System.Threading
+@using RentLibrary
+@using RentCommon
+@inject IHttpService Http
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject Service svc
+
+
+@if (areas == null && selRenter == null)
+{
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    @if (areas.Length > 0)
+    {
+        <h4 style="color:darkgreen">Арендуемые площади @selRenter.RenterName</h4>
+
+        <table class="table table-sm table-hover">
+            <thead>
+                <tr>
+                    @if (svc.DevOrProd())
+                    {
+                        <th>ID</th>
+                    }
+                    <th>Объект</th>
+                    <th>Размещение</th>
+                    <th>Наименование</th>
+                    <th>Площадь,  м<sup>2</sup></th>
+                    <th>Цена за м<sup>2</sup>, EUR </th>
+                    <th>Стоимость, EUR</th>
+                    <th>Цена за м<sup>2</sup> с НДС, EUR </th>
+                    <th>Стоимость с НДС, EUR</th>
+                    <th>Дополнительно</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var area in areas)
+                {
+                <tr valign="top">
+                    @if (svc.DevOrProd())
+                    {
+                        <td>@area.Id</td>
+                    }
+                    <td>@area.ObjectName</td>
+                    <td>@area.LayerName</td>
+                    <td>@area.AreaName</td>
+                    <td>@area.Square</td>
+                    <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                    <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                    <td>@area.Price.ToString("F2")</td>
+                    <td>@area.Cost.ToString("F2")</td>
+                    <td>
+                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                    </td>
+                </tr>
+
+                }
+            </tbody>
+            <tr>
+                <td colspan="1" align="left"><b>Итого</b></td>
+                <td></td>
+                <td></td>
+                <td><b>@Math.Round(@total_area, 2)</b></td>
+                <td></td>
+                <td><b>@total_sum_vat.ToString("F2")</b></td>
+                <td></td>
+                <td><b>@total_sum.ToString("F2")</b></td>
+                <td></td>
+                <td colspan="2"></td>
+
+            </tr>
+        </table>
+    }
+    else
+    {
+        <h4 style="color:darkgreen">( дог. №@selRenter.Contract ) @selRenter.RenterName</h4>
+        <hr />
+        <h4 style="color:red">Данный договор просрочен или расторгнут раньше срока окончания!</h4>
+    }
+    <hr />
+
+    <p>
+        <button type="button" class="btn btn-outline-primary btn-link btn-sm" onclick="window.history.go(-1)">Назад</button>
+
+    </p>
+
+
+}
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+
+    private AreaRect[] areas;
+    private RenterRect selRenter;
+
+    float total_area = 0;
+    float total_sum = 0;
+    float total_sum_vat = 0;
+    float free_area = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshList();
+    }
+
+    private async Task RefreshList()
+    {
+        total_area = 0;
+        total_sum = 0;
+        total_sum_vat = 0;
+        free_area = 0;
+
+        areas = await Http.Get<AreaRect[]>(ConnectAPI.apiUri + "/api/Areas/GetAreasByRenterId?id=" + id);
+        selRenter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Renters/" + id);
+
+        foreach (var ar in areas)
+        {
+            total_area += ar.Square;
+            total_sum += ar.Cost;
+            total_sum_vat += Finance.WithoutVat(ar.Cost);
+            if (!ar.isRented)
+            {
+                free_area += ar.Square;
+            }
+        }
+
+        StateHasChanged();
+    }
+    void OnClickRates(int id)
+    {
+        NavigationManager.NavigateTo("/rentrates/" + id);
+    }
+
+    
+}

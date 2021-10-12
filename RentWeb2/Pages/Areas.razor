@@ -1,0 +1,329 @@
+﻿@page "/areas"
+
+@using System.Diagnostics
+@using RentLibrary
+@using RentCommon
+@inject IHttpService Http
+@inject IJSRuntime JsRuntime
+@inject IAuthenticationService AuthenticationService
+
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+
+@inject Service svc
+
+@if (objects == null)
+{
+    @*<p><em>Загрузка данных...</em></p>*@
+    <div class="text-center">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="sr-only">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+
+    <form class="form-inline">
+        <div class="form-group">
+            <div class="input-group mb-3 mr-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Объект</span>
+                </div>
+                <select class="custom-select" @onchange="OnChangeObject">
+                    <option></option>
+                    @foreach (var obj in objects)
+                    {
+                        <option value="@obj.Id" selected="@(SavedObject == obj.Id.ToString())">@obj.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @if (layers != null)
+            {
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Размещение</span>
+                    </div>
+                    <select class="custom-select" @onchange="OnChangeLayer">
+                        <option></option>
+                        @foreach (var obj in layers)
+                        {
+                            <option value="@obj.Id" selected="@(SavedLayer == obj.Id.ToString())">@obj.Name</option>
+                        }
+                    </select>
+                </div>
+            }
+        </div>
+    </form>
+}
+
+@if (svc.allowEdit)
+{
+    <p>(@x,@y)</p>
+}
+
+@if (area != null)
+{
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                @if (svc.DevOrProd())
+                {
+                    <th>ID</th>
+                }
+                <th>Наименование</th>
+                <th>Площадь,  м<sup>2</sup></th>
+                <th>Цена за м<sup>2</sup>, EUR</th>
+                <th>Стоимость, EUR</th>
+                <th>Цена за м<sup>2</sup> с НДС, EUR</th>
+                <th>Стоимость с НДС, EUR</th>
+                <th>Арендуется</th>
+                <th>Дополнительно</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr valign="top">
+                @if (svc.DevOrProd())
+                {
+                    <td>@area.Id</td>
+                }
+                <td>@area.AreaName</td>
+                <td>@area.Square</td>
+                <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+
+                <td>@area.Price.ToString("F2")</td>
+                <td>@area.Cost.ToString("F2")</td>
+                @if (area.isRented)
+                {
+                    <td>Да</td>
+                    <td>
+                        <a href="/renterdetails/@renter.Id">(@renter.Contract) @renter.RenterName</a>
+                        <a href="/rentrates/@area.Id">(ставки)</a>
+                    </td>
+                }
+                else
+                {
+                    <td>Нет</td>
+                    <td></td>
+                }
+
+            </tr>
+
+        </tbody>
+    </table>
+}
+
+@*preserveAspectRatio="none" preserveAspectRatio="xMinYMin scale"*@
+
+<div style="border:3px solid green;width:100%;height:80vh;overflow:scroll;">
+    <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG" height="@Height" width="@Width">
+        @if (img_code.Length != 0)
+        {
+            <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
+        }
+
+        @if (apoints != null)
+        {
+
+            @foreach (var a in apoints)
+            {
+
+                @if (a.isRented)
+                {
+                    <polygon points="@a.points"
+                             style="        fill: lightgreen;
+                            fill-opacity: 0.5;stroke-width:2;
+                            stroke: rgb(0, 0, 255);
+                            stroke-dasharray: 5;
+                            stroke-dashoffset: 10;
+                            "/>
+                }
+                else
+                {
+                    <polygon points="@a.points"
+                             style="        fill: red;
+        fill-opacity: 0.5;
+        stroke-width: 2;
+        stroke: rgb(0, 0, 255);
+        stroke-dasharray: 5;
+        stroke-dashoffset: 10;
+" />
+                }
+            }
+        }
+
+
+    </svg>
+</div>
+
+@if (svc.allowEdit)
+{
+  <a href="editareas">Редактирование площадей</a>
+}
+
+    <style>
+
+        svg {
+            width: auto;
+            height: auto;
+            /*border: dashed;*/
+            pointer-events: none;
+        }
+
+        image {
+            cursor: pointer;
+            pointer-events: all;
+        }
+    </style>
+
+
+    @code {
+
+public class Pts
+    {
+        public bool isRented { get; set; }
+        public string points { get; set; }
+    }
+
+    List<Pts> apoints;
+
+    private IEnumerable<ObjectRect> objects;
+
+    private LayerRect[] layers;
+
+    private IEnumerable<AreaRect> areas;
+
+
+    int Width = 0;
+    int Height = 0;
+
+    string img_code = "";
+
+    public string id_layer;
+    int x;
+    int y;
+    AreaRect area = null;
+    RenterRect renter = null;
+
+    // bool isEditEnabled;
+
+    ElementReference svgMain;
+
+    string SavedObject;
+    string SavedLayer;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        SavedObject = await LocalStore.GetItemAsync<string>("Object");
+        SavedLayer = await LocalStore.GetItemAsync<string>("Layer");
+
+        objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
+
+        apoints = new List<Pts>();
+
+        if (SavedObject != null)
+        {
+
+            layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + SavedObject);
+        }
+
+        if (SavedLayer != null)
+        {
+            img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == SavedLayer).LayerFile);
+            Height = layers.First(l => l.Id.ToString() == SavedLayer).Height;
+            Width = layers.First(l => l.Id.ToString() == SavedLayer).Width;
+            id_layer = SavedLayer;
+            areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+
+            foreach (var a in areas)
+            {
+                apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+            }
+        }
+    }
+
+    async Task OnChangeObject(ChangeEventArgs e)
+    {
+
+        // Debug.WriteLine(e.Value);
+
+
+        if (e.Value.ToString().Length > 0)
+        {
+            // при смене объекта чистим все зависящие параметры
+            img_code = "";
+            layers = null;
+            areas = null;
+            area = null;
+            apoints = null;
+            layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + e.Value.ToString());
+            await LocalStore.SetItemAsync("Object", e.Value.ToString());
+        }
+        //else
+        //{
+        //    layers = null;
+        //    await LocalStore.ClearAsync();
+        //}
+        // await JsRuntime.InvokeVoidAsync("ShowAlert", "You clicked a line");
+    }
+
+
+    async Task OnChangeLayer(ChangeEventArgs e)
+    {
+
+        img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == e.Value.ToString()).LayerFile);
+        Height = layers.First(l => l.Id.ToString() == e.Value.ToString()).Height;
+        Width = layers.First(l => l.Id.ToString() == e.Value.ToString()).Width;
+        Debug.WriteLine(img_code);
+        id_layer = e.Value.ToString();
+        await LocalStore.SetItemAsync("Layer", e.Value.ToString());
+        areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+        apoints = new List<Pts>();
+        foreach (var a in areas)
+        {
+            apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+        }
+    }
+
+
+    async Task OnMoveSVG(MouseEventArgs e)
+    {
+        int[] pt = await JsRuntime.InvokeAsync<int[]>("GetRelativePos", svgMain, e);
+        x = pt[0];
+        y = pt[1];
+    }
+
+    async Task OnClick()
+    {
+        area = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas?id=" + id_layer + "&x=" + x.ToString() + "&y=" + y.ToString());
+
+        if (area != null && area.isRented)
+        {
+            renter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + area.Id.ToString());
+        }
+    }
+
+    //Координаты точек для полигона через запятую
+    private async Task<string> GetAreaPointString(int areaid)
+    {
+        string ps = "";
+
+        List<AreaPoint> areaPs = new List<AreaPoint>();
+        areaPs = await Http.Get<List<AreaPoint>>(ConnectAPI.apiUri + "/api/Areas/GetAreaPoints?id=" + areaid.ToString());
+        foreach (AreaPoint point in areaPs)
+        {
+            ps += point.PointX + "," + point.PointY + " ";
+        }
+
+        return ps.Trim();
+    }
+
+
+    }
