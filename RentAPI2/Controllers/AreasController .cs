@@ -63,10 +63,10 @@ namespace RentAPI.Controllers
 
         // удаляем не площадь а арендатора - высвобождаем
         [HttpDelete]
-        [Route("api/Areas/{id}")]
-        public void Delete(int id)
+        [Route("api/Areas")]
+        public void Delete([FromQuery] int areaid)
         {
-
+            dba.Value.DeleteArea(areaid);
         }
 
         [HttpPut]

@@ -22,16 +22,16 @@
 }
 else
 {
-<form class="form-check-inline">
-    <div class="form-group">
-        <h4 style="color:darkgreen">Площади объекта @objectR.Name</h4>
-    </div>
-    <div class="form-group" style="margin-left:50px">
-        <a href="layers/@objectR.Id">Размещение на объекте</a>
-    </div>
-</form>
+    <form class="form-check-inline">
+        <div class="form-group">
+            <h4 style="color:darkgreen">Площади объекта @objectR.Name</h4>
+        </div>
+        <div class="form-group" style="margin-left:50px">
+            <a href="layers/@objectR.Id">Размещение на объекте</a>
+        </div>
+    </form>
 
-    
+
 
     @if (svc.allowEdit)
     {
@@ -68,51 +68,52 @@ else
 
             @foreach (var area in areas)
             {
-            <tr valign="top">
-                @if (svc.DevOrProd())
-                {
-                    <td>@area.Id</td>
-                }
-                @if (area.isRented)
-                {
-                    @*<td>Да</td>*@
-                    <td>
-                        <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
-                        @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
-                    </td>
-                }
-                else
-                {
-                    @*<td>Нет</td>*@
-                    <td>-</td>
-                }
-                <td>@area.LayerName</td>
-                <td>@area.AreaName</td>
-                <td>@area.Square</td>
-                <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
-                <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
-                <td>@area.Price.ToString("F2")</td>
-                <td>@area.Cost.ToString("F2")</td>
-                @if (area.isRented)
-                {
-                    @*<td>Да</td>*@
-                    <td>
-                        @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
-                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
-                    </td>
-                }
-                else
-                {
-                    @*<td>Нет</td>*@
-                    <td>-</td>
-                }
-                @if (svc.allowEdit)
-                {
-                    <td>
-                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
-                    </td>
-                }
-            </tr>
+                <tr valign="top">
+                    @if (svc.DevOrProd())
+                    {
+                        <td>@area.Id</td>
+                    }
+                    @if (area.isRented)
+                    {
+                        @*<td>Да</td>*@
+                        <td>
+                            <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
+                            @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
+                        </td>
+                    }
+                    else
+                    {
+                        @*<td>Нет</td>*@
+                        <td>-</td>
+                    }
+                    <td>@area.LayerName</td>
+                    <td>@area.AreaName</td>
+                    <td>@area.Square</td>
+                    <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                    <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                    <td>@area.Price.ToString("F2")</td>
+                    <td>@area.Cost.ToString("F2")</td>
+                    @if (area.isRented)
+                    {
+                        @*<td>Да</td>*@
+                        <td>
+                            @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
+                            <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                        </td>
+                    }
+                    else
+                    {
+                        @*<td>Нет</td>*@
+                        <td>-</td>
+                    }
+                    @if (svc.allowEdit)
+                    {
+                        <td>
+                            <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
+                            <button class="btn btn-sm btn-danger" @onclick="(() =>  Confirm(area))"><i class="oi oi-trash" /></button>
+                        </td>
+                    }
+                </tr>
 
             }
         </tbody>
@@ -140,6 +141,30 @@ else
 
 
 }
+
+@if (ShowConfirm)
+{
+    <div class="modal show fade" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Подтверждение</h4>
+                    <button type="button" class="close" @onclick="(() => { ShowConfirm = !ShowConfirm; })">&times;</button>
+                </div>
+                <div class="modal-body">
+                    Вы действительно хотите удалить <b>@selArea.AreaName</b> ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" @onclick="(() => { ShowConfirm = !ShowConfirm; })">Отмена</button>
+                    <button type="button" class="btn btn-danger" @onclick="(() => { DelArea(selArea.Id); })">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+
 
 @if (ShowModal)
 {
@@ -242,6 +267,9 @@ else
         </div>
     </div>
     <div class="modal-backdrop fade show"></div>
+
+
+
 }
 
 @code {
@@ -263,6 +291,8 @@ else
     int rId;
     string layerName;
     private bool ShowModal = false;
+
+    bool ShowConfirm = false;
 
     RenterRect renter = null;
     // string r_name;
@@ -358,6 +388,15 @@ else
         await RefreshList();
     }
 
+    async void DelArea(int areaid)
+    {
+        await Http.Delete(ConnectAPI.apiUri + "/api/Areas?areaid=" + areaid);
+
+        ShowConfirm = !ShowConfirm;
+        StateHasChanged();
+        await RefreshList();
+    }
+
     async void SetRenter(AreaRect area)
     {
         await Http.Put(ConnectAPI.apiUri + "/api/Areas/AddRenter?areaid=" + area.Id + "&id=" + rId.ToString(), null);
@@ -383,5 +422,10 @@ else
         StateHasChanged();
     }
 
+    void Confirm(AreaRect area)
+    {
+        ShowConfirm = true;
+        selArea = area;
+    }
 
 }

@@ -322,13 +322,28 @@ namespace RentDB
             context.Value.SaveChanges();
         }
 
-        public void DeleteArea(AreaRect old)
+        public void DeleteArea(int areaId)
         {
+            // удалим точки этой площади из базы
+            var ap = context.Value.AreaPoints.Where(a => a.Area.Id == areaId).AsEnumerable();
+             if (ap != null)
+             {
+                context.Value.AreaPoints.RemoveRange(ap);
+                context.Value.SaveChanges();
+             }
+
+            // найдем и удалим ставки аренды по этой площади, если удаляем значит они не нужны
+            var ar = context.Value.RentRates.Where(a => a.Area.Id == areaId).AsEnumerable();
+            if (ar != null)
+            {
+                context.Value.RentRates.RemoveRange(ar);
+                context.Value.SaveChanges();
+            }
+
+
             // найдем объект в базе с таким ид 
-            context.Value.RentAreas.Remove(context.Value.RentAreas.Find(old.Id));
+            context.Value.RentAreas.Remove(context.Value.RentAreas.Find(areaId));
             context.Value.SaveChanges();
         }
-
-
     }
 }
