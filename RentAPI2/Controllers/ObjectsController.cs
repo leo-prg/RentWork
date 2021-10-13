@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace RentAPI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class ObjectsController : ControllerBase
     {
