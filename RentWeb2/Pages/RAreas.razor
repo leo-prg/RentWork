@@ -47,23 +47,23 @@ else
 
                 @foreach (var area in areas)
                 {
-                <tr valign="top">
-                    @if (svc.DevOrProd())
-                    {
-                        <td>@area.Id</td>
-                    }
-                    <td>@area.ObjectName</td>
-                    <td>@area.LayerName</td>
-                    <td>@area.AreaName</td>
-                    <td>@area.Square</td>
-                    <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
-                    <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
-                    <td>@area.Price.ToString("F2")</td>
-                    <td>@area.Cost.ToString("F2")</td>
-                    <td>
-                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
-                    </td>
-                </tr>
+                    <tr valign="top">
+                        @if (svc.DevOrProd())
+                        {
+                            <td>@area.Id</td>
+                        }
+                        <td>@area.ObjectName</td>
+                        <td>@area.LayerName</td>
+                        <td>@area.AreaName</td>
+                        <td>@area.Square</td>
+                        <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                        <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                        <td>@area.Price.ToString("F2")</td>
+                        <td>@area.Cost.ToString("F2")</td>
+                        <td>
+                            <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                        </td>
+                    </tr>
 
                 }
             </tbody>
@@ -86,7 +86,8 @@ else
     {
         <h4 style="color:darkgreen">( дог. №@selRenter.Contract ) @selRenter.RenterName</h4>
         <hr />
-        <h4 style="color:red">Данный договор просрочен или расторгнут раньше срока окончания!</h4>
+        <h4 style="color:red">У данного арендатора нет привязанных площадей!</h4>
+        <h3 style="color:red">Возможные причины: договор истек, закрыт, либо договор находится в процессе обработки.</h3>
     }
     <hr />
 
@@ -146,5 +147,5 @@ else
         NavigationManager.NavigateTo("/rentrates/" + id);
     }
 
-    
+
 }
