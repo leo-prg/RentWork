@@ -135,7 +135,7 @@ else
         <button class="btn btn-info btn-sm mb-2" @onclick="SavePoints">Сохранить</button>
     </div>
     <div class="child" style="border:3px solid green;width:71%;height:70vh;overflow:scroll;">
-        <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG" height="@Height" width="@Width">
+        <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG" height="@Height" width="@Width" style="@SetCursor()">
             @if (img_code.Length != 0)
             {
                 <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
@@ -357,7 +357,7 @@ else
     async void  OnChangeArea(ChangeEventArgs e)
     {
 
-       // Debug.WriteLine(e.Value);
+        // Debug.WriteLine(e.Value);
 
         area = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas/GetAreaById?id=" + e.Value.ToString() );
 
@@ -494,6 +494,11 @@ else
     {
         area = null;
         ShowModal = false;
+    }
+
+    private string SetCursor()
+    {
+        return pointadd?"cursor:crosshair":"cursor:pointer";
     }
 
 
