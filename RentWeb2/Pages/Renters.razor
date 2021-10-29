@@ -47,6 +47,8 @@ else
             </div>
         </div>*@
 
+    <h5>Всего по списку <span style="color:blue">@count</span> действующих договоров</h5>
+
     <table class="table table-hover">
         <thead>
             <tr>
@@ -240,6 +242,8 @@ else
 
     private string searchStr = "";
 
+    private int count=0;
+
     bool ShowModal = false;
     bool ShowConfirm = false;
 
@@ -286,6 +290,15 @@ else
 
         renters = await Http.Get<IEnumerable<RenterRect>>(ConnectAPI.apiUri + "/api/Renters");
         if (str != null) Search(str);
+
+        count = 0;
+        foreach (var r in renters)
+        {
+            if (r.EndDate.Date > DateTime.Now.Date)
+            {
+                count++;
+            }
+        }
         StateHasChanged();
     }
 
