@@ -3,24 +3,25 @@
 @using System.Diagnostics
 
 <ul class="nav nav-pills nav-fill">
+    
     <li class="nav-item">
-        <a class="@(isActive1 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_for_bank" @onclick="() => ActivateTab(1)">Список арендаторов</a>
+        <a class="@(act == 1 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_for_bank" @onclick="() => { act = 1; }">Список арендаторов</a>
     </li>
 
     <li class="nav-item">
-        <a class="@(isActive2 ? "nav-link active " : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report" @onclick="() => ActivateTab(2)">Общий по площадям</a>
+        <a class="@(act == 2 ? "nav-link active " : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report" @onclick="() => { act = 2; }">Общий по площадям</a>
     </li>
 
     <li class="nav-item">
-        <a class="@(isActive3 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_free" @onclick="() => ActivateTab(3)">Свободные площади</a>
+        <a class="@(act == 3 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_free" @onclick="() => { act = 3; }">Свободные площади</a>
     </li>
 
     <li class="nav-item">
-        <a class="@(isActive4 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_rates" @onclick="() => ActivateTab(4)">Понижение/повышение ставок</a>
+        <a class="@(act == 4 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_rates" @onclick="() => { act = 4; }">Понижение/повышение ставок</a>
     </li>
 
     <li class="nav-item">
-        <a class="@(isActive5 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_invoices" @onclick="() => ActivateTab(5)">Счета</a>
+        <a class="@(act == 5 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_invoices" @onclick="() => { act = 5; }">Счета</a>
     </li>
 
     <iframe name="mainreport" style="width:100%;  height: 90vh; border: none"></iframe>
@@ -31,11 +32,7 @@
 
 @code
 {
-    private bool isActive1 = false;
-    private bool isActive2 = false;
-    private bool isActive3 = false;
-    private bool isActive4 = false;
-    private bool isActive5 = false;
+    private byte act = 0;
 
     private string report = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fОбщий+отчет&rs:Command=Render";
     private string report_for_bank = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fRenterList&rs:Command=Render";
@@ -46,59 +43,6 @@
     // счета по аренде
     private string report_invoices = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fInvoice&rs:Command=Render";
 
-
-    private void ActivateTab(int tab)
-    {
-        Debug.WriteLine($"Pressed {tab}");
-        switch (tab)
-        {
-            case 1 : { isActive1 = true;
-                    isActive2 = false;
-                    isActive3 = false;
-                    isActive4 = false;
-                    isActive5 = false;
-                };
-                break;
-            case 2:
-                {
-                    isActive1 = false;
-                    isActive2 = true;
-                    isActive3 = false;
-                    isActive4 = false;
-                    isActive5 = false;
-                };
-                break;
-            case 3:
-                {
-                    isActive1 = false;
-                    isActive2 = false;
-                    isActive3 = true;
-                    isActive4 = false;
-                    isActive5 = false;
-                };
-                break;
-            case 4:
-                {
-                    isActive1 = false;
-                    isActive2 = false;
-                    isActive3 = false;
-                    isActive4 = true;
-                    isActive5 = false;
-                };
-                break;
-            case 5:
-                {
-                    isActive1 = false;
-                    isActive2 = false;
-                    isActive3 = false;
-                    isActive4 = false;
-                    isActive5 = true;
-                };
-                break;
-
-
-        }
-    }
-
-
 }
+
+
