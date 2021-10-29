@@ -41,7 +41,7 @@
                 Отчеты по аренде
             </NavLink>
         </li>
-        <li class="nav-item px-3">
+        @*<li class="nav-item px-3">
             <NavLink class="nav-link" href="freespaces">
                 <span class="oi oi-task" aria-hidden="true"></span>
                 Свободные площади
@@ -52,7 +52,7 @@
                 <span class="oi oi-document" aria-hidden="true"></span>
                 Счета по аренде
             </NavLink>
-        </li>
+        </li>*@
 
 
         <li class="nav-item px-3">
@@ -61,6 +61,7 @@
                 Анализ доходов
             </NavLink>
         </li>
+
         @if (accessBank.Contains(AuthenticationService.User.Username))
         {
             <li class="nav-item px-3">
