@@ -2,6 +2,7 @@
 
 @using RentLibrary
 @inject IHttpService Http
+@inject NavigationManager NavigationManager
 
 @using GoogleMapsComponents
 @using GoogleMapsComponents.Maps
@@ -36,18 +37,37 @@
 
                 var place = new LatLngLiteral() { Lat = _lat, Lng = _lon };
 
-                var mo = new MarkerOptions() { Position = place, Map = mapMain.InteropObject,
-                    Title = o.Name + (char)13 + (char)10 + o.Address,
-                    Icon = new Icon { Url = "logo_map.png", ScaledSize = new Size { Width = 50, Height = 50 } }
+                var mo = new MarkerOptions()
+                {
+                    Position = place,
+                    Map = mapMain.InteropObject,
+                    Title = "Перейти на объект" + (char)13 + (char)10 + o.Name + (char)13 + (char)10 + o.Address,
+                    Icon = new Icon { Url = "logo_map.png", ScaledSize = new Size { Width = 50, Height = 50 } },
+                    Label = new MarkerLabel { Text = o.Id.ToString(), Color = "rgba(0, 0, 0, 0.1)" },
                 };
 
                 var marker = await Marker.CreateAsync(mapMain.JsRuntime, mo);
 
                 markers.Push(marker);
 
+
+
+                await marker.AddListener<MouseEvent>("click", async e =>
+                {
+                    string markerLabelText = await marker.GetLabelText();
+
+                    NavigationManager.NavigateTo("/oareas/"+markerLabelText);
+                    Debug.WriteLine(markerLabelText);
+
+
+
+                });
             }
 
             await MarkerClustering.CreateAsync(mapMain.JsRuntime, mapMain.InteropObject, markers);
+
+
+
         }
 
     }
@@ -57,14 +77,13 @@
     {
         mapOptions = new MapOptions()
         {
-            Zoom = 12,
+            Zoom = 14,
             Center = new LatLngLiteral()
             {
-                Lat = 52.071989,
-               
-                Lng = 23.750558
+                Lat = 52.082396,
+                Lng = 23.696826
             },
-            MapTypeId = MapTypeId.Roadmap
+            MapTypeId = MapTypeId.Satellite
         };
 
         await addMarker();
