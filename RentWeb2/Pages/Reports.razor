@@ -9,6 +9,10 @@
     </li>
 
     <li class="nav-item">
+        <a class="@(act == 6 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_outdated_contracts" @onclick="() => { act = 6; }">Договора с истекающим сроком действия</a>
+    </li>
+
+    <li class="nav-item">
         <a class="@(act == 1 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_for_bank" @onclick="() => { act = 1; }">Список арендаторов</a>
     </li>
 
@@ -27,6 +31,7 @@
     <li class="nav-item">
         <a class="@(act == 5 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_invoices" @onclick="() => { act = 5; }">Счета</a>
     </li>
+
 
     <iframe name="mainreport" style="width:100%;  height: 90vh; border: none"></iframe>
 </ul>
@@ -47,6 +52,7 @@
     private string report_free = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fFreeSpaces&rs:Command=Render";
     // счета по аренде
     private string report_invoices = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fInvoice&rs:Command=Render";
+    private string report_outdated_contracts = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fИстекающие+договора&rs:Command=Render";
 
 }
 
