@@ -10,6 +10,8 @@ namespace RentLibrary
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public DateTime? EmpDate { get; set; }
         public string Duty { get; set; }
         public string HomePhone { get; set; }
         public string Email { get; set; }

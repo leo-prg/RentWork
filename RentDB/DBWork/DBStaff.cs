@@ -12,7 +12,7 @@ namespace RentDB
 
         public IEnumerable<RentLibrary.Staff> GetAllStaff()
         {
-            return context.Value.Staff.Select(s=> new RentLibrary.Staff() { Id = s.Id, Name = s.Name, Duty = s.Duty, 
+            return context.Value.Staff.Select(s=> new RentLibrary.Staff() { Id = s.Id, Name = s.Name, DateOfBirth = s.DateOfBirth, EmpDate = s.EmpDate,  Duty = s.Duty, 
                 WorkPhone = s.WorkPhone,  Email = s.Email,  HomePhone = s.HomePhone, InternalPhone = s.InternalPhone } ).OrderBy(s=> s.Id);
         }
 
@@ -23,6 +23,8 @@ namespace RentDB
             {
                 Id = s.Id,
                 Name = s.Name,
+                DateOfBirth = s.DateOfBirth,
+                EmpDate = s.EmpDate,
                 Duty = s.Duty,
                 WorkPhone = s.WorkPhone,
                 Email = s.Email,
@@ -36,6 +38,8 @@ namespace RentDB
             context.Value.Staff.Add(new Staff()
             {
                 Name = staff.Name,
+                DateOfBirth = staff.DateOfBirth,
+                EmpDate = staff.EmpDate,
                 Duty = staff.Duty,
                 WorkPhone = staff.WorkPhone,
                 InternalPhone = staff.InternalPhone, 
@@ -50,6 +54,8 @@ namespace RentDB
         {
             var sU = context.Value.Staff.Where(s => s.Id == oldS.Id).FirstOrDefault();
             sU.Name = newS.Name;
+            sU.DateOfBirth = newS.DateOfBirth;
+            sU.EmpDate = newS.EmpDate;
             sU.Duty = newS.Duty;
             sU.WorkPhone = newS.WorkPhone;
             sU.InternalPhone = newS.InternalPhone;

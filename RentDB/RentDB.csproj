@@ -127,6 +127,14 @@
     <Compile Include="Migrations\202103230758076_RenterAccCode.designer.cs">
       <DependentUpon>202103230758076_RenterAccCode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112181818104_Employee DoB.cs" />
+    <Compile Include="Migrations\202112181818104_Employee DoB.designer.cs">
+      <DependentUpon>202112181818104_Employee DoB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202112181829186_Employment Date.cs" />
+    <Compile Include="Migrations\202112181829186_Employment Date.designer.cs">
+      <DependentUpon>202112181829186_Employment Date.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -168,6 +176,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202103230758076_RenterAccCode.resx">
       <DependentUpon>202103230758076_RenterAccCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112181818104_Employee DoB.resx">
+      <DependentUpon>202112181818104_Employee DoB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112181829186_Employment Date.resx">
+      <DependentUpon>202112181829186_Employment Date.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,5 +26,9 @@ namespace RentDB
         public string WorkPhone { get; set; }
         [StringLength(3)]
         public string InternalPhone { get; set; }
+        [Column(TypeName ="Date")]
+        public DateTime DateOfBirth { get; set; }
+        [Column(TypeName = "Date")]
+        public DateTime? EmpDate { get; set; }
     }
 }
