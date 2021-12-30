@@ -56,12 +56,12 @@ else
                 {
                     <th>ID</th>
                 }
-                <th>Наименование арендатора</th>
-                <th>Договор аренды</th>
-                <th>Дата начала</th>
-                <th>Дата окончания</th>
+                <th @onclick="@(() => renters = Sort("RenterName", renters))">Наименование арендатора</th>
+                <th @onclick="@(() => renters = Sort("ContractNo", renters))">Договор аренды</th>
+                <th @onclick="@(() => renters = Sort("StartDate", renters))">Дата начала</th>
+                <th @onclick="@(() => renters = Sort("EndDate", renters))">Дата окончания</th>
                 <th>Дополнительно</th>
-                <th>Примечание</th>
+                <th @onclick="@(() => Sort("Annotation",renters))">Примечание</th>
                 @if (svc.allowEdit)
                 {
                     <th>Действия</th>
@@ -74,47 +74,47 @@ else
             {
                 @if (r.EndDate.Date < DateTime.Now.Date)
                 {
-                    <tr style="background-color:lightpink @style">
-                        @if (svc.DevOrProd())
-                        {
-                            <td>@r.Id</td>
-                        }
-                        <td><a href="/renterdetails/@r.Id.ToString()">@r.RenterName</a></td>
-                        <td>@r.Contract</td>
-                        <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
-                        <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
-                        <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
-                        <td>@r.Annotation</td>
-                        @if (svc.allowEdit)
-                        {
-                            <td>
-                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(r))"><i class="oi oi-pencil" /></button>
-                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(r))"><i class="oi oi-trash" /></button>
-                            </td>
-                        }
-                    </tr>
+            <tr style="background-color:lightpink @style">
+                @if (svc.DevOrProd())
+                {
+                    <td>@r.Id</td>
+                }
+                <td><a href="/renterdetails/@r.Id.ToString()">@r.RenterName</a></td>
+                <td>@r.Contract</td>
+                <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
+                <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
+                <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
+                <td>@r.Annotation</td>
+                @if (svc.allowEdit)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(r))"><i class="oi oi-pencil" /></button>
+                        <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(r))"><i class="oi oi-trash" /></button>
+                    </td>
+                }
+            </tr>
                 }
                 else
                 {
-                    <tr>
-                        @if (svc.DevOrProd())
-                        {
-                            <td>@r.Id</td>
-                        }
-                        <td><a href="/renterdetails/@r.Id.ToString()">@r.RenterName</a></td>
-                        <td>@r.Contract</td>
-                        <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
-                        <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
-                        <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
-                        <td>@r.Annotation</td>
-                        @if (svc.allowEdit)
-                        {
-                            <td>
-                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(r))"><i class="oi oi-pencil" /></button>
-                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(r))"><i class="oi oi-trash" /></button>
-                            </td>
-                        }
-                    </tr>
+        <tr>
+            @if (svc.DevOrProd())
+            {
+                <td>@r.Id</td>
+            }
+            <td><a href="/renterdetails/@r.Id.ToString()">@r.RenterName</a></td>
+            <td>@r.Contract</td>
+            <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
+            <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
+            <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
+            <td>@r.Annotation</td>
+            @if (svc.allowEdit)
+            {
+                <td>
+                    <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(r))"><i class="oi oi-pencil" /></button>
+                    <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(r))"><i class="oi oi-trash" /></button>
+                </td>
+            }
+        </tr>
                 }
 
             }
@@ -234,7 +234,11 @@ else
 }
 
 @code {
-    private IEnumerable<RenterRect> renters { get; set; }
+
+    private bool isSortedAscending;
+    private string activeSortColumn;
+
+    private IEnumerable<RenterRect> renters;
 
     private RenterRect selRenter;
 
@@ -265,6 +269,32 @@ else
         }
     }
 
+    private  IEnumerable<T> Sort<T>(string column, IEnumerable<T> set)
+    {
+        if (column != activeSortColumn)
+        {
+            isSortedAscending = true;
+            activeSortColumn = column;
+            return set.OrderBy(x => x.GetType().GetProperty(column).GetValue(x, null)).ToList();
+
+        }
+        else
+        {
+
+            if (isSortedAscending)
+            {
+                isSortedAscending = !isSortedAscending;
+                return  set.OrderByDescending(x => x.GetType().GetProperty(column).GetValue(x, null)).ToList();
+            }
+            else
+            {
+                isSortedAscending = !isSortedAscending;
+                return set.OrderBy(x => x.GetType().GetProperty(column).GetValue(x, null)).ToList();
+            }
+
+        }
+
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -277,6 +307,8 @@ else
         searchStr = ss;
         sessionStorage.SetItem<string>("searchStr", ss);
         renters = (await Http.Get<IEnumerable<RenterRect>>(ConnectAPI.apiUri + "/api/Renters")).Where(r => r.RenterName.ToUpper().Contains(ss.ToUpper())).Select(r => r);
+
+
         if (renters.Count() == 0)
         {
             toastService.ShowToast(ToastLevel.Error, "Ничего не найдено", "Ошибка");
@@ -291,10 +323,14 @@ else
         renters = await Http.Get<IEnumerable<RenterRect>>(ConnectAPI.apiUri + "/api/Renters");
         if (str != null) Search(str);
 
+
+
         count = 0;
         foreach (var r in renters)
         {
-            if (r.EndDate.Date > DateTime.Now.Date)
+           
+           
+            if ((r.EndDate.Date > DateTime.Now.Date) && (r.StartDate.Date < DateTime.Now.Date))
             {
                 count++;
             }

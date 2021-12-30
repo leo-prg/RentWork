@@ -20,8 +20,9 @@
         public RentModel()
             // почему-то не хотело браться из конфига пока забил так
             : base("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework")
+        //: base("Data Source = Server; Initial Catalog = TestRentKrok;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework")
         {
-            
+
         }
         // Добавьте DbSet для каждого типа сущности, который требуется включить в модель. Дополнительные сведения 
         // о настройке и использовании модели Code First см. в статье http://go.microsoft.com/fwlink/?LinkId=390109.

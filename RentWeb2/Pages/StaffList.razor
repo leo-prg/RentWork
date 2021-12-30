@@ -33,7 +33,9 @@ else
         <thead>
             <tr>
                 <th>ФИО</th>
+                <th>День рождения</th>
                 <th width="200">Должноcть</th>
+                <th>Дата приема</th>
                 <th>Телефон (раб.)</th>
                 <th width="100">Телефон (внутр.)</th>
                 <th>Email</th>
@@ -47,21 +49,23 @@ else
         <tbody>
             @foreach (var s in staffs)
             {
-                <tr>
-                    <td>@s.Name</td>
-                    <td width="200">@s.Duty</td>
-                    <td>@s.WorkPhone</td>
-                    <td width="150">@s.InternalPhone</td>
-                    <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
-                    <td>@s.HomePhone</td>
-                    @if (svc.allowEdit)
-                    {
-                        <td>
-                            <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil"/></button>
-                            <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash"/></button>
-                        </td>
-                    }
-                </tr>
+            <tr>
+                <td>@s.Name</td>
+                <td>@s.DateOfBirth.ToString("d MMMM")</td>
+                <td width="200">@s.Duty</td>
+                <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
+                <td>@s.WorkPhone</td>
+                <td width="150">@s.InternalPhone</td>
+                <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
+                <td>@s.HomePhone</td>
+                @if (svc.allowEdit)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
+                        <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
+                    </td>
+                }
+            </tr>
             }
         </tbody>
     </table>
@@ -97,9 +101,23 @@ else
                         <br />
                         <div class="input-group">
                             <div class="input-group-prepend">
+                                <span class="input-group-text">Дата рождения</span>
+                            </div>
+                            <input type="date" class="form-control" @bind="selStaff.DateOfBirth">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="input-group-text">Должность</span>
                             </div>
                             <input type="text" class="form-control" @bind="selStaff.Duty">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Дата приема</span>
+                            </div>
+                            <input type="date" class="form-control" @bind="selStaff.EmpDate">
                         </div>
                         <br />
                         <div class="input-group">
