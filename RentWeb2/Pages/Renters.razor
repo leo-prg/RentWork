@@ -56,12 +56,23 @@ else
                 {
                     <th>ID</th>
                 }
-                <th @onclick="@(() => renters = Sort("RenterName", renters))">Наименование арендатора</th>
-                <th @onclick="@(() => renters = Sort("ContractNo", renters))">Договор аренды</th>
-                <th @onclick="@(() => renters = Sort("StartDate", renters))">Дата начала</th>
-                <th @onclick="@(() => renters = Sort("EndDate", renters))">Дата окончания</th>
+                <th @onclick="@(() => renters = Sort("RenterName", renters))">
+                    Наименование арендатора
+                    <span class="fa @(SetSortIcon("RenterName"))"></span>
+                </th>
+                <th @onclick="@(() => renters = Sort("ContractNo", renters))">
+                    Договор аренды
+                    <span class="fa @(SetSortIcon("ContractNo"))"></span>
+                </th>
+                <th @onclick="@(() => renters = Sort("StartDate", renters))">
+                    Дата начала
+                    <span class="fa @(SetSortIcon("StartDate"))"></span>
+                </th>
+                <th @onclick="@(() => renters = Sort("EndDate", renters))">Дата окончания
+                <span class="fa @(SetSortIcon("EndDate"))"></span>
+                </th>
                 <th>Дополнительно</th>
-                <th @onclick="@(() => Sort("Annotation",renters))">Примечание</th>
+                <th>Примечание</th>
                 @if (svc.allowEdit)
                 {
                     <th>Действия</th>
@@ -236,7 +247,7 @@ else
 @code {
 
     private bool isSortedAscending;
-    private string activeSortColumn;
+    private string activeSortColumn = "ContractNo";
 
     private IEnumerable<RenterRect> renters;
 
@@ -321,6 +332,7 @@ else
         string str = sessionStorage.GetItem<string>("searchStr");
 
         renters = await Http.Get<IEnumerable<RenterRect>>(ConnectAPI.apiUri + "/api/Renters");
+        renters = Sort("RenterName", renters);
         if (str != null) Search(str);
 
 
@@ -328,8 +340,8 @@ else
         count = 0;
         foreach (var r in renters)
         {
-           
-           
+
+
             if ((r.EndDate.Date > DateTime.Now.Date) && (r.StartDate.Date < DateTime.Now.Date))
             {
                 count++;
@@ -377,4 +389,21 @@ else
         ShowConfirm = true;
         selRenter = renter;
     }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
+    }
+
 }
