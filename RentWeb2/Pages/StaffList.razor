@@ -49,25 +49,48 @@ else
         <tbody>
             @foreach (var s in staffs)
             {
-            <tr>
-                <td>@s.Name</td>
-                <td>@s.DateOfBirth.ToString("d MMMM")</td>
-                <td width="200">@s.Duty</td>
-                <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
-                <td>@s.WorkPhone</td>
-                <td width="150">@s.InternalPhone</td>
-                <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
-                <td>@s.HomePhone</td>
-                @if (svc.allowEdit)
+
+                @if (s.DateOfBirth.Date.Day == DateTime.Now.Date.Day && s.DateOfBirth.Date.Month == DateTime.Now.Date.Month)
                 {
-                    <td>
-                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
-                        <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
-                    </td>
-                }
-            </tr>
-            }
-        </tbody>
+                    <tr style="background-color:lightgreen">
+                        <td>@s.Name</td>
+                        <td>@s.DateOfBirth.ToString("d MMMM")</td>
+                        <td width="200">@s.Duty</td>
+                        <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
+                        <td>@s.WorkPhone</td>
+                        <td width="150">@s.InternalPhone</td>
+                        <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
+                        <td>@s.HomePhone</td>
+                        @if (svc.allowEdit)
+                        {
+                            <td>
+                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
+                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
+                            </td>
+                        }
+                    </tr>
+                    }
+                   else {
+                    <tr>
+                        <td>@s.Name</td>
+                        <td>@s.DateOfBirth.ToString("d MMMM")</td>
+                        <td width="200">@s.Duty</td>
+                        <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
+                        <td>@s.WorkPhone</td>
+                        <td width="150">@s.InternalPhone</td>
+                        <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
+                        <td>@s.HomePhone</td>
+                        @if (svc.allowEdit)
+                        {
+                            <td>
+                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
+                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
+                            </td>
+                        }
+                    </tr>
+                    }
+                    }
+                </tbody>
     </table>
 
     @*<Table TableItem="Staff" Items="staffs" PageSize="10" ColumnReorder="true" ShowSearchBar="true" ShowFooter="true"
