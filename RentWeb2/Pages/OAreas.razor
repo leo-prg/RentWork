@@ -215,7 +215,7 @@ else
                         <div class="input-group-prepend">
                             <span class="input-group-text">Цена c НДС</span>
                         </div>
-                        <input type="number" class="form-control" @bind="selArea.Price">
+                        <input type="number" class="form-control" @bind="selArea.Price" >
                         <div class="input-group-append">
                             <span class="input-group-text">EUR</span>
                         </div>
@@ -386,6 +386,7 @@ else
         selAreaRenter = null;
     }
 
+
     async void NoRenter(AreaRect area)
     {
         await Http.Put(ConnectAPI.apiUri + "/api/Areas/NoRenter?areaid=" + area.Id, null);
@@ -407,6 +408,11 @@ else
 
     async void SetRenter(AreaRect area)
     {
+        if (area.Square > 0 || area.Price > 0)
+        {
+            area.Cost = (float)Math.Round(area.Square * area.Price, 2);
+        }
+
         await Http.Put(ConnectAPI.apiUri + "/api/Areas/AddRenter?areaid=" + area.Id + "&id=" + rId.ToString(), null);
         StateHasChanged();
         await RefreshList();
@@ -414,6 +420,11 @@ else
 
     async void SaveArea(AreaRect area)
     {
+        if (area.Square > 0 || area.Price > 0)
+        {
+            area.Cost = (float)Math.Round(area.Square * area.Price,2);
+        }
+
         if (area.Id > 0) // редактируем
         {
             await Http.Put(ConnectAPI.apiUri + "/api/Areas/", area);
