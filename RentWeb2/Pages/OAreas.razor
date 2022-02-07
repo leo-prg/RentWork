@@ -123,6 +123,8 @@ else
             <td></td>
             <td><b>@Math.Round(@total_area, 2)</b></td>
             <td></td>
+            <td><b>@total_sum_novat.ToString("F2")</b></td>
+            <td></td>
             <td><b>@total_sum.ToString("F2")</b></td>
             <td></td>
             @*<td><b>@Math.Round(total_sum * 1.2, 2)</b></td>*@
@@ -299,6 +301,7 @@ else
     // int r_id;
     float total_area = 0;
     float total_sum = 0;
+    float total_sum_novat = 0;
     float free_area = 0;
 
     protected override async Task OnInitializedAsync()
@@ -310,7 +313,9 @@ else
     {
         total_area = 0;
         total_sum = 0;
+        total_sum_novat = 0;
         free_area = 0;
+
 
         areas = await Http.Get<AreaRect[]>(ConnectAPI.apiUri + "/api/Objects/" + id);
 
@@ -321,6 +326,7 @@ else
         {
             total_area += ar.Square;
             total_sum += ar.Cost;
+            total_sum_novat += Finance.WithoutVat(ar.Cost);
             if (!ar.isRented)
             {
                 free_area += ar.Square;
