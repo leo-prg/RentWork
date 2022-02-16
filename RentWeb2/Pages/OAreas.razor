@@ -233,7 +233,6 @@ else
                     <br />
                     @if (selArea.isRented == true)
                     {
-
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Арендатор</span>
@@ -367,7 +366,7 @@ else
         renters = await Http.Get<RenterRect[]>(ConnectAPI.apiUri + "/api/Renters");
         layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/ListLayers/" + objectR.Id);
 
-        renters = renters.Where(s => s.Contract.Length > 1).ToArray();
+        renters = renters.Where(s => s.Contract.Length >= 1).ToArray();
 
         rId = 0;
         lId = selArea.LayerId;
