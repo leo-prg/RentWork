@@ -178,19 +178,20 @@ else
                     <button type="button" class="close" @onclick="CloseModal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Размещение</span>
-                        </div>
-                        <select @bind="@lId">
-                            <option></option>
-                            @foreach (var l in layers)
-                            {
-                                <option value="@l.Id">@l.Name</option>
-                            }
-                        </select>
-                    </div>
-                    <br />
+                    @*Нет смысла привязка и так есть, т.к. открыто с объекта*@
+                    @*<div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Размещение</span>
+            </div>
+            <select @bind="@lId">
+                <option></option>
+                @foreach (var l in layers)
+                {
+                    <option value="@l.Id">@l.Name</option>
+                }
+            </select>
+        </div>
+        <br />*@
 
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -215,7 +216,7 @@ else
                         <div class="input-group-prepend">
                             <span class="input-group-text">Цена c НДС</span>
                         </div>
-                        <input type="number" class="form-control" @bind="selArea.Price" >
+                        <input type="number" class="form-control" @bind="selArea.Price">
                         <div class="input-group-append">
                             <span class="input-group-text">EUR</span>
                         </div>
@@ -366,7 +367,7 @@ else
         renters = await Http.Get<RenterRect[]>(ConnectAPI.apiUri + "/api/Renters");
         layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/ListLayers/" + objectR.Id);
 
-        renters = renters.Where(s => s.Contract.Length >= 1).ToArray();
+        renters = renters.Where(s => s.Contract.Length >= 1).OrderBy(s=>s.ContractNo).ToArray();
 
         rId = 0;
         lId = selArea.LayerId;
