@@ -83,6 +83,7 @@
     <Compile Include="DataModel\RentArea.cs" />
     <Compile Include="DataModel\Renter.cs" />
     <Compile Include="DataModel\RentLayer.cs" />
+    <Compile Include="DataModel\RentLog.cs" />
     <Compile Include="DataModel\RentModel.cs" />
     <Compile Include="DataModel\RentObject.cs" />
     <Compile Include="DataModel\RentRates.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="DBWork\DBObject.cs" />
     <Compile Include="DBWork\DBRenter.cs" />
     <Compile Include="DBWork\DBRentRates.cs" />
+    <Compile Include="DBWork\DBRentLog.cs" />
     <Compile Include="DBWork\DBStaff.cs" />
     <Compile Include="Migrations\202009010615310_Initial.cs" />
     <Compile Include="Migrations\202009010615310_Initial.designer.cs">
@@ -134,6 +136,10 @@
     <Compile Include="Migrations\202112181829186_Employment Date.cs" />
     <Compile Include="Migrations\202112181829186_Employment Date.designer.cs">
       <DependentUpon>202112181829186_Employment Date.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205310829337_RentLog.cs" />
+    <Compile Include="Migrations\202205310829337_RentLog.designer.cs">
+      <DependentUpon>202205310829337_RentLog.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -182,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112181829186_Employment Date.resx">
       <DependentUpon>202112181829186_Employment Date.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205310829337_RentLog.resx">
+      <DependentUpon>202205310829337_RentLog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -19,8 +19,8 @@
         // в файле конфигурации приложения.
         public RentModel()
             // почему-то не хотело браться из конфига пока забил так
-            : base("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework")
-        //: base("Data Source = Server; Initial Catalog = TestRentKrok;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework")
+            : base("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework;MultipleActiveResultSets=true")
+          //    : base("Data Source = Server; Initial Catalog = TestRentKrok;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework")
         {
 
         }
@@ -34,8 +34,10 @@
         public virtual DbSet<RentRates> RentRates { get; set; }
         public virtual DbSet<RenterFiles> RenterFiles { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        
         public virtual DbSet<AreaPoints> AreaPoints { get; set; }
 
+        public virtual DbSet<RentLog> RentLogs { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RentObject>().HasMany(c => c.RentLayers).WithRequired(x => x.Object);

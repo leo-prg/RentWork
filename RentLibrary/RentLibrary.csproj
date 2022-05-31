@@ -48,6 +48,7 @@
     <Compile Include="RenterFileList.cs" />
     <Compile Include="RenterRect.cs" />
     <Compile Include="Rates.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Staff.cs" />
     <Compile Include="UserList.cs" />
   </ItemGroup>
