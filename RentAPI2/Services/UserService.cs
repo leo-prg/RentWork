@@ -28,6 +28,7 @@ namespace RentAPI2.Services
     {
 
         private static readonly Lazy<RentModel> rm = new Lazy<RentModel>();
+
         private List<User> _users = rm.Value.Users.ToList();
 
         private readonly AppSettings _appSettings;

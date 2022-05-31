@@ -64,10 +64,12 @@
         ul = new List<UserList>();
         // redirect to home if already logged in
         await AuthenticationService.Initialize();
+
         if (AuthenticationService.User != null)
         {
             NavigationManager.NavigateTo("/");
         }
+
         ul = await Http.Get<List<UserList>>(ConnectAPI.apiUri + "/api/Users/List");
     }
 
@@ -79,7 +81,9 @@
             await AuthenticationService.Login(model.Username, model.Password);
             var returnUrl = NavigationManager.QueryString("returnUrl") ?? "";
             NavigationManager.NavigateTo(returnUrl);
-            await Http.Post<Log>(ConnectAPI.apiUri + "/api/Log", new Log() { UserName = AuthenticationService.User.Username, DateOper = DateTime.Now, Page = NavigationManager.Uri.ToString(), Oper = "Login into app" });
+
+            await Http.Post<Log>(ConnectAPI.apiUri + "/api/Log", new Log()
+            { UserName = AuthenticationService.User.Username, DateOper = DateTime.Now, Page = NavigationManager.Uri.ToString(), Oper = "Login into app" });
 
         }
         catch (Exception ex)

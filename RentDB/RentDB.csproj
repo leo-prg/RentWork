@@ -141,6 +141,10 @@
     <Compile Include="Migrations\202205310829337_RentLog.designer.cs">
       <DependentUpon>202205310829337_RentLog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205311829272_fix.cs" />
+    <Compile Include="Migrations\202205311829272_fix.designer.cs">
+      <DependentUpon>202205311829272_fix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -191,6 +195,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205310829337_RentLog.resx">
       <DependentUpon>202205310829337_RentLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205311829272_fix.resx">
+      <DependentUpon>202205311829272_fix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -40,6 +40,9 @@
         public virtual DbSet<RentLog> RentLogs { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Database.SetInitializer<RentModel>(null);
+            base.OnModelCreating(modelBuilder);
+            
             modelBuilder.Entity<RentObject>().HasMany(c => c.RentLayers).WithRequired(x => x.Object);
             modelBuilder.Entity<RentLayer>().HasMany(c => c.RentAreas).WithRequired(x => x.Layer);
             modelBuilder.Entity<Renter>().HasMany(c => c.RentAreas).WithOptional(x => x.Renter);
