@@ -29,9 +29,9 @@ namespace RentWeb2.Shared
     
         // Server API2 Core
        
-      //  public static string apiUri = "https://server:44307";
+        public static string apiUri = "https://server:44307";
 
-        public static string apiUri = "https://localhost:5001";
+      //  public static string apiUri = "https://localhost:5001";
 
         public static string reportUri = "https://server:44355";
 

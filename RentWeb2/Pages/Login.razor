@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using System.ComponentModel.DataAnnotations
 @using RentLibrary
+@using System.Diagnostics
 
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
@@ -63,18 +64,11 @@
         ul = new List<UserList>();
         // redirect to home if already logged in
         await AuthenticationService.Initialize();
-
-
-
         if (AuthenticationService.User != null)
         {
-            await Http.Post<Log>(ConnectAPI.apiUri + "/api/Log", new Log() { UserName = AuthenticationService.User.Username, DateOper = DateTime.Now, Page = NavigationManager.Uri.ToString(), Oper = "Login into app" });
             NavigationManager.NavigateTo("/");
         }
-
-
         ul = await Http.Get<List<UserList>>(ConnectAPI.apiUri + "/api/Users/List");
-
     }
 
     private async void HandleValidSubmit()
