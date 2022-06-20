@@ -49,6 +49,20 @@ else
 
     <h5>Всего по списку <span style="color:blue">@count</span> действующих договоров</h5>
 
+    <style>
+        tbody {
+            display: block;
+            height: 68vh;
+            overflow: auto;
+        }
+
+            thead, tbody tr {
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+            }
+    </style>
+
     <table class="table table-hover">
         <thead>
             <tr>
