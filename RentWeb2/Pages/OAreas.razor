@@ -51,10 +51,11 @@ else
                 <th>Размещение</th>
                 <th>Наименование</th>
                 <th>Площадь,  м<sup>2</sup></th>
-                <th>Цена за м<sup>2</sup>, EUR </th>
-                <th>Стоимость, EUR</th>
-                <th>Цена за м<sup>2</sup> с НДС, EUR </th>
-                <th>Стоимость с НДС, EUR</th>
+                <th>Валюта</th>
+                <th>Цена за м<sup>2</sup></th>
+                <th>Стоимость</th>
+                <th>Цена за м<sup>2</sup> с НДС</th>
+                <th>Стоимость с НДС</th>
                 @*<th>Арендуется</th>*@
                 <th>Дополнительно</th>
                 @if (svc.allowEdit)
@@ -68,52 +69,53 @@ else
 
             @foreach (var area in areas)
             {
-                <tr valign="top">
-                    @if (svc.DevOrProd())
-                    {
-                        <td>@area.Id</td>
-                    }
-                    @if (area.isRented)
-                    {
-                        @*<td>Да</td>*@
-                        <td>
-                            <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
-                            @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
-                        </td>
-                    }
-                    else
-                    {
-                        @*<td>Нет</td>*@
-                        <td>-</td>
-                    }
-                    <td>@area.LayerName</td>
-                    <td>@area.AreaName</td>
-                    <td>@area.Square</td>
-                    <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
-                    <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
-                    <td>@area.Price.ToString("F2")</td>
-                    <td>@area.Cost.ToString("F2")</td>
-                    @if (area.isRented)
-                    {
-                        @*<td>Да</td>*@
-                        <td>
-                            @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
-                            <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
-                        </td>
-                    }
-                    else
-                    {
-                        @*<td>Нет</td>*@
-                        <td>-</td>
-                    }
-                    @if (svc.allowEdit)
-                    {
-                        <td>
-                            <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
-                            <button class="btn btn-sm btn-danger" @onclick="(() =>  Confirm(area))"><i class="oi oi-trash" /></button>
-                        </td>
-                    }
-                </tr>
+            <tr valign="top">
+                @if (svc.DevOrProd())
+                {
+                    <td>@area.Id</td>
+                }
+                @if (area.isRented)
+                {
+                    @*<td>Да</td>*@
+                    <td>
+                        <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
+                        @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
+                    </td>
+                }
+                else
+                {
+                    @*<td>Нет</td>*@
+                    <td>-</td>
+                }
+                <td>@area.LayerName</td>
+                <td>@area.AreaName</td>
+                <td>@area.Square</td>
+                <td><span style="color:blue;font-weight:bold">@area.Currency</span></td>
+                <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                <td>@area.Price.ToString("F2")</td>
+                <td>@area.Cost.ToString("F2")</td>
+                @if (area.isRented)
+                {
+                    @*<td>Да</td>*@
+                    <td>
+                        @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
+                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                    </td>
+                }
+                else
+                {
+                    @*<td>Нет</td>*@
+                    <td>-</td>
+                }
+                @if (svc.allowEdit)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
+                        <button class="btn btn-sm btn-danger" @onclick="(() =>  Confirm(area))"><i class="oi oi-trash" /></button>
+                    </td>
+                }
+            </tr>
 
             }
         </tbody>
@@ -121,7 +123,9 @@ else
             <td colspan="1" align="left"><b>Итого</b></td>
             <td></td>
             <td></td>
+            <td></td>
             <td><b>@Math.Round(@total_area, 2)</b></td>
+            <td></td>
             <td></td>
             <td><b>@total_sum_novat.ToString("F2")</b></td>
             <td></td>
@@ -218,7 +222,7 @@ else
                         </div>
                         <input type="number" class="form-control" @bind="selArea.Price">
                         <div class="input-group-append">
-                            <span class="input-group-text">EUR</span>
+                            <span class="input-group-text">@selArea.Currency</span>
                         </div>
                     </div>
                     <br />
@@ -228,7 +232,7 @@ else
                         </div>
                         <input type="number" class="form-control" @bind="selArea.Cost">
                         <div class="input-group-append">
-                            <span class="input-group-text">EUR</span>
+                            <span class="input-group-text">@selArea.Currency</span>
                         </div>
                     </div>
                     <br />

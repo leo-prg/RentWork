@@ -35,10 +35,11 @@ else
                     <th>Размещение</th>
                     <th>Наименование</th>
                     <th>Площадь,  м<sup>2</sup></th>
-                    <th>Цена за м<sup>2</sup>, EUR </th>
-                    <th>Стоимость, EUR</th>
-                    <th>Цена за м<sup>2</sup> с НДС, EUR </th>
-                    <th>Стоимость с НДС, EUR</th>
+                    <th>Валюта</th>
+                    <th>Цена за м<sup>2</sup></th>
+                    <th>Стоимость</th>
+                    <th>Цена за м<sup>2</sup> с НДС</th>
+                    <th>Стоимость с НДС</th>
                     <th>Дополнительно</th>
                 </tr>
             </thead>
@@ -47,28 +48,30 @@ else
 
                 @foreach (var area in areas)
                 {
-                    <tr valign="top">
-                        @if (svc.DevOrProd())
-                        {
-                            <td>@area.Id</td>
-                        }
-                        <td>@area.ObjectName</td>
-                        <td>@area.LayerName</td>
-                        <td>@area.AreaName</td>
-                        <td>@area.Square</td>
-                        <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
-                        <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
-                        <td>@area.Price.ToString("F2")</td>
-                        <td>@area.Cost.ToString("F2")</td>
-                        <td>
-                            <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
-                        </td>
-                    </tr>
+                <tr valign="top">
+                    @if (svc.DevOrProd())
+                    {
+                        <td>@area.Id</td>
+                    }
+                    <td>@area.ObjectName</td>
+                    <td>@area.LayerName</td>
+                    <td>@area.AreaName</td>
+                    <td>@area.Square</td>
+                    <td><span style="color:blue;font-weight:bold">@area.Currency</span></td>
+                    <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                    <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                    <td>@area.Price.ToString("F2")</td>
+                    <td>@area.Cost.ToString("F2")</td>
+                    <td>
+                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                    </td>
+                </tr>
 
                 }
             </tbody>
             <tr>
                 <td colspan="1" align="left"><b>Итого</b></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td><b>@Math.Round(@total_area, 2)</b></td>
@@ -108,10 +111,10 @@ else
     private AreaRect[] areas;
     private RenterRect selRenter;
 
-    float total_area = 0;
-    float total_sum = 0;
-    float total_sum_vat = 0;
-    float free_area = 0;
+    private float total_area = 0;
+    private float total_sum = 0;
+    private float total_sum_vat = 0;
+    private float free_area = 0;
 
 
     protected override async Task OnInitializedAsync()

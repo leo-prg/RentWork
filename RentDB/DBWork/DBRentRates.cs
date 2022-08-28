@@ -19,6 +19,7 @@ namespace RentDB
               StartDate = s.StartDate,
               EndDate = s.EndDate,
               Rate = s.Rate,
+              Currency = s.Currency,
               ForWholeArea = s.ForWholeArea,
               Note = s.Note
             } ).OrderBy(s=> s.StartDate);
@@ -50,6 +51,7 @@ namespace RentDB
                     StartDate = r_rate.StartDate,
                     EndDate = r_rate.EndDate,
                     Rate = r_rate.Rate,
+                    Currency = r_rate.Currency,
                     ForWholeArea = r_rate.ForWholeArea,
                     Note = r_rate.Note,
                     Area = ra
@@ -64,6 +66,7 @@ namespace RentDB
             sR.StartDate = newR.StartDate;
             sR.EndDate = newR.EndDate;
             sR.Rate = newR.Rate;
+            sR.Currency = newR.Currency;
             sR.ForWholeArea = newR.ForWholeArea;
             sR.Note = newR.Note;
             context.Value.SaveChanges();

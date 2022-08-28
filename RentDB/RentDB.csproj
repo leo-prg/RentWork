@@ -145,6 +145,14 @@
     <Compile Include="Migrations\202205311829272_fix.designer.cs">
       <DependentUpon>202205311829272_fix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208271812394_Rate currency.cs" />
+    <Compile Include="Migrations\202208271812394_Rate currency.designer.cs">
+      <DependentUpon>202208271812394_Rate currency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208281120234_Area totals currency.cs" />
+    <Compile Include="Migrations\202208281120234_Area totals currency.designer.cs">
+      <DependentUpon>202208281120234_Area totals currency.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -198,6 +206,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205311829272_fix.resx">
       <DependentUpon>202205311829272_fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208271812394_Rate currency.resx">
+      <DependentUpon>202208271812394_Rate currency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208281120234_Area totals currency.resx">
+      <DependentUpon>202208281120234_Area totals currency.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

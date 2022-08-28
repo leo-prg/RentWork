@@ -17,6 +17,8 @@ namespace RentDB
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public float Rate { get; set; }
+        [StringLength(3)]
+        public string Currency { get; set; }
         public bool ForWholeArea { get; set; }
         [StringLength(100)]
         public string Note { get; set; }
