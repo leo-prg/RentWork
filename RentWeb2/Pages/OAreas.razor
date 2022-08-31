@@ -36,10 +36,13 @@ else
     @if (svc.allowEdit)
     {
         <div>
-            <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenModal(new AreaRect()))">Добавить</button>
+            <button class="btn btn-primary mr-3 btn-sm" @onclick="(() => OpenModal(new AreaRect()))">Добавить</button>
         </div>
     }
 
+    <hr />
+    <h6 style="color:green">Всего арендаторов: @renter_cnt. Свободные площади: @free_area м<sup>2</sup>.</h6>
+    
     <table class="table table-sm table-hover">
         <thead>
             <tr>
@@ -69,53 +72,53 @@ else
 
             @foreach (var area in areas)
             {
-            <tr valign="top">
-                @if (svc.DevOrProd())
-                {
-                    <td>@area.Id</td>
-                }
-                @if (area.isRented)
-                {
-                    @*<td>Да</td>*@
-                    <td>
-                        <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
-                        @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
-                    </td>
-                }
-                else
-                {
-                    @*<td>Нет</td>*@
-                    <td>-</td>
-                }
-                <td>@area.LayerName</td>
-                <td>@area.AreaName</td>
-                <td>@area.Square</td>
-                <td><span style="color:blue;font-weight:bold">@area.Currency</span></td>
-                <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
-                <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
-                <td>@area.Price.ToString("F2")</td>
-                <td>@area.Cost.ToString("F2")</td>
-                @if (area.isRented)
-                {
-                    @*<td>Да</td>*@
-                    <td>
-                        @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
-                        <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
-                    </td>
-                }
-                else
-                {
-                    @*<td>Нет</td>*@
-                    <td>-</td>
-                }
-                @if (svc.allowEdit)
-                {
-                    <td>
-                        <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
-                        <button class="btn btn-sm btn-danger" @onclick="(() =>  Confirm(area))"><i class="oi oi-trash" /></button>
-                    </td>
-                }
-            </tr>
+                <tr valign="top">
+                    @if (svc.DevOrProd())
+                    {
+                        <td>@area.Id</td>
+                    }
+                    @if (area.isRented)
+                    {
+                        @*<td>Да</td>*@
+                        <td>
+                            <button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)">@area.RenterName</button>
+                            @*<button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>*@
+                        </td>
+                    }
+                    else
+                    {
+                        @*<td>Нет</td>*@
+                        <td>-</td>
+                    }
+                    <td>@area.LayerName</td>
+                    <td>@area.AreaName</td>
+                    <td>@area.Square</td>
+                    <td><span style="color:blue;font-weight:bold">@area.Currency</span></td>
+                    <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
+                    <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
+                    <td>@area.Price.ToString("F2")</td>
+                    <td>@area.Cost.ToString("F2")</td>
+                    @if (area.isRented)
+                    {
+                        @*<td>Да</td>*@
+                        <td>
+                            @*<button class="btn btn-sm btn-link" @onclick="async () => await OnClickRenter(area.Id)" title="@area.RenterName">арендатор</button>*@
+                            <button class="btn btn-sm btn-link" @onclick="async () => OnClickRates(area.Id)">ставки</button>
+                        </td>
+                    }
+                    else
+                    {
+                        @*<td>Нет</td>*@
+                        <td>-</td>
+                    }
+                    @if (svc.allowEdit)
+                    {
+                        <td>
+                            <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(area))"><i class="oi oi-pencil" /></button>
+                            <button class="btn btn-sm btn-danger" @onclick="(() =>  Confirm(area))"><i class="oi oi-trash" /></button>
+                        </td>
+                    }
+                </tr>
 
             }
         </tbody>
@@ -135,13 +138,10 @@ else
 
         </tr>
     </table>
-    <hr />
-    <h6 style="color:green">Свободные площади: @free_area м<sup>2</sup>.</h6>
-    <hr />
+
 
     <p>
         <button type="button" class="btn btn-outline-primary btn-link btn-sm" onclick="window.history.go(-1)">Назад</button>
-
     </p>
 
 
@@ -183,18 +183,18 @@ else
                 <div class="modal-body">
                     @*Нет смысла привязка и так есть, т.к. открыто с объекта*@
                     @*<div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Размещение</span>
-            </div>
-            <select @bind="@lId">
-                <option></option>
-                @foreach (var l in layers)
-                {
-                    <option value="@l.Id">@l.Name</option>
-                }
-            </select>
-        </div>
-        <br />*@
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Размещение</span>
+                            </div>
+                            <select @bind="@lId">
+                                <option></option>
+                                @foreach (var l in layers)
+                                {
+                                    <option value="@l.Id">@l.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <br />*@
 
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -306,6 +306,7 @@ else
     float total_sum = 0;
     float total_sum_novat = 0;
     float free_area = 0;
+    private int renter_cnt = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -335,6 +336,9 @@ else
                 free_area += ar.Square;
             }
         }
+        
+                renter_cnt = areas.Where(x => x.isRented == true).Select(s=>s.RenterName).Distinct().Count();
+        
 
         areas = areas.OrderBy(s => s.LayerName).ThenBy(r => r.AreaName).ToArray();
         StateHasChanged();
@@ -370,7 +374,7 @@ else
         renters = await Http.Get<RenterRect[]>(ConnectAPI.apiUri + "/api/Renters");
         layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/ListLayers/" + objectR.Id);
 
-        renters = renters.Where(s => s.Contract.Length >= 1).OrderBy(s=>s.ContractNo).ToArray();
+        renters = renters.Where(s => s.Contract.Length >= 1).OrderBy(s => s.ContractNo).ToArray();
 
         rId = 0;
         lId = selArea.LayerId;
@@ -425,7 +429,7 @@ else
     {
         if (area.Square > 0 || area.Price > 0)
         {
-            area.Cost = (float)Math.Round(area.Square * area.Price,2);
+            area.Cost = (float)Math.Round(area.Square * area.Price, 2);
         }
 
         if (area.Id > 0) // редактируем
