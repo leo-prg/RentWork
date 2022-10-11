@@ -1,59 +1,95 @@
 ﻿@page "/reports"
 
 @using System.Diagnostics
+@using Radzen.Blazor
 
-<ul class="nav nav-pills nav-fill">
+<RadzenTabs RenderMode="TabRenderMode.Server" >
+    <Tabs>
+        <RadzenTabsItem Text="Договора из бухгалтерии">
+            <RadzenSSRSViewer ReportName="Отчеты/Accounting/AccContract" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 0 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_accounting" @onclick="() => { act = 0; }">Договора из бухгалтерии</a>
-    </li>
+        <RadzenTabsItem Text="Договора с истекающим сроком действия">
+            <RadzenSSRSViewer ReportName="Отчеты/Истекающие договора" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 6 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_outdated_contracts" @onclick="() => { act = 6; }">Договора с истекающим сроком действия</a>
-    </li>
+        <RadzenTabsItem Text="Список арендаторов">
+            <RadzenSSRSViewer ReportName="Отчеты/RenterList" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 1 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_for_bank" @onclick="() => { act = 1; }">Список арендаторов</a>
-    </li>
+        <RadzenTabsItem Text="Общий по площадям">
+            <RadzenSSRSViewer ReportName="Отчеты/Общий отчет" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 2 ? "nav-link active " : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report" @onclick="() => { act = 2; }">Общий по площадям</a>
-    </li>
+        <RadzenTabsItem Text="Свободные площади">
+            <RadzenSSRSViewer ReportName="Отчеты/FreeSpaces" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 3 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_free" @onclick="() => { act = 3; }">Свободные площади</a>
-    </li>
+        <RadzenTabsItem Text="Повышение/понижение ставок">
+            <RadzenSSRSViewer ReportName="Отчеты/RateReport" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 4 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_rates" @onclick="() => { act = 4; }">Понижение/повышение ставок</a>
-    </li>
+        <RadzenTabsItem Text="Счета">
+            <RadzenSSRSViewer ReportName="Отчеты/Invoice" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh" />
+        </RadzenTabsItem>
 
-    <li class="nav-item">
-        <a class="@(act == 5 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_invoices" @onclick="() => { act = 5; }">Счета</a>
-    </li>
+    </Tabs>
+
+</RadzenTabs>
+
+    @*
+    <ul class="nav nav-pills nav-fill">
+
+        <li class="nav-item">
+            <a class="@(act == 0 ? " nav-link active" : "nav-link" )" style="margin-bottom:10px" target="mainreport" href="@report_accounting" @onclick="() => { act = 0; }">Договора из бухгалтерии</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="@(act == 6 ? " nav-link active" : "nav-link" )" style="margin-bottom:10px" target="mainreport" href="@report_outdated_contracts" @onclick="() => { act = 6; }">Договора с истекающим сроком действия</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="@(act == 1 ? " nav-link active" : "nav-link" )" style="margin-bottom:10px" target="mainreport" href="@report_for_bank" @onclick="() => { act = 1; }">Список арендаторов</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="@(act == 2 ? " nav-link active " : " nav-link")" style="margin-bottom:10px" target="mainreport" href="@report" @onclick="() => { act = 2; }">Общий по площадям</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="@(act == 3 ? " nav-link active" : "nav-link" )" style="margin-bottom:10px" target="mainreport" href="@report_free" @onclick="() => { act = 3; }">Свободные площади</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="@(act == 4 ? " nav-link active" : "nav-link" )" style="margin-bottom:10px" target="mainreport" href="@report_rates" @onclick="() => { act = 4; }">Понижение/повышение ставок</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="@(act == 5 ? " nav-link active" : "nav-link" )" style="margin-bottom:10px" target="mainreport" href="@report_invoices" @onclick="() => { act = 5; }">Счета</a>
+        </li>
 
 
-    <iframe name="mainreport" style="width:100%;  height: 90vh; border: none"></iframe>
-</ul>
+        <iframe name="mainreport" style="width:100%;  height: 90vh; border: none"></iframe>
+    </ul>*@
 
 
 
 
-@code
-{
-    private byte act = 99;
+    @code
+    {
+        //private byte act = 99;
 
-    private string report_accounting = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fAccounting%2fAccContract&rs:Command=Render";
-    private string report = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fОбщий+отчет&rs:Command=Render";
-    private string report_for_bank = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fRenterList&rs:Command=Render";
-    // учет ставки за объект - понижения ставок
-    private string report_rates = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fRateReport&rs:Command=Render";
-    // свободные площади
-    private string report_free = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fFreeSpaces&rs:Command=Render";
-    // счета по аренде
-    private string report_invoices = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fInvoice&rs:Command=Render";
-    private string report_outdated_contracts = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fИстекающие+договора&rs:Command=Render";
+        //private string report_accounting = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fAccounting%2fAccContract&rs:Command=Render";
+        //private string report = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fОбщий+отчет&rs:Command=Render";
+        //private string report_for_bank = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fRenterList&rs:Command=Render";
+        //// учет ставки за объект - понижения ставок
+        //private string report_rates = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fRateReport&rs:Command=Render";
+        //// свободные площади
+        //private string report_free = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fFreeSpaces&rs:Command=Render";
+        //// счета по аренде
+        //private string report_invoices = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fInvoice&rs:Command=Render";
+        //private string report_outdated_contracts = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fИстекающие+договора&rs:Command=Render";
 
-}
+    }
 
 

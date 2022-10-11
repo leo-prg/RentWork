@@ -15,6 +15,7 @@ using RentWeb2.Services;
 using Blazored.Toast;
 using Blazored.Modal;
 using BlazorTable;
+using Radzen;
 
 namespace RentWeb2
 {
@@ -44,11 +45,16 @@ namespace RentWeb2
                 .AddScoped<IHttpService, HttpService>()
                 .AddScoped<ConnectAPI>().AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddBlazoredToast();
-          //  builder.Services.AddCookies();
+            //  builder.Services.AddCookies();
 
-                      
+            builder.Services.AddScoped<DialogService>();
+            builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<TooltipService>();
+            builder.Services.AddScoped<ContextMenuService>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+
 
             var host = builder.Build();
 

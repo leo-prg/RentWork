@@ -1,7 +1,7 @@
 ﻿@page "/Bank"
 
 
-@if (showPwd)
+@*@if (showPwd)
 {
     <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -10,16 +10,21 @@
         <input type="password" class="form-control" width="100" placeholder="пароль"
                @oninput="@((ChangeEventArgs __e) => { if (__e.Value.ToString() == "200002167") { showPwd = false; showBank = true; } })">
     </div>
-}
+}*@
 
 @if (showBank)
 {
-    <iframe src= "@report"  style="width:100%;  height: 90vh; border: none"></iframe>
+    <RadzenSSRSViewer ReportName="Отчеты/Bank" ReportServer="https://server:44355/ReportServer/" UseProxy="false" Style="width:auto;height:80vh">
+        @*<Parameters>
+            <RadzenSSRSViewerParameter ParameterName="DtDoc" Value="@DateTime.Now.AddDays(-1).ToString()" />
+        </Parameters>*@
+    </RadzenSSRSViewer>
+    @*<iframe src= "@report"  style="width:100%;  height: 90vh; border: none"></iframe>*@
 }
 
 @code
 {
-    bool showPwd = false;
+    //bool showPwd = false;
     bool showBank = true;
-    private string report= ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fBank&rs:Command=Render";
+    //private string report = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fBank&rs:Command=Render";
 }
