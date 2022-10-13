@@ -153,6 +153,10 @@
     <Compile Include="Migrations\202208281120234_Area totals currency.designer.cs">
       <DependentUpon>202208281120234_Area totals currency.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202210131448192_Rate-type-change.cs" />
+    <Compile Include="Migrations\202210131448192_Rate-type-change.designer.cs">
+      <DependentUpon>202210131448192_Rate-type-change.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -212,6 +216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202208281120234_Area totals currency.resx">
       <DependentUpon>202208281120234_Area totals currency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210131448192_Rate-type-change.resx">
+      <DependentUpon>202210131448192_Rate-type-change.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

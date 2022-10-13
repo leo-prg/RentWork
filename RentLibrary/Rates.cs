@@ -11,7 +11,7 @@ namespace RentLibrary
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public float Rate  { get; set; }
+        public double Rate  { get; set; }
         public string Currency { get; set; }
         public bool ForWholeArea { get; set; }
         public string Note { get; set; }
