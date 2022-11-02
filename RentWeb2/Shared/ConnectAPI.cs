@@ -17,11 +17,7 @@ namespace RentWeb2.Shared
 
         // public static string reportUri = "http://server:8055";
 
-        public static string apiUri = "https://server:44307";
-
-        //  public static string apiUri = "https://localhost:5001";
-
-        public static string reportUri = "https://server:44355";
+      
 
     }
     
