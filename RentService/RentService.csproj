@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RentCommon\RentCommon.csproj" />
-    <ProjectReference Include="..\RentDB\RentData.csproj" />
+    <ProjectReference Include="..\RentData\RentData.csproj" />
     <ProjectReference Include="..\RentLibrary\RentDto.csproj" />
   </ItemGroup>
 

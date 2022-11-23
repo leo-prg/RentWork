@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using RentAPI2.Helpers;
 using RentAPI2.Services;
 using RentService.StaffService;
+using RentData;
+using Microsoft.EntityFrameworkCore;
 
 namespace RentAPI2
 {
@@ -31,7 +33,8 @@ namespace RentAPI2
 
             // configure strongly typed settings object
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
+            services.AddDbContext<RentContext>
+            (options => options.UseSqlServer("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework;MultipleActiveResultSets=true"));
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
 

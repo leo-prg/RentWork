@@ -4,7 +4,7 @@ using RentAPI2.Models;
 using RentAPI2.Services;
 using RentData;
 using System.Collections.Generic;
-using RentLibrary;
+using RentDto;
 
 namespace RentAPI2.Controllers
 {

@@ -27,15 +27,16 @@ namespace RentAPI2.Services
     public class UserService : IUserService
     {
 
-        private static readonly Lazy<RentContext> rm = new Lazy<RentContext>();
+        private readonly RentContext _rm;
 
-        private List<User> _users = rm.Value.Users.ToList();
+        private List<User> _users;
 
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(IOptions<AppSettings> appSettings, RentContext context)
         {
             _appSettings = appSettings.Value;
+            _rm = context;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -75,14 +76,14 @@ namespace RentAPI2.Services
   
         public List<User> ListUsers()
         {
-            return rm.Value.Users.ToList();
+            return _rm.Users.ToList();
         }
         public bool NewUser(User user)
         {
             try {
                 user.Password = PwdCrypt.Encrypt(user.Password);
-                rm.Value.Users.Add(user);
-                rm.Value.SaveChanges();
+                _rm.Users.Add(user);
+                _rm.SaveChanges();
                 return true;
             }
             catch
@@ -95,12 +96,12 @@ namespace RentAPI2.Services
         {
             try
             {
-                var u = rm.Value.Users.Where(x=>x.Id == user.Id).First();
+                var u = _rm.Users.Where(x=>x.Id == user.Id).First();
                 u.LastName = user.LastName;
                 u.FirstName = user.FirstName;
                 u.Email = user.Email;
                 u.Password = PwdCrypt.Encrypt(user.Password);
-                rm.Value.SaveChanges();
+                _rm.SaveChanges();
                 return true;
             }
             catch
@@ -113,9 +114,9 @@ namespace RentAPI2.Services
         {
             try
             {
-                var u = rm.Value.Users.Where(x => x.Id == id).FirstOrDefault();
-                rm.Value.Users.Remove(u);
-                rm.Value.SaveChanges();
+                var u = _rm.Users.Where(x => x.Id == id).FirstOrDefault();
+                _rm.Users.Remove(u);
+                _rm.SaveChanges();
                 return true;
             }
             catch

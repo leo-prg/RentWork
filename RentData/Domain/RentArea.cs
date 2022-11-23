@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using RentDto;
+using RentData;
+
+namespace RentData
+{
+    [Table("RentAreas")]
+    public class RentArea
+    {
+        public int Id { get; set; }
+        public RentLayer Layer { get; set; }
+        [StringLength(50)]
+        public string Name { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public float Square { get; set; }
+        public float Price { get; set; }
+        public float Cost { get; set; }
+        public virtual Renter Renter { get; set; }
+        [StringLength(3)]
+        public string Currency { get; set; }
+
+        public void RemoveRenter()
+        {
+            Renter = null;
+        }
+
+        public virtual List<RentRates> RentRates { get; set; }
+
+        public virtual List<AreaPoints> AreaPoints { get; set; }
+
+
+    }
+
+}
