@@ -7,7 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RentDB.DataModel
+namespace RentData
+
 {
     [Table("RenterFiles")]
     public class RenterFiles

@@ -46,9 +46,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RentLibrary\RentLibrary.csproj">
+    <ProjectReference Include="..\RentLibrary\RentDto.csproj">
       <Project>{9bef6822-4a8e-4fbe-98cf-81c8f38b2fec}</Project>
-      <Name>RentLibrary</Name>
+      <Name>RentDto</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

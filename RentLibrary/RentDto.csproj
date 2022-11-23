@@ -49,7 +49,7 @@
     <Compile Include="RenterRect.cs" />
     <Compile Include="Rates.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Staff.cs" />
+    <Compile Include="StaffDto.cs" />
     <Compile Include="UserList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

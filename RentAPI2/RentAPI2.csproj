@@ -20,8 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RentCommon\RentCommon.csproj" />
-    <ProjectReference Include="..\RentDB\RentDB.csproj" />
-    <ProjectReference Include="..\RentLibrary\RentLibrary.csproj" />
+    <ProjectReference Include="..\RentLibrary\RentDto.csproj" />
+    <ProjectReference Include="..\RentService\RentService.csproj" />
   </ItemGroup>
 
 

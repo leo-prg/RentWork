@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using RentDB;
+using RentData;
 using RentAPI2.Helpers;
 using RentAPI2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,7 @@ namespace RentAPI2.Services
     public class UserService : IUserService
     {
 
-        private static readonly Lazy<RentModel> rm = new Lazy<RentModel>();
+        private static readonly Lazy<RentContext> rm = new Lazy<RentContext>();
 
         private List<User> _users = rm.Value.Users.ToList();
 

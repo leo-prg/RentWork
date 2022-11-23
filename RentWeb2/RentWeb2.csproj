@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RentCommon\RentCommon.csproj" />
-    <ProjectReference Include="..\RentLibrary\RentLibrary.csproj" />
+    <ProjectReference Include="..\RentLibrary\RentDto.csproj" />
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 

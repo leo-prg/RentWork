@@ -1,15 +1,8 @@
-﻿namespace RentDB
+﻿namespace RentData
 {
-    using RentDB.DataModel;
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity;
-    using System.Linq;
 
-    public class RentModel : DbContext
+    public class RentContext : DbContext
     {
         // Контекст настроен для использования строки подключения "RentModel" из файла конфигурации  
         // приложения (App.config или Web.config). По умолчанию эта строка подключения указывает на базу данных 
@@ -17,7 +10,7 @@
         // 
         // Если требуется выбрать другую базу данных или поставщик базы данных, измените строку подключения "RentModel" 
         // в файле конфигурации приложения.
-        public RentModel()
+        public RentContext()
             // почему-то не хотело браться из конфига пока забил так
             : base("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework;MultipleActiveResultSets=true")
           //    : base("Data Source = Server; Initial Catalog = TestRentKrok;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework")
@@ -40,7 +33,7 @@
         public virtual DbSet<RentLog> RentLogs { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<RentModel>(null);
+            Database.SetInitializer<RentContext>(null);
             base.OnModelCreating(modelBuilder);
             
             modelBuilder.Entity<RentObject>().HasMany(c => c.RentLayers).WithRequired(x => x.Object);

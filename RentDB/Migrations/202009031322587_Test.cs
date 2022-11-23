@@ -1,4 +1,4 @@
-﻿namespace RentDB.Migrations
+﻿namespace RentData.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

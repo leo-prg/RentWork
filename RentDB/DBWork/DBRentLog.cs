@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RentLibrary;
-namespace RentDB
+namespace RentData
 {
     public class DBRentLog
     {
-        readonly Lazy<RentModel> _context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> _context = new Lazy<RentContext>();
 
         public void AddLog(Log log)
         {

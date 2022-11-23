@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using RentLibrary;
 
-namespace RentDB
+namespace RentData
 {
     public class DBLayer
     {
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
 
         public void AddObjectLayer(int oId, LayerRect lRect)
         {

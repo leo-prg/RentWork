@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
-using RentDB;
+using RentData;
+using RentDto;
 using RentLibrary;
+using RentService.StaffService;
 
 namespace RentAPI.Controllers
 {
@@ -13,33 +15,39 @@ namespace RentAPI.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
-        Lazy<DBStaff> dbr = new Lazy<DBStaff>();
+        private readonly IStaffService _staffService;
+
+        public StaffController(IStaffService staffService)
+        {
+            _staffService = staffService;
+        }
+
         [HttpGet]
         [Route("api/Staff")]
-        public IEnumerable<RentLibrary.Staff> Get()
+        public IEnumerable<StaffDto> Get()
         {
-            return dbr.Value.GetAllStaff();
+            return _staffService.GetAllStaff();
         }
 
         [HttpPost]
         [Route("api/Staff")]
-        public void Post(RentLibrary.Staff staff)
+        public void Post(StaffDto staff)
         {
-            dbr.Value.AddStaff(staff);
+            _staffService.AddStaff(staff);
         }
 
         [HttpPut]
         [Route("api/Staff")]
-        public void Put(RentLibrary.Staff newStaff)
+        public void Put(StaffDto newStaff)
         {
-            dbr.Value.UpdateStaff(newStaff, newStaff);
+            _staffService.UpdateStaff(newStaff);
         }
 
         [HttpDelete]
         [Route("api/Staff/{id}")]
         public void Delete(int id)
         {
-            dbr.Value.DropStaff(id);
+            _staffService.DropStaff(id);
         }
     }
 }

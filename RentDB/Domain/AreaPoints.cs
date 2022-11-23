@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 
-namespace RentDB
+namespace RentData
 {
 
     [Table("AreaPoints")]

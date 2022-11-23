@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RentDB
+namespace RentData
 {
     public class DBRentRates
     {
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
 
         public IEnumerable<Rates> GetRentRates(int id)
         {

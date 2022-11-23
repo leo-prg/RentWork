@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 using RentCommon;
 using RentLibrary;
 
-namespace RentDB
+namespace RentData
 {
     public class DBArea
     {
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
 
         public void AddLayerArea(AreaRect area)
         {

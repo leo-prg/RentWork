@@ -1,18 +1,18 @@
-﻿namespace RentDB.Migrations
+﻿namespace RentData.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<RentDB.RentModel>
+    internal sealed class Configuration : DbMigrationsConfiguration<RentData.RentContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(RentDB.RentModel context)
+        protected override void Seed(RentData.RentContext context)
         {
             //  This method will be called after migrating to the latest version.
 

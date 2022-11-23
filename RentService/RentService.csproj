@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RentCommon\RentCommon.csproj" />
+    <ProjectReference Include="..\RentDB\RentData.csproj" />
+    <ProjectReference Include="..\RentLibrary\RentDto.csproj" />
+  </ItemGroup>
+
+</Project>

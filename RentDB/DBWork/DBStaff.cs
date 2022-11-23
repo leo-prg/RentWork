@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RentDto;
 
-namespace RentDB
+namespace RentData
 {
     public class DBStaff
     {
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
 
-        public IEnumerable<RentLibrary.Staff> GetAllStaff()
+        public IEnumerable<StaffDto> GetAllStaff()
         {
-            return context.Value.Staff.Select(s=> new RentLibrary.Staff() { Id = s.Id, Name = s.Name, DateOfBirth = s.DateOfBirth, EmpDate = s.EmpDate,  Duty = s.Duty, 
+            return context.Value.Staff.Select(s=> new StaffDto() { Id = s.Id, Name = s.Name, DateOfBirth = s.DateOfBirth, EmpDate = s.EmpDate,  Duty = s.Duty, 
                 WorkPhone = s.WorkPhone,  Email = s.Email,  HomePhone = s.HomePhone, InternalPhone = s.InternalPhone } ).OrderBy(s=> s.Id);
         }
 
 
-        public RentLibrary.Staff GetStaffById(int id)
+        public StaffDto GetStaffById(int id)
         {
-            return context.Value.Staff.Select(s => new RentLibrary.Staff()
+            return context.Value.Staff.Select(s => new StaffDto()
             {
                 Id = s.Id,
                 Name = s.Name,
@@ -33,7 +34,7 @@ namespace RentDB
             }).FirstOrDefault();
         }
 
-        public void AddStaff(RentLibrary.Staff staff)
+        public void AddStaff(RentDto.StaffDto staff)
         {
             context.Value.Staff.Add(new Staff()
             {
@@ -49,8 +50,7 @@ namespace RentDB
             context.Value.SaveChanges();
         }
 
-
-        public void UpdateStaff(RentLibrary.Staff oldS, RentLibrary.Staff newS)
+        public void UpdateStaff(StaffDto oldS, StaffDto newS)
         {
             var sU = context.Value.Staff.Where(s => s.Id == oldS.Id).FirstOrDefault();
             sU.Name = newS.Name;

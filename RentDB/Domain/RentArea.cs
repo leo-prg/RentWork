@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using RentLibrary;
-using RentDB;
+using RentData;
 
-namespace RentDB
+namespace RentData
 {
     [Table("RentAreas")]
     public class RentArea

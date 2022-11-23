@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace RentDB
+namespace RentData
 {
 
     [Table("RentRates")]
