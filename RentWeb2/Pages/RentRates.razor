@@ -39,10 +39,11 @@ else
                 }
                 <th>Начало действия</th>
                 <th>Окончание действия</th>
-                <th>Ставка, EUR</th>
-                <th>Сумма, EUR </th>
-                <th>Ставка с НДС, EUR </th>
-                <th>Сумма с НДС, EUR </th>
+                <th>Валюта</th>
+                <th>Ставка</th>
+                <th>Сумма</th>
+                <th>Ставка с НДС</th>
+                <th>Сумма с НДС</th>
                 <th>За объект</th>
                 <th>Примечание</th>
                 @if (svc.allowEdit)
@@ -75,6 +76,7 @@ else
                 }
                 <td style="background-color: lightgreen">@rate.StartDate.ToString("dd.MM.yyyy")</td>
                 <td style="background-color: lightgreen">@rate.EndDate.ToString("dd.MM.yyyy")</td>
+                <td style="background-color: lightgreen"><span style="color:blue;font-weight:bold">@rate.Currency</span></td>
                 <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
                 @if (!rate.ForWholeArea)
                 {
@@ -86,6 +88,7 @@ else
                 }
 
                 <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
+
                 @if (!rate.ForWholeArea)
                 {
                     <td style="background-color: lightgreen">@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
@@ -118,10 +121,11 @@ else
             }
             <td>@rate.StartDate.ToString("dd.MM.yyyy")</td>
             <td>@rate.EndDate.ToString("dd.MM.yyyy")</td>
+            <td><span style="color:blue;font-weight:bold">@rate.Currency</span></td>
             <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
             @if (!rate.ForWholeArea)
             {
-                <td>@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square),2).ToString("F2")</td>
+                <td>@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square), 2).ToString("F2")</td>
             }
             else
             {
@@ -200,7 +204,16 @@ else
                         </div>
                         <input type="number" class="form-control" @bind="selRate.Rate">
                         <div class="input-group-append">
-                            <span class="input-group-text">EUR</span>
+                            @*<span class="input-group-text">EUR</span>*@
+                            <select @bind="selRate.Currency">
+                                <option/>
+                                @foreach (var currency in Enum.GetValues(typeof(Currency)))
+                                {
+                                  #pragma warning disable CS0252
+                                    <option value="@currency" selected="@(currency == selRate.Currency)">@currency</option>
+                                   #pragma warning restore CS0252
+                                }
+                            </select>
                         </div>
                     </div>
                     <br />
@@ -273,6 +286,12 @@ else
     private List<DateTime> bDates = null;
     private List<DateTime> eDates = null;
 
+    private enum Currency
+    {
+        EUR,
+        BYN,
+        USD
+    }
 
 
     protected override async Task OnInitializedAsync()

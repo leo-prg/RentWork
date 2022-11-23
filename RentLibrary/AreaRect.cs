@@ -22,6 +22,7 @@ namespace RentLibrary
         public float Cost { get; set; }
         public bool isRented { get;  set; }
         public string RenterName { get; set; }
+        public string Currency { get; set; }
     }
 
     public class AreaPoint

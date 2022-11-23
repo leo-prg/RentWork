@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 using RentCommon;
 using RentLibrary;
 
-namespace RentDB
+namespace RentData
 {
     public class DBArea
     {
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
 
         public void AddLayerArea(AreaRect area)
         {
@@ -85,6 +85,7 @@ namespace RentDB
                 Square = x.Square,
                 Price = x.Price, 
                 Cost = x.Cost,
+                Currency = x.Currency,
                 isRented = x.Renter != null
             }).FirstOrDefault();
         }
@@ -109,6 +110,7 @@ namespace RentDB
                     Square = x.Square,
                     Price = x.Price,
                     Cost = x.Cost,
+                    Currency = x.Currency,
                     isRented = x.Renter != null
                 }).ToList();
         
@@ -133,6 +135,7 @@ namespace RentDB
                     Square = x.Square,
                     Price = x.Price,
                     Cost = x.Cost,
+                    Currency = x.Currency,
                     isRented = x.Renter != null
                 }).ToList();
         }
@@ -155,6 +158,7 @@ namespace RentDB
                     Square = x.Square,
                     Price = x.Price,
                     Cost = x.Cost,
+                    Currency = x.Currency,
                     isRented = x.Renter != null
                 }).ToList();
         }
@@ -177,6 +181,7 @@ namespace RentDB
                     Square = x.Square,
                     Price = x.Price,
                     Cost = x.Cost,
+                    Currency = x.Currency,
                     isRented = x.Renter != null
                 }).OrderBy(x => x.LayerName).ThenBy(y => y.AreaName).ToList();
 
@@ -202,6 +207,7 @@ namespace RentDB
                 Square = s.Square,
                 Price = s.Price,
                 Cost = s.Cost,
+                Currency = s.Currency,
                 isRented = (s.Renter != null)
 
             }).ToList();
@@ -251,7 +257,8 @@ namespace RentDB
                     x1 = a.X, y1 = a.Y, x2 = (a.X + a.Width), y2 = (a.Y + a.Height),
                    Square = a.Square,
                     Price = a.Price,
-                    Cost = a.Cost
+                    Cost = a.Cost,
+                    Currency = a.Currency
                 }).FirstOrDefault();
         }
 
@@ -319,6 +326,7 @@ namespace RentDB
             _old.Price = _new.Price;
             _old.Square = _new.Square;
             _old.Cost = _new.Cost;
+            _old.Currency = _new.Currency;
             context.Value.SaveChanges();
         }
 

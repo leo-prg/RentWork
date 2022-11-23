@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using RentDB.DataModel;
 
-namespace RentDB
+namespace RentData
 {
     [Table("Renters")]
     public class Renter

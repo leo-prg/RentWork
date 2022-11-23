@@ -143,9 +143,9 @@ namespace RentCommon
     public static class Finance
     {
         // Определение суммы без НДС
-        public static float WithoutVat(float amount)
+        public static double WithoutVat(double amount)
         {
-            float withoutvat;
+            double withoutvat;
             withoutvat = amount - (amount * 20 / 120);
             return withoutvat;
         }

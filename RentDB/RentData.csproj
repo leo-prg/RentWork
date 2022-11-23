@@ -79,17 +79,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModel\RenterFiles.cs" />
-    <Compile Include="DataModel\RentArea.cs" />
-    <Compile Include="DataModel\Renter.cs" />
-    <Compile Include="DataModel\RentLayer.cs" />
-    <Compile Include="DataModel\RentLog.cs" />
-    <Compile Include="DataModel\RentModel.cs" />
-    <Compile Include="DataModel\RentObject.cs" />
-    <Compile Include="DataModel\RentRates.cs" />
-    <Compile Include="DataModel\AreaPoints.cs" />
-    <Compile Include="DataModel\User.cs" />
-    <Compile Include="DataModel\Staff.cs" />
+    <Compile Include="Domain\RenterFiles.cs" />
+    <Compile Include="Domain\RentArea.cs" />
+    <Compile Include="Domain\Renter.cs" />
+    <Compile Include="Domain\RentLayer.cs" />
+    <Compile Include="Domain\RentLog.cs" />
+    <Compile Include="RentContext.cs" />
+    <Compile Include="Domain\RentObject.cs" />
+    <Compile Include="Domain\RentRates.cs" />
+    <Compile Include="Domain\AreaPoints.cs" />
+    <Compile Include="Domain\User.cs" />
+    <Compile Include="Domain\Staff.cs" />
     <Compile Include="DBWork\DBArea.cs" />
     <Compile Include="DBWork\DBLayer.cs" />
     <Compile Include="DBWork\DBObject.cs" />
@@ -145,6 +145,18 @@
     <Compile Include="Migrations\202205311829272_fix.designer.cs">
       <DependentUpon>202205311829272_fix.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202208271812394_Rate currency.cs" />
+    <Compile Include="Migrations\202208271812394_Rate currency.designer.cs">
+      <DependentUpon>202208271812394_Rate currency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202208281120234_Area totals currency.cs" />
+    <Compile Include="Migrations\202208281120234_Area totals currency.designer.cs">
+      <DependentUpon>202208281120234_Area totals currency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202210131448192_Rate-type-change.cs" />
+    <Compile Include="Migrations\202210131448192_Rate-type-change.designer.cs">
+      <DependentUpon>202210131448192_Rate-type-change.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -153,9 +165,9 @@
       <Project>{d664280d-37c0-4283-8d6c-ab87995b5667}</Project>
       <Name>RentCommon</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RentLibrary\RentLibrary.csproj">
+    <ProjectReference Include="..\RentLibrary\RentDto.csproj">
       <Project>{9bef6822-4a8e-4fbe-98cf-81c8f38b2fec}</Project>
-      <Name>RentLibrary</Name>
+      <Name>RentDto</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +210,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205311829272_fix.resx">
       <DependentUpon>202205311829272_fix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208271812394_Rate currency.resx">
+      <DependentUpon>202208271812394_Rate currency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202208281120234_Area totals currency.resx">
+      <DependentUpon>202208281120234_Area totals currency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202210131448192_Rate-type-change.resx">
+      <DependentUpon>202210131448192_Rate-type-change.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

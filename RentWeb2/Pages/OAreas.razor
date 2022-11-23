@@ -36,10 +36,13 @@ else
     @if (svc.allowEdit)
     {
         <div>
-            <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenModal(new AreaRect()))">Добавить</button>
+            <button class="btn btn-primary mr-3 btn-sm" @onclick="(() => OpenModal(new AreaRect()))">Добавить</button>
         </div>
     }
 
+    <hr />
+    <h6 style="color:green">Всего арендаторов: @renter_cnt. Свободные площади: @free_area м<sup>2</sup>.</h6>
+    
     <table class="table table-sm table-hover">
         <thead>
             <tr>
@@ -51,10 +54,11 @@ else
                 <th>Размещение</th>
                 <th>Наименование</th>
                 <th>Площадь,  м<sup>2</sup></th>
-                <th>Цена за м<sup>2</sup>, EUR </th>
-                <th>Стоимость, EUR</th>
-                <th>Цена за м<sup>2</sup> с НДС, EUR </th>
-                <th>Стоимость с НДС, EUR</th>
+                <th>Валюта</th>
+                <th>Цена за м<sup>2</sup></th>
+                <th>Стоимость</th>
+                <th>Цена за м<sup>2</sup> с НДС</th>
+                <th>Стоимость с НДС</th>
                 @*<th>Арендуется</th>*@
                 <th>Дополнительно</th>
                 @if (svc.allowEdit)
@@ -89,6 +93,7 @@ else
                     <td>@area.LayerName</td>
                     <td>@area.AreaName</td>
                     <td>@area.Square</td>
+                    <td><span style="color:blue;font-weight:bold">@area.Currency</span></td>
                     <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
                     <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
                     <td>@area.Price.ToString("F2")</td>
@@ -123,6 +128,7 @@ else
             <td></td>
             <td><b>@Math.Round(@total_area, 2)</b></td>
             <td></td>
+            <td></td>
             <td><b>@total_sum_novat.ToString("F2")</b></td>
             <td></td>
             <td><b>@total_sum.ToString("F2")</b></td>
@@ -132,13 +138,10 @@ else
 
         </tr>
     </table>
-    <hr />
-    <h6 style="color:green">Свободные площади: @free_area м<sup>2</sup>.</h6>
-    <hr />
+
 
     <p>
         <button type="button" class="btn btn-outline-primary btn-link btn-sm" onclick="window.history.go(-1)">Назад</button>
-
     </p>
 
 
@@ -180,18 +183,18 @@ else
                 <div class="modal-body">
                     @*Нет смысла привязка и так есть, т.к. открыто с объекта*@
                     @*<div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Размещение</span>
-            </div>
-            <select @bind="@lId">
-                <option></option>
-                @foreach (var l in layers)
-                {
-                    <option value="@l.Id">@l.Name</option>
-                }
-            </select>
-        </div>
-        <br />*@
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Размещение</span>
+                            </div>
+                            <select @bind="@lId">
+                                <option></option>
+                                @foreach (var l in layers)
+                                {
+                                    <option value="@l.Id">@l.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <br />*@
 
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -218,7 +221,7 @@ else
                         </div>
                         <input type="number" class="form-control" @bind="selArea.Price">
                         <div class="input-group-append">
-                            <span class="input-group-text">EUR</span>
+                            <span class="input-group-text">@selArea.Currency</span>
                         </div>
                     </div>
                     <br />
@@ -228,7 +231,7 @@ else
                         </div>
                         <input type="number" class="form-control" @bind="selArea.Cost">
                         <div class="input-group-append">
-                            <span class="input-group-text">EUR</span>
+                            <span class="input-group-text">@selArea.Currency</span>
                         </div>
                     </div>
                     <br />
@@ -299,10 +302,11 @@ else
     RenterRect renter = null;
     // string r_name;
     // int r_id;
-    float total_area = 0;
-    float total_sum = 0;
-    float total_sum_novat = 0;
-    float free_area = 0;
+    double total_area = 0;
+    double total_sum = 0;
+    double total_sum_novat = 0;
+    double free_area = 0;
+    private int renter_cnt = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -332,6 +336,9 @@ else
                 free_area += ar.Square;
             }
         }
+        
+                renter_cnt = areas.Where(x => x.isRented == true).Select(s=>s.RenterName).Distinct().Count();
+        
 
         areas = areas.OrderBy(s => s.LayerName).ThenBy(r => r.AreaName).ToArray();
         StateHasChanged();
@@ -367,7 +374,7 @@ else
         renters = await Http.Get<RenterRect[]>(ConnectAPI.apiUri + "/api/Renters");
         layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/ListLayers/" + objectR.Id);
 
-        renters = renters.Where(s => s.Contract.Length >= 1).OrderBy(s=>s.ContractNo).ToArray();
+        renters = renters.Where(s => s.Contract.Length >= 1).OrderBy(s => s.ContractNo).ToArray();
 
         rId = 0;
         lId = selArea.LayerId;
@@ -422,7 +429,7 @@ else
     {
         if (area.Square > 0 || area.Price > 0)
         {
-            area.Cost = (float)Math.Round(area.Square * area.Price,2);
+            area.Cost = (float)Math.Round(area.Square * area.Price, 2);
         }
 
         if (area.Id > 0) // редактируем

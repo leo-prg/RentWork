@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RentAPI2.Helpers;
 using RentAPI2.Services;
-
+using RentService.StaffService;
 
 namespace RentAPI2
 {
@@ -34,6 +34,9 @@ namespace RentAPI2
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IStaffService, StaffService>();
+
 
             services.AddCors(o => o.AddPolicy("ApiPolicy", builder =>
             {

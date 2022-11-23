@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
-using RentDB;
+using RentData;
 using RentLibrary;
 
 namespace RentAPI.Controllers

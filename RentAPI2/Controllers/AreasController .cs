@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using RentDB;
+using RentData;
 using RentLibrary;
 
 namespace RentAPI.Controllers
@@ -15,7 +15,7 @@ namespace RentAPI.Controllers
     public class AreasController : ControllerBase
     {
         Lazy<DBArea> dba = new Lazy<DBArea>();
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
         Lazy<DBRenter> dbr = new Lazy<DBRenter>();
 
         [HttpGet]

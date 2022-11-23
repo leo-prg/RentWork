@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RentLibrary
+namespace RentDto
 {
-    public class Staff
+    public class StaffDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

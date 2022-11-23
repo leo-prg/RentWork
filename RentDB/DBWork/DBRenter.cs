@@ -8,14 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using RentDB.DataModel;
 using RentLibrary;
 
-namespace RentDB
+namespace RentData
 {
     public class DBRenter
     {
-        readonly Lazy<RentModel> context = new Lazy<RentModel>();
+        readonly Lazy<RentContext> context = new Lazy<RentContext>();
 
 
         public void AddRenter(RenterRect renter)
