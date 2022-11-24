@@ -9,7 +9,7 @@ namespace RentService.StaffService
     {
         IEnumerable<StaffDto> GetAllStaff();
         StaffDto GetStaffById(int id);
-        void AddStaff(RentDto.StaffDto staff);
+        void AddStaff(StaffDto staff);
         void UpdateStaff(StaffDto newS);
         void DropStaff(int id);
 
