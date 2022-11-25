@@ -241,7 +241,7 @@ else
 
     private async Task RefreshList()
     {
-        staffs = await Http.Get<IEnumerable<StaffDto>>(ConnectAPI.apiUri + "/api/StaffDto");
+        staffs = await Http.Get<IEnumerable<StaffDto>>(ConnectAPI.apiUri + "/api/Staff");
         StateHasChanged();
     }
 
@@ -261,7 +261,7 @@ else
     {
         ShowConfirm = false;
         Debug.WriteLine($"Удаляем {id}");
-        await Http.Delete(ConnectAPI.apiUri + "/api/StaffDto/" + id);
+        await Http.Delete(ConnectAPI.apiUri + "/api/Staff/" + id);
         await RefreshList();
         toastService.ShowToast(ToastLevel.Warning, "Сотрудник удален!", "Предупреждение");
     }
@@ -272,11 +272,11 @@ else
         // проверить ИД если есть значит редактирование, если нету - значит новый арендатор
         if (staff.Id > 0)
         {
-            await Http.Put(ConnectAPI.apiUri + "/api/StaffDto", staff);
+            await Http.Put(ConnectAPI.apiUri + "/api/Staff", staff);
         }
         else
         {
-            await Http.Post(ConnectAPI.apiUri + "/api/StaffDto", staff);
+            await Http.Post(ConnectAPI.apiUri + "/api/Staff", staff);
         }
         await RefreshList();
 

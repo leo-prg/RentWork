@@ -11,6 +11,7 @@ using RentAPI2.Helpers;
 using RentAPI2.Models;
 using Microsoft.AspNetCore.Mvc;
 using RentCommon;
+using System.Diagnostics;
 
 namespace RentAPI2.Services
 {
@@ -27,34 +28,35 @@ namespace RentAPI2.Services
     public class UserService : IUserService
     {
 
-        private static readonly RentContext _rm;
+        private readonly RentContext _rm;
 
-        private List<User> _users = _rm.Users.ToList();
-
+        
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings, RentContext context)
+        public UserService(IOptions<AppSettings> appSettings, RentContext rm)
         {
             _appSettings = appSettings.Value;
-            _rm = context;
+            _rm = rm;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && PwdCrypt.Decrypt(x.Password) == PwdCrypt.Decrypt(model.Password));
-
-            // return null if user not found
+            var pwd = PwdCrypt.Decrypt(model.Password);
+            var user = _rm.Users.SingleOrDefault(x=>x.Username == model.Username);
             if (user == null) return null;
 
-            // authentication successful so generate jwt token
-            var token = generateJwtToken(user);
+            if (PwdCrypt.Decrypt(user.Password) == PwdCrypt.Decrypt(model.Password))
+            {
+                var token = generateJwtToken(user);
+                return new AuthenticateResponse(user, token);
+            }
+            else return null;
 
-            return new AuthenticateResponse(user, token);
         }
 
         public User GetById(int id)
         {
-            return _users.FirstOrDefault(x => x.Id == id);
+            return _rm.Users.FirstOrDefault(x => x.Id == id);
         }
 
         // helper methods
