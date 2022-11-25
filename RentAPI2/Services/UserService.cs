@@ -29,7 +29,7 @@ namespace RentAPI2.Services
 
         private readonly RentContext _rm;
 
-        private readonly List<User> _users = null;
+        private readonly List<User> _users;
 
         private readonly AppSettings _appSettings;
 
