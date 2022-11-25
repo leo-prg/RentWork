@@ -21,8 +21,9 @@ namespace RentAPI.Controllers
         private readonly IObjectService _objectService;
         private readonly IAreaService _areaService;
 
-        public ObjectsController(IAreaService areaService)
+        public ObjectsController(IObjectService objectService, IAreaService areaService)
         {
+            _objectService = objectService;
             _areaService = areaService;
         }
 
