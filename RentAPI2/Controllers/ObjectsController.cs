@@ -9,6 +9,7 @@ using System.Web;
 using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using RentService;
 
 namespace RentAPI.Controllers
 {
@@ -17,7 +18,12 @@ namespace RentAPI.Controllers
     public class ObjectsController : ControllerBase
     {
         Lazy<DBObject> dbo = new Lazy<DBObject>();
-        Lazy<DBArea> dba = new Lazy<DBArea>();
+        private readonly IAreaService _areaService;
+
+        public ObjectsController(IAreaService areaService)
+        {
+            _areaService = areaService;
+        }
 
         [HttpGet]
         [Route("api/Objects")]
@@ -30,7 +36,7 @@ namespace RentAPI.Controllers
         [Route("api/Objects/{id}")]
         public List<AreaRect> Get(int id)
         {
-            return dba.Value.GetObjectAreas(id);
+            return _areaService.GetObjectAreas(id);
         }
 
         [HttpGet]

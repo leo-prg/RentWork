@@ -6,7 +6,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentData;
 using RentDto;
-using RentService.StaffService;
+using RentService;
 
 namespace RentAPI.Controllers
 {

@@ -19,7 +19,7 @@ namespace RentData
         }
 
 
-        public virtual DbSet<RentObject> RentObjects { get; set; }
+    public virtual DbSet<RentObject> RentObjects { get; set; }
     public virtual DbSet<RentLayer> RentLayers { get; set; }
     public virtual DbSet<RentArea> RentAreas { get; set; }
     public virtual DbSet<Renter> Renters { get; set; }

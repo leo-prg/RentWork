@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using RentData;
 using RentDto;
+using RentService;
 
 namespace RentAPI.Controllers
 {
@@ -14,15 +15,20 @@ namespace RentAPI.Controllers
     [ApiController]
     public class AreasController : ControllerBase
     {
-        Lazy<DBArea> dba = new Lazy<DBArea>();
-        readonly Lazy<RentContext> context = new Lazy<RentContext>();
-        Lazy<DBRenter> dbr = new Lazy<DBRenter>();
+        private readonly IAreaService _areaService;
+        private readonly IRenterService _renterService;
+
+        public AreasController(IAreaService areaService, IRenterService renterService)
+        {
+            _areaService = areaService;
+            _renterService = renterService;
+        }
 
         [HttpGet]
         [Route("api/Areas")]
         public AreaRect Get([FromQuery] int id, [FromQuery]  int x, [FromQuery] int y)
         {
-            return dba.Value.FindAreaInfoByPoint(id, x, y);
+            return _areaService.FindAreaInfoByPoint(id, x, y);
         }
 
         
@@ -30,35 +36,35 @@ namespace RentAPI.Controllers
         [Route("api/Areas/GetAreaById")]
         public AreaRect GetAreaById([FromQuery] int id)
         {
-            return dba.Value.GetAreaById(id);
+            return _areaService.GetAreaById(id);
         }
 
         [HttpGet]
         [Route("api/Areas/GetAreasByRenterId")]
         public List<AreaRect> GetAreasByRenterId([FromQuery] int id)
         {
-            return dba.Value.GetAreasByRenterId(id);
+            return _areaService.GetAreasByRenterId(id);
         }
 
         [HttpGet]
         [Route("api/Areas/{id}")]
         public RenterRect Get(int id)
         {
-            return id > 0 ? dba.Value.GetAreaRenter(id) : null;
+            return id > 0 ? _areaService.GetAreaRenter(id) : null;
         }
 
         [HttpPost]
         [Route("api/Areas/NewArea")]
         public void Post([FromBody] AreaRect area)
         {
-            dba.Value.AddLayerArea(area);
+            _areaService.AddLayerArea(area);
         }
 
         [HttpPut]
         [Route("api/Areas")]
         public void Put(AreaRect area)
         {
-            dba.Value.UpdateAreaData(area, area);
+            _areaService.UpdateAreaData(area, area);
         }
 
         // удаляем не площадь а арендатора - высвобождаем
@@ -66,45 +72,45 @@ namespace RentAPI.Controllers
         [Route("api/Areas")]
         public void Delete([FromQuery] int areaid)
         {
-            dba.Value.DeleteArea(areaid);
+            _areaService.DeleteArea(areaid);
         }
 
         [HttpPut]
         [Route("api/Areas/NoRenter")]
         public void NoRenter([FromQuery] int areaid)
         {
-            AreaRect area = dba.Value.GetAreaById(areaid);
-            dba.Value.AddRenterToArea(area, null);
+            AreaRect area = _areaService.GetAreaById(areaid);
+            _areaService.AddRenterToArea(area, null);
         }
       
         [HttpPut]
         [Route("api/Areas/AddRenter")]
         public void AddRenter( [FromQuery] int areaid, [FromQuery] int id)
         {
-            AreaRect area = dba.Value.GetAreaById(areaid);
-            RenterRect renter = dbr.Value.GetRenterById(id);
-            dba.Value.AddRenterToArea(area, renter);
+            AreaRect area = _areaService.GetAreaById(areaid);
+            RenterRect renter = _renterService.GetRenterById(id);
+            _areaService.AddRenterToArea(area, renter);
         }
 
         [HttpGet]
         [Route("api/Areas/GetLayerAreas")]
         public IEnumerable<AreaRect> GetLayerAreas([FromQuery] int id)
         {
-            return dba.Value.GetLayerAreas(id);
+            return _areaService.GetLayerAreas(id);
         }
 
         [HttpGet]
         [Route("api/Areas/GetAreaPoints")]
         public List<AreaPoint> GetAreaPoints([FromQuery] int id)
         {
-            return dba.Value.GetAreaPoints(id);
+            return _areaService.GetAreaPoints(id);
         }
 
         [HttpPost]
         [Route("api/Areas/AddAreaPoints")]
         public void AddAreaPoints([FromQuery] int areaId, [FromBody] List<AreaPoint> points)
         {
-                dba.Value.AddAreaPoints(areaId, points);
+                _areaService.AddAreaPoints(areaId, points);
         }
         
 

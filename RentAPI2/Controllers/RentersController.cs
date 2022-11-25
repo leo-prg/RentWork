@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using RentData;
 using RentDto;
 using Microsoft.AspNetCore.Mvc;
+using RentService;
 
 namespace RentAPI.Controllers
 {
@@ -17,34 +18,39 @@ namespace RentAPI.Controllers
     [ApiController]
     public class RentersController : ControllerBase
     {
-        Lazy<DBRenter> dbr = new Lazy<DBRenter>();
+        private readonly IRenterService _renterService;
+
+        public RentersController(IRenterService renterService)
+        {
+            _renterService = renterService;
+        }
 
         [HttpGet]
         [Route("api/Renters")]
         public IEnumerable<RenterRect> Get()
         {
-            return dbr.Value.GetAllRenters();
+            return _renterService.GetAllRenters();
         }
 
         [HttpGet]
         [Route("api/Renters/{id}")]
         public RenterRect Get(int id)
         {
-            return dbr.Value.GetRenterById(id);
+            return _renterService.GetRenterById(id);
         }
 
         [HttpPost]
         [Route("api/Renters/KillFile/{id}")]
         public void KillFile(int id)
         {
-            dbr.Value.KillFile(id);
+            _renterService.KillFile(id);
         }
 
         [HttpGet]
         [Route("api/Renters/DownloadFile/{id}")]
         public IActionResult DownloadFile(int id)
         {
-            var file = dbr.Value.GetFileById(id);
+            var file = _renterService.GetFileById(id);
             if (file != null)
             {
               return File(file, "application/octet-stream");
@@ -59,21 +65,21 @@ namespace RentAPI.Controllers
         [Route("api/Renters/GetRenterFileList")]
         public IEnumerable<RenterFileList> GetRenterFileList([FromQuery] int id)
         {
-            return dbr.Value.GetRenterFileList(id);
+            return _renterService.GetRenterFileList(id);
         }
 
         [HttpPost]
         [Route("api/Renters")]
         public void Post(RenterRect newRenter)
         {
-            dbr.Value.AddRenter(newRenter);
+            _renterService.AddRenter(newRenter);
         }
 
         [HttpPut]
         [Route("api/Renters")]
         public void Put(RenterRect newRenter)
         {
-            dbr.Value.UpdateRenter(newRenter, newRenter);
+            _renterService.UpdateRenter(newRenter, newRenter);
         }
 
         [HttpPost]
@@ -88,15 +94,15 @@ namespace RentAPI.Controllers
                 fileData = binaryReader.ReadBytes((int)httpRequest[0].OpenReadStream().Length);
             }
 
-            dbr.Value.AddRenterFile(id, fileData, JsonSerializer.Deserialize<RenterFileList>(d)); 
+            _renterService.AddRenterFile(id, fileData, JsonSerializer.Deserialize<RenterFileList>(d)); 
         }
         
         [HttpDelete]
         [Route("api/Renters")]
         public void Delete(int id)
         {
-            RenterRect rr = dbr.Value.GetRenterById(id);
-            dbr.Value.DropRenter(rr);
+            RenterRect rr = _renterService.GetRenterById(id);
+            _renterService.DropRenter(rr);
         }
     }
 }

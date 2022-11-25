@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RentDto;
 
-namespace RentService.StaffService
+namespace RentService
 {
     public interface IStaffService
     {

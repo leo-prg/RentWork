@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RentAPI2.Helpers;
 using RentAPI2.Services;
-using RentService.StaffService;
+using RentService;
 using RentData;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +38,8 @@ namespace RentAPI2
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
 
+            services.AddScoped<IRenterService, RenterService>();
+            services.AddScoped<IAreaService, AreaService>();
             services.AddScoped<IStaffService, StaffService>();
 
 
