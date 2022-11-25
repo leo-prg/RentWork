@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using RentData;
 using RentDto;
+using RentService;
 
 namespace RentAPI.Controllers
 {
@@ -14,13 +9,18 @@ namespace RentAPI.Controllers
     [ApiController]
     public class LayersController : ControllerBase
     {
-        Lazy<DBLayer> dbl = new Lazy<DBLayer>();
+        private protected ILayerService _layerService;
+
+        public LayersController(ILayerService layerService)
+        {
+            _layerService = layerService;
+        }
 
         [HttpGet]
         [Route("api/Layers/{id}")]
         public IEnumerable<LayerRect> Get(int id)
         {
-            return dbl.Value.GetLayersOfObject(id);
+            return _layerService.GetLayersOfObject(id);
         }
 
         
@@ -28,7 +28,7 @@ namespace RentAPI.Controllers
         [Route("api/ListLayers/{id}")]
         public IEnumerable<LayerRect> GetList(int id)
         {
-            return dbl.Value.GetObjectLayersList(id);
+            return _layerService.GetObjectLayersList(id);
         }
 
         [HttpPost]
@@ -36,7 +36,7 @@ namespace RentAPI.Controllers
         // id объекта куда добавляем слой
         public void AddLayer([FromQuery] int id, [FromBody] LayerRect lr)
         {
-            dbl.Value.AddObjectLayer(id, lr);
+            _layerService.AddObjectLayer(id, lr);
         }
 
         [HttpPut]
@@ -45,14 +45,14 @@ namespace RentAPI.Controllers
         public void UpdateLayer([FromQuery] int id, [FromBody] LayerRect lr)
         {
             //Console.WriteLine(lr.LayerFile);
-            dbl.Value.UpdateObjectLayer(id, lr);
+            _layerService.UpdateObjectLayer(id, lr);
         }
 
         [HttpDelete]
         [Route("api/Layers/{id}")]
         public void Delete(int id)
         {
-            dbl.Value.DeleteLayer(id);
+            _layerService.DeleteLayer(id);
         }
 
 

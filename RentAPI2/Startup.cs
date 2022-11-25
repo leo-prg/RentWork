@@ -39,7 +39,10 @@ namespace RentAPI2
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IRenterService, RenterService>();
+
+            services.AddScoped<ILayerService, LayerService>();
             services.AddScoped<IAreaService, AreaService>();
+
             services.AddScoped<IStaffService, StaffService>();
 
 
