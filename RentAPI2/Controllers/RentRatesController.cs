@@ -6,6 +6,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentData;
 using RentDto;
+using RentService;
 
 namespace RentAPI.Controllers
 {
@@ -13,13 +14,18 @@ namespace RentAPI.Controllers
     [ApiController]
     public class RentRatesController : ControllerBase
     {
-        Lazy<DBRentRates> dbr = new Lazy<DBRentRates>();
-        
+        private readonly IRateService _rateService;
+
+        public RentRatesController(IRateService rateService)
+        {
+            _rateService = rateService;
+        }
+
         [HttpGet]
         [Route("api/RentRates")]
         public IEnumerable<Rates> Get([FromQuery] int id)
         {
-            return dbr.Value.GetRentRates(id);
+            return _rateService.GetRentRates(id);
         }
 
 
@@ -27,21 +33,21 @@ namespace RentAPI.Controllers
         [Route("api/RentRates/AddRate")]
         public void AddRate([FromBody()] Rates rate, [FromQuery]int area_id)
         {
-            dbr.Value.AddRentRate(rate, area_id);
+            _rateService.AddRentRate(rate, area_id);
         }
 
         [HttpPut]
         [Route("api/RentRates/UpdateRate")]
         public void UpdateRate(Rates urate)
         {
-            dbr.Value.UpdateRate(urate, urate);
+            _rateService.UpdateRate(urate, urate);
         }
 
         [HttpDelete]
         [Route("api/RentRates")]
         public void Delete([FromQuery] int id)
         {
-            dbr.Value.DropRate(id);
+            _rateService.DropRate(id);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentData;
 using RentDto;
+using RentService;
 
 namespace RentAPI.Controllers
 {
@@ -13,13 +14,19 @@ namespace RentAPI.Controllers
     [ApiController]
     public class RentLogController : ControllerBase
     {
-        Lazy<DBRentLog> dblog = new Lazy<DBRentLog>();
-    
+        private readonly ILogService _logService;
+
+        public RentLogController(ILogService logService)
+        {
+            _logService =  logService;
+
+        }
+
         [HttpPost]
         [Route("api/Log")]
         public void Post(Log log)
         {
-            dblog.Value.AddLog(log);
+           _logService.AddLog(log);
         }
     }
 }

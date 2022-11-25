@@ -39,12 +39,12 @@ namespace RentAPI2
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IRenterService, RenterService>();
-
+            services.AddScoped<IObjectService, ObjectService>();
             services.AddScoped<ILayerService, LayerService>();
             services.AddScoped<IAreaService, AreaService>();
-
+            services.AddScoped<IRateService, RateService>();
             services.AddScoped<IStaffService, StaffService>();
-
+            services.AddScoped<ILogService, LogService>();
 
             services.AddCors(o => o.AddPolicy("ApiPolicy", builder =>
             {

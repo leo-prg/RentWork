@@ -17,7 +17,8 @@ namespace RentAPI.Controllers
     [ApiController]
     public class ObjectsController : ControllerBase
     {
-        Lazy<DBObject> dbo = new Lazy<DBObject>();
+
+        private readonly IObjectService _objectService;
         private readonly IAreaService _areaService;
 
         public ObjectsController(IAreaService areaService)
@@ -29,7 +30,7 @@ namespace RentAPI.Controllers
         [Route("api/Objects")]
         public IEnumerable<ObjectRect> Get()
         {
-            return dbo.Value.GetAllObjects();
+            return _objectService.GetAllObjects();
         }
 
         [HttpGet]
@@ -43,25 +44,26 @@ namespace RentAPI.Controllers
         [Route("api/Objects/GetObjectById")]
         public ObjectRect GetObjectById([FromQuery]int id)
         {
-            return dbo.Value.GetObjectById(id);
+            return _objectService.GetObjectById(id);
         }
         [HttpPost]
         [Route("api/Objects")]
         public void Post(ObjectRect objectRect)
         {
-            dbo.Value.AddObject(objectRect);
+           _objectService.AddObject(objectRect);
         }
 
         [HttpPut]
         [Route("api/Objects")]
         public void Put(ObjectRect objectRect)
         {
-            dbo.Value.UpdateObject(objectRect, objectRect);
+           _objectService.UpdateObject(objectRect, objectRect);
         }
         [HttpDelete]
         [Route("api/Objects/{id}")]
         public void Delete(int id)
         {
+
         }
     }
 }
