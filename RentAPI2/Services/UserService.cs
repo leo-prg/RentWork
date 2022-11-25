@@ -27,9 +27,9 @@ namespace RentAPI2.Services
     public class UserService : IUserService
     {
 
-        private readonly RentContext _rm;
+        private static readonly RentContext _rm;
 
-        private readonly List<User> _users;
+        private List<User> _users = _rm.Users.ToList();
 
         private readonly AppSettings _appSettings;
 
