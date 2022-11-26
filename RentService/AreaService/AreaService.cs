@@ -232,7 +232,7 @@ namespace RentService
         public List<AreaRect> GetAreasByRenterId(int id)
         {
                 var area = _context.RentAreas
-                .Where(x => x.Renter.Id == id)
+                .Where(r => r.Renter.Id == id)
                 .Select(x => new AreaRect()
                 {
                     Id = x.Id,
@@ -279,6 +279,7 @@ namespace RentService
         public List<AreaRect> GetLayerAreas(int id)
         {
             var dbl = _context.RentLayers.Where(x => x.Id == id).FirstOrDefault();
+            
             return _context.RentAreas
                 .Where(x => x.Layer.Id == dbl.Id)
                 .Select(x => new AreaRect()
