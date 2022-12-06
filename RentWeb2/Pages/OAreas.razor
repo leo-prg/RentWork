@@ -182,7 +182,7 @@ else
                 </div>
                 <div class="modal-body">
                     @*Нет смысла привязка и так есть, т.к. открыто с объекта*@
-                    @*<div class="input-group">
+                    <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Размещение</span>
                             </div>
@@ -194,7 +194,7 @@ else
                                 }
                             </select>
                         </div>
-                        <br />*@
+                        <br />
 
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -343,8 +343,7 @@ else
         areas = areas.OrderBy(s => s.LayerName).ThenBy(r => r.AreaName).ToArray();
         StateHasChanged();
     }
-
-
+    
     async Task OnClickRenter(int id)
     {
         //Debug.WriteLine(id);
@@ -358,8 +357,6 @@ else
 
         NavigationManager.NavigateTo("/rentrates/" + id);
     }
-
-
 
     async void OpenModal(AreaRect area)
     {
@@ -392,7 +389,6 @@ else
         selArea = null;
         selAreaRenter = null;
     }
-
 
     async void NoRenter(AreaRect area)
     {
@@ -434,6 +430,8 @@ else
 
         if (area.Id > 0) // редактируем
         {
+            area.LayerId = lId;
+            area.LayerName = layerName;
             await Http.Put(ConnectAPI.apiUri + "/api/Areas/", area);
 
         }

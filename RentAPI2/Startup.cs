@@ -33,8 +33,8 @@ namespace RentAPI2
 
             // configure strongly typed settings object
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            services.AddDbContext<RentContext>
-            (options => options.UseSqlServer("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework;MultipleActiveResultSets=true"));
+            services.AddDbContext<RentContext>();
+            //(options => options.UseSqlServer("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework;MultipleActiveResultSets=true"));
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
 

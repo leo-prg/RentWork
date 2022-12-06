@@ -4,6 +4,7 @@ using RentDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace RentService
@@ -329,6 +330,8 @@ namespace RentService
         {
             // найдем объект в базе с таким ид 
             var _old = _context.RentAreas.Where(x => x.Id == old.Id).FirstOrDefault();
+            var _layer = _context.RentLayers.Find(_new.LayerId);
+            _old.Layer = _layer;
             _old.Name = _new.AreaName;
             _old.Price = _new.Price;
             _old.Square = _new.Square;

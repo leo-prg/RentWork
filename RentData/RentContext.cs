@@ -35,7 +35,8 @@ namespace RentData
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer("Server=.\\SQLExpress;Database=Rent;Trusted_Connection=true;TrustServerCertificate=true;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
