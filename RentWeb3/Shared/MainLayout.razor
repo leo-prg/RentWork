@@ -1,0 +1,49 @@
+﻿@inherits LayoutComponentBase
+@using Radzen
+@using Radzen.Blazor
+
+<RadzenLayout>
+<RadzenHeader>
+    <ChildContent>
+        <div class="row justify-content-start align-items-center">
+            <div class="col-5 d-flex align-items-center">
+                <RadzenSidebarToggle Click="@(args => { sidebarExpanded = !sidebarExpanded;})">
+                </RadzenSidebarToggle>
+                <RadzenLabel Text="Аренда коммерческой недвижимости" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size:medium;" />
+            </div>
+            <div class="col-7 d-flex align-items-center justify-content-end">
+                    <a href="http://krokooo.by/" title="Официальный сайт ООО Крок" target="_blank" class="mx-3">
+                        Девелоперская компания ООО "Крок"
+                    </a>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenHeader>
+<RadzenBody>
+    <ChildContent>
+        <RadzenContentContainer Name="main">
+            <div class="container-fluid example-container">
+                <div class="row">
+                    <div class="col-12 pt-4 pb-5 px-3 px-lg-5">
+                        @Body
+                    </div>
+                </div>
+            </div>
+        </RadzenContentContainer>
+    </ChildContent>
+</RadzenBody>
+<RadzenSidebar @bind-Expanded=@sidebarExpanded class="sidebar" style="display: flex; flex-direction: column">
+        <NavMenu></NavMenu>
+</RadzenSidebar>
+</RadzenLayout>
+
+@code {
+
+    bool sidebarExpanded = true;
+    
+    protected override void OnInitialized()
+    {
+        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("ru-RU");
+    }
+}
+    

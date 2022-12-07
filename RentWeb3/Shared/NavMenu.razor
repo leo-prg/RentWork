@@ -1,0 +1,30 @@
+﻿<RadzenPanelMenu >
+    <RadzenPanelMenuItem Path="/" Text="Сотрудники" Icon="badge"></RadzenPanelMenuItem>
+    <RadzenPanelMenuItem Path="" Text="Арендаторы" Icon="people"></RadzenPanelMenuItem>
+    <RadzenPanelMenuItem Text="Недвижимость" Icon="account_balance">
+        <RadzenPanelMenuItem Path="" Text="Объекты" Icon="maps_home_work"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Path="" Text="Схемы" Icon="layers"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Path="" Text="Геолокация" Icon="public" />
+    </RadzenPanelMenuItem>
+    <RadzenPanelMenuItem Text="Отчеты" Icon="assignment_turned_in">
+        <RadzenPanelMenuItem Path="" Text="Аренда" Icon="apartment"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Path="" Text="Банк" Icon="euro_symbol"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Path="" Text="Анализ доходов" Icon="leaderboard"></RadzenPanelMenuItem>
+    </RadzenPanelMenuItem>
+    <RadzenPanelMenuItem Text="Настройки" Icon="settings">
+        <RadzenPanelMenuItem Path="" Text="Программа" Icon="admin_panel_settings"></RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Path="" Text="Пользователи" Icon="manage_accounts"></RadzenPanelMenuItem>
+    </RadzenPanelMenuItem>
+</RadzenPanelMenu>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

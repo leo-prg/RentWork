@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29424.173
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentDto", "RentLibrary\RentDto.csproj", "{9BEF6822-4A8E-4FBE-98CF-81C8F38B2FEC}"
 EndProject
@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentWeb2", "RentWeb2\RentWe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentService", "RentService\RentService.csproj", "{2CCCD502-F0B6-4590-B188-43F63B4C0CE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentData", "RentData\RentData.csproj", "{4A6A8E7A-5FD8-4586-A615-CC4CB70B2C1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentData", "RentData\RentData.csproj", "{4A6A8E7A-5FD8-4586-A615-CC4CB70B2C1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentWeb3", "RentWeb3\RentWeb3.csproj", "{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{4A6A8E7A-5FD8-4586-A615-CC4CB70B2C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A6A8E7A-5FD8-4586-A615-CC4CB70B2C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A6A8E7A-5FD8-4586-A615-CC4CB70B2C1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

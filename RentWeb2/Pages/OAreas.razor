@@ -184,10 +184,10 @@ else
                     @*Нет смысла привязка и так есть, т.к. открыто с объекта*@
                     <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">Размещение</span>
+                                <span class="input-group-text">Рзмещение</span>
                             </div>
                             <select @bind="@lId">
-                                <option></option>
+                                <option value=""></option>
                                 @foreach (var l in layers)
                                 {
                                     <option value="@l.Id">@l.Name</option>
