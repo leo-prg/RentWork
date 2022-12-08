@@ -8,7 +8,7 @@ namespace RentWeb3
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             //throw new NotImplementedException();
-            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJuYmYiOjE2NzA0ODI1ODgsImV4cCI6MTY3MTAwMDk4OCwiaWF0IjoxNjcwNDgyNTg4fQ.L9AN8Uct5kXewlMOyxxYId_ggEpRyabbWli9bvEmDbM";
+            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJuYW1lIjoibGVvIiwibmJmIjoxNjcwNDk1Njk1LCJleHAiOjE2NzEwMTQwOTUsImlhdCI6MTY3MDQ5NTY5NX0.H0Znu3USEnmJyzsw2AKwl9hVi3aHAk9IrrF3ivzD4A0";
             
             var identity = new ClaimsIdentity(ParseClaimsFromJwt(token),"jwt");
             var user = new ClaimsPrincipal(identity);
