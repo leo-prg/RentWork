@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using RentData;
 
+
+
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
@@ -13,7 +15,7 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
         if (user == null)
         {
             // not logged in
-            context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            context.Result = new JsonResult(new { message = "" }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
     }
 }

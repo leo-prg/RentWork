@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using RentAPI2.Models;
 using RentAPI2.Services;
 using RentData;
 using System.Collections.Generic;
 using RentDto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RentAPI2.Controllers
 {

@@ -1,4 +1,4 @@
-namespace RentAPI2.Helpers
+namespace RentAPI2.Services
 {
     public class AppSettings
     {

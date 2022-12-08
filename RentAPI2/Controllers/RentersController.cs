@@ -11,6 +11,7 @@ using RentData;
 using RentDto;
 using Microsoft.AspNetCore.Mvc;
 using RentService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RentAPI.Controllers
 {

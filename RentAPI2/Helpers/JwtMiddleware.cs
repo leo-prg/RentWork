@@ -47,6 +47,7 @@ namespace RentAPI2.Helpers
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
+
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 

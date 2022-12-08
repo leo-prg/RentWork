@@ -9,11 +9,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RentAPI2.Helpers;
 using RentAPI2.Services;
 using RentService;
 using RentData;
 using Microsoft.EntityFrameworkCore;
+using RentAPI2.Helpers;
 
 namespace RentAPI2
 {
@@ -37,7 +37,6 @@ namespace RentAPI2
             //(options => options.UseSqlServer("Data Source = Server; Initial Catalog = RentKrok;;Persist Security Info=True;User ID = sa; Password=empty;App=EntityFramework;MultipleActiveResultSets=true"));
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
-
             services.AddScoped<IRenterService, RenterService>();
             services.AddScoped<IObjectService, ObjectService>();
             services.AddScoped<ILayerService, LayerService>();
@@ -52,11 +51,7 @@ namespace RentAPI2
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
-
-
-
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

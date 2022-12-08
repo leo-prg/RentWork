@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using RentService;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RentAPI.Controllers
 {

@@ -1,6 +1,6 @@
 using RentData;
 
-namespace RentAPI2.Models
+namespace RentAPI2.Services
 {
     public class AuthenticateResponse
     {

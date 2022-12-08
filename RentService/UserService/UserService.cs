@@ -7,35 +7,26 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using RentData;
-using RentAPI2.Helpers;
-using RentAPI2.Models;
-using Microsoft.AspNetCore.Mvc;
 using RentCommon;
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 namespace RentAPI2.Services
 {
-    public interface IUserService
-    {
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
-        User GetById(int id);
-        List<User> ListUsers();
-        bool NewUser(User user);
-        bool EditUser(User user);
-        bool DeleteUser(int id);
-    }
 
     public class UserService : IUserService
     {
 
         private readonly RentContext _rm;
 
-        
+       // private readonly IConfiguration _configuration;
+
         private readonly AppSettings _appSettings;
 
         public UserService(IOptions<AppSettings> appSettings, RentContext rm)
         {
-            _appSettings = appSettings.Value;
+              _appSettings = appSettings.Value;
+        //    _configuration = configuration;
             _rm = rm;
         }
 
@@ -60,20 +51,42 @@ namespace RentAPI2.Services
         }
 
         // helper methods
-
         private string generateJwtToken(User user)
         {
-            // generate token that is valid for 7 days
+            //// generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()), new Claim("name", user.Username) }),
                 Expires = DateTime.UtcNow.AddDays(6),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+
+            //List<Claim> claims = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, user.Id.ToString()) //,
+            //   // new Claim(ClaimTypes.Role, "Admin")
+            //};
+
+            //var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+            //    _configuration.GetSection("AppSettings:Secret").Value));
+
+            //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            //var token = new JwtSecurityToken(
+            //    claims: claims,
+            //    expires: DateTime.Now.AddDays(1),
+            //    signingCredentials: creds);
+
+            //var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            //return jwt;
+
+
+
         }
   
         public List<User> ListUsers()

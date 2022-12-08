@@ -49,7 +49,9 @@ namespace RentWeb2.Services
         public async Task Login(string username, string password)
         {
             password = PwdCrypt.Encrypt(password);
+
             User = await _httpService.Post<User>(ConnectAPI.apiUri+ "/api/auth", new { username, password });
+
             await _localStorageService.SetItemAsync("user", User);
         }
 
