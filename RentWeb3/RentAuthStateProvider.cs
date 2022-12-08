@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Json;
 
 namespace RentWeb3
 {
@@ -9,7 +10,7 @@ namespace RentWeb3
             //throw new NotImplementedException();
             string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJuYmYiOjE2NzA0ODI1ODgsImV4cCI6MTY3MTAwMDk4OCwiaWF0IjoxNjcwNDgyNTg4fQ.L9AN8Uct5kXewlMOyxxYId_ggEpRyabbWli9bvEmDbM";
             
-            var identity = new ClaimsIdentity();
+            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token),"jwt");
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
 
@@ -17,5 +18,25 @@ namespace RentWeb3
 
             return state;
         }
+
+        public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        {
+            var payload = jwt.Split('.')[1];
+            var jsonBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()));
+        }
+
+        private static byte[] ParseBase64WithoutPadding(string base64)
+        {
+            switch (base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+            return Convert.FromBase64String(base64);
+        }
+
     }
+
 }
