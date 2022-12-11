@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentService", "RentService\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentData", "RentData\RentData.csproj", "{4A6A8E7A-5FD8-4586-A615-CC4CB70B2C1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentWeb3", "RentWeb3\RentWeb3.csproj", "{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RentWeb3", "RentWeb3\RentWeb3.csproj", "{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentApi3", "RentApi3\RentApi3.csproj", "{F88F03E5-03DF-4D20-9D55-7A1E8A32C0D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{488EB8FB-380E-4BC6-B60F-31DA54C2DD21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F88F03E5-03DF-4D20-9D55-7A1E8A32C0D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F88F03E5-03DF-4D20-9D55-7A1E8A32C0D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F88F03E5-03DF-4D20-9D55-7A1E8A32C0D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F88F03E5-03DF-4D20-9D55-7A1E8A32C0D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

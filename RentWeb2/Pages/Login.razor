@@ -86,7 +86,8 @@
             NavigationManager.NavigateTo(returnUrl);
 
             await Http.Post<Log>(ConnectAPI.apiUri + "/api/Log", new Log()
-            { UserName = AuthenticationService.User.Username,
+            { 
+                UserName = AuthenticationService.User.Username,
                 DateOper = DateTime.Now, Page = NavigationManager.Uri.ToString(),
                 Oper = "Login into app" });
 
@@ -102,9 +103,9 @@
     private class Model
     {
         [Required(ErrorMessage = "Введите имя")]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Введите пароль")]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Введите пароль")] 
+        public string Password { get; set; } = string.Empty;
     }
 }

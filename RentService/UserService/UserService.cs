@@ -11,7 +11,7 @@ using RentCommon;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 
-namespace RentAPI2.Services
+namespace RentService
 {
 
     public class UserService : IUserService

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RentAPI2.Services
+namespace RentService
 {
     public class AuthenticateRequest
     {

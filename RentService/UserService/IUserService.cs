@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using RentData;
 
-namespace RentAPI2.Services
+namespace RentService
 {
     public interface IUserService
     {

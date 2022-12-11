@@ -12,8 +12,8 @@ namespace RentDto
         public int Id { get; set; }
         public string RenterName { get; set; }
         public string Contract { get; set; }
-        public int ContractNo => 
-        Convert.ToInt32(String.IsNullOrEmpty(Regex.Replace(Contract, "[A-Za-zА-Яа-я/-]", ""))?"0": Regex.Replace(Contract, "[A-Za-zА-Яа-я/-]", ""));
+        public int ContractNo =>
+        Convert.ToInt32(string.IsNullOrEmpty(Regex.Replace(Contract, "[A-Za-zА-Яа-я/-]", "")) ? "0" : Regex.Replace(Contract, "[A-Za-zА-Яа-я/-]", ""));
         public DateTime StartPartnership { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

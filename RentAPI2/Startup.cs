@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RentAPI2.Services;
 using RentService;
 using RentData;
 using Microsoft.EntityFrameworkCore;
