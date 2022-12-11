@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RentCommon\RentCommon.csproj" />
     <ProjectReference Include="..\RentData\RentData.csproj" />
     <ProjectReference Include="..\RentLibrary\RentDto.csproj" />
     <ProjectReference Include="..\RentService\RentService.csproj" />

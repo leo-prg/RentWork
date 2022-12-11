@@ -32,16 +32,17 @@ namespace RentService
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var pwd = PwdCrypt.Decrypt(model.Password);
-            var user = _rm.Users.SingleOrDefault(x=>x.Username == model.Username);
-            if (user == null) return null;
+            //var pwd = PwdCrypt.Decrypt(model.Password);
+            //var user = _rm.Users.SingleOrDefault(x=>x.Username == model.Username);
+            //if (user == null) return null;
 
-            if (PwdCrypt.Decrypt(user.Password) == PwdCrypt.Decrypt(model.Password))
-            {
-                var token = generateJwtToken(user);
-                return new AuthenticateResponse(user, token);
-            }
-            else return null;
+            //if (PwdCrypt.Decrypt(user.Password) == PwdCrypt.Decrypt(model.Password))
+            //{
+            //    var token = generateJwtToken(user);
+            //    return new AuthenticateResponse(user, token);
+            //}
+            //else 
+                return null;
 
         }
 
@@ -95,34 +96,34 @@ namespace RentService
         }
         public bool NewUser(User user)
         {
-            try {
-                user.Password = PwdCrypt.Encrypt(user.Password);
-                _rm.Users.Add(user);
-                _rm.SaveChanges();
-                return true;
-            }
-            catch
-            {
+            //try {
+            //    user.Password = PwdCrypt.Encrypt(user.Password);
+            //    _rm.Users.Add(user);
+            //    _rm.SaveChanges();
+            //    return true;
+            //}
+            //catch
+            //{
                 return false;
-            }
+            //}
         }
 
         public bool EditUser(User user)
         {
-            try
-            {
-                var u = _rm.Users.Where(x=>x.Id == user.Id).First();
-                u.LastName = user.LastName;
-                u.FirstName = user.FirstName;
-                u.Email = user.Email;
-                u.Password = PwdCrypt.Encrypt(user.Password);
-                _rm.SaveChanges();
-                return true;
-            }
-            catch
-            {
+            //try
+            //{
+            //    var u = _rm.Users.Where(x=>x.Id == user.Id).First();
+            //    u.LastName = user.LastName;
+            //    u.FirstName = user.FirstName;
+            //    u.Email = user.Email;
+            //    u.Password = PwdCrypt.Encrypt(user.Password);
+            //    _rm.SaveChanges();
+            //    return true;
+            //}
+            //catch
+            //{
                 return false;
-            }
+            //}
         }
 
         public bool DeleteUser(int id)
