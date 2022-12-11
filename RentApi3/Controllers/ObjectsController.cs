@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using RentService;
 using Microsoft.AspNetCore.Authorization;
+using System.Windows.Forms;
 
 namespace RentAPI.Controllers
 {
@@ -37,9 +38,18 @@ namespace RentAPI.Controllers
 
         [HttpGet]
         [Route("api/Objects/{id}")]
-        public List<AreaRect> Get(int id)
+        public ActionResult<List<AreaRect>> Get(int id)
         {
-            return _areaService.GetObjectAreas(id);
+                var oAreas = _areaService.GetObjectAreas(id);
+            
+                if (oAreas.Count != 0)
+                {
+                    return Ok(oAreas);
+                }
+                else
+                {
+                    return NoContent();
+                }
         }
 
         [HttpGet]

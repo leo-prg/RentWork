@@ -50,6 +50,7 @@
     <Compile Include="Rates.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="StaffDto.cs" />
+    <Compile Include="UserDto.cs" />
     <Compile Include="UserList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
