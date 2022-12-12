@@ -29,7 +29,7 @@ namespace RentAPI.Controllers
             _areaService = areaService;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles="Admin")]
         [Route("api/Objects")]
         public IEnumerable<ObjectRect> Get()
         {

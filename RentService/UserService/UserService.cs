@@ -10,6 +10,8 @@ using RentData;
 using RentCommon;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using System.Configuration;
+using System.Security.Cryptography;
 
 namespace RentService
 {
@@ -19,14 +21,12 @@ namespace RentService
 
         private readonly RentContext _rm;
 
-       // private readonly IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
-        private readonly AppSettings _appSettings;
-
-        public UserService(IOptions<AppSettings> appSettings, RentContext rm)
+        public UserService(IConfiguration configuration, RentContext rm)
         {
-              _appSettings = appSettings.Value;
-        //    _configuration = configuration;
+        
+             _configuration = configuration;
             _rm = rm;
         }
 
@@ -56,7 +56,7 @@ namespace RentService
         {
             //// generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("AppSettings:Secret").Value);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()), new Claim("name", user.Username) }),
@@ -140,6 +140,49 @@ namespace RentService
                 return false;
             }
         }
-      
-    }
+
+
+		private string CreateToken(User user)
+		{
+			List<Claim> claims = new List<Claim>
+			{
+				new Claim(ClaimTypes.Name, user.Username),
+				new Claim(ClaimTypes.Role, "Admin")
+			};
+
+			var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+				_configuration.GetSection("AppSettings:Token").Value));
+
+			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+			var token = new JwtSecurityToken(
+				claims: claims,
+				expires: DateTime.Now.AddDays(1),
+				signingCredentials: creds);
+
+			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+			return jwt;
+		}
+
+		private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512())
+			{
+				passwordSalt = hmac.Key;
+				passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+			}
+		}
+
+
+		private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512(passwordSalt))
+			{
+				var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+				return computedHash.SequenceEqual(passwordHash);
+			}
+		}
+
+	}
 }
