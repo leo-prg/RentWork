@@ -30,21 +30,21 @@ namespace RentService
             _rm = rm;
         }
 
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
-        {
-            //var pwd = PwdCrypt.Decrypt(model.Password);
-            //var user = _rm.Users.SingleOrDefault(x=>x.Username == model.Username);
-            //if (user == null) return null;
+        //public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        //{
+        //    //var pwd = PwdCrypt.Decrypt(model.Password);
+        //    //var user = _rm.Users.SingleOrDefault(x=>x.Username == model.Username);
+        //    //if (user == null) return null;
 
-            //if (PwdCrypt.Decrypt(user.Password) == PwdCrypt.Decrypt(model.Password))
-            //{
-            //    var token = generateJwtToken(user);
-            //    return new AuthenticateResponse(user, token);
-            //}
-            //else 
-                return null;
+        //    //if (PwdCrypt.Decrypt(user.Password) == PwdCrypt.Decrypt(model.Password))
+        //    //{
+        //    //    var token = generateJwtToken(user);
+        //    //    return new AuthenticateResponse(user, token);
+        //    //}
+        //    //else 
+        //        return null;
 
-        }
+        //}
 
         public User GetById(int id)
         {
@@ -96,16 +96,16 @@ namespace RentService
         }
         public bool NewUser(User user)
         {
-            //try {
-            //    user.Password = PwdCrypt.Encrypt(user.Password);
-            //    _rm.Users.Add(user);
-            //    _rm.SaveChanges();
-            //    return true;
-            //}
-            //catch
-            //{
+            try
+            {
+                _rm.Users.Add(user);
+                _rm.SaveChanges();
+                return true;
+            }
+            catch
+            {
                 return false;
-            //}
+            }
         }
 
         public bool EditUser(User user)
@@ -142,47 +142,7 @@ namespace RentService
         }
 
 
-		private string CreateToken(User user)
-		{
-			List<Claim> claims = new List<Claim>
-			{
-				new Claim(ClaimTypes.Name, user.Username),
-				new Claim(ClaimTypes.Role, "Admin")
-			};
-
-			var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-				_configuration.GetSection("AppSettings:Token").Value));
-
-			var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-			var token = new JwtSecurityToken(
-				claims: claims,
-				expires: DateTime.Now.AddDays(1),
-				signingCredentials: creds);
-
-			var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-			return jwt;
-		}
-
-		private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-		{
-			using (var hmac = new HMACSHA512())
-			{
-				passwordSalt = hmac.Key;
-				passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-			}
-		}
-
-
-		private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-		{
-			using (var hmac = new HMACSHA512(passwordSalt))
-			{
-				var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-				return computedHash.SequenceEqual(passwordHash);
-			}
-		}
+	
 
 	}
 }

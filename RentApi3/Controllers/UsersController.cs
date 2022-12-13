@@ -20,17 +20,17 @@ namespace RentAPI2.Controllers
             _userService = userService;
         }
 
-        [HttpPost, AllowAnonymous]
-        [Route("api/auth")]
-        public IActionResult Authenticate(AuthenticateRequest model)
-        {
-            var response = _userService.Authenticate(model);
+        //[HttpPost, AllowAnonymous]
+        //[Route("api/auth")]
+        //public IActionResult Authenticate(AuthenticateRequest model)
+        //{
+        //    var response = _userService.Authenticate(model);
 
-            if (response == null)
-                return BadRequest(new { message = "Неверное имя пользователя или пароль" });
+        //    if (response == null)
+        //        return BadRequest(new { message = "Неверное имя пользователя или пароль" });
 
-            return Ok(response);
-        }
+        //    return Ok(response);
+        //}
 
         [HttpGet, AllowAnonymous]
         [Route("/api/Users/List")]

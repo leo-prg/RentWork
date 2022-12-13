@@ -1,8 +1,10 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RentData;
 using RentService;
+using System.Configuration;
 using System.Text;
 
 namespace RentApi3
@@ -20,7 +22,12 @@ namespace RentApi3
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<RentContext>();
+			IConfigurationRoot configuration = new ConfigurationBuilder()
+    		  .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+		        .AddJsonFile("appsettings.json")
+		            .Build();
+			builder.Services.AddDbContext<RentContext>(options => options.UseSqlServer(
+			configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRenterService, RenterService>();

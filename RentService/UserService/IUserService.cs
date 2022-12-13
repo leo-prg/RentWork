@@ -5,7 +5,8 @@ namespace RentService
 {
     public interface IUserService
     {
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
+        //AuthenticateResponse Authenticate(AuthenticateRequest model);
+
         User GetById(int id);
         List<User> ListUsers();
         bool NewUser(User user);
