@@ -181,8 +181,8 @@ else
                     <button type="button" class="close" @onclick="CloseModal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    @*Нет смысла привязка и так есть, т.к. открыто с объекта*@
-                    @*<div class="input-group">
+                    @*Нет смысла привязка и так есть, т.к. открыто с объекта, открыл т.к. привязывается при создании также*@
+                    <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Размещение</span>
                             </div>
@@ -194,7 +194,7 @@ else
                                 }
                             </select>
                         </div>
-                        <br />*@
+                        <br />
 
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -336,8 +336,9 @@ else
                 free_area += ar.Square;
             }
         }
-        
-                renter_cnt = areas.Where(x => x.isRented == true).Select(s=>s.RenterName).Distinct().Count();
+
+        free_area = Math.Round(free_area, 1);
+        renter_cnt = areas.Where(x => x.isRented == true).Select(s=>s.RenterName).Distinct().Count();
         
 
         areas = areas.OrderBy(s => s.LayerName).ThenBy(r => r.AreaName).ToArray();

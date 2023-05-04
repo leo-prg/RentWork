@@ -16,23 +16,23 @@ namespace RentCommon
 {
     public class Transform
     {
-        //Из базы в картинку
-        public static Image ByteToImage(byte[] bytesArr)
-        {
+        ////Из базы в картинку
+        //public static Image ByteToImage(byte[] bytesArr)
+        //{
 
-            using (MemoryStream memstr = new MemoryStream(bytesArr))
-            {
-                Image img = Image.FromStream(memstr);
-                return img;
-            }
-        }
+        //    using (MemoryStream memstr = new MemoryStream(bytesArr))
+        //    {
+        //        Image img = Image.FromStream(memstr);
+        //        return img;
+        //    }
+        //}
 
-        //Из картинки в базу
-        public static byte[] ImageToByte(Image img)
-        {
-            ImageConverter converter = new ImageConverter();
-            return (byte[])converter.ConvertTo(img, typeof(byte[]));
-        }
+        ////Из картинки в базу
+        //public static byte[] ImageToByte(Image img)
+        //{
+        //    ImageConverter converter = new ImageConverter();
+        //    return (byte[])converter.ConvertTo(img, typeof(byte[]));
+        //}
 
         //Точки в ширину и высоту прямоугольника
         public static void PointsToDimensions(int x1, int y1, int x2, int y2, out int width, out int height)
