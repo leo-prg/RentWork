@@ -86,7 +86,7 @@ else
                 <span class="fa @(SetSortIcon("EndDate"))"></span>
                 </th>
                 <th>Дополнительно</th>
-                <th>Примечание</th>
+                @*<th>Примечание</th>*@
                 @if (svc.allowEdit)
                 {
                     <th>Действия</th>
@@ -109,7 +109,7 @@ else
                 <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
                 <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
                 <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
-                <td>@r.Annotation</td>
+                @*<td>@r.Annotation</td>*@
                 @if (svc.allowEdit)
                 {
                     <td>
@@ -131,7 +131,7 @@ else
             <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
             <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
             <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
-            <td>@r.Annotation</td>
+           @* <td>@r.Annotation</td>*@
             @if (svc.allowEdit)
             {
                 <td>
