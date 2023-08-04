@@ -29,7 +29,7 @@ else
         @if (svc.allowEdit)
         {
             <div>
-                <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenModal(new RenterRect { StartPartnership = DateTime.Today, StartDate = DateTime.Today, EndDate = DateTime.Today }))">Новый</button>
+                <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenModal(new RenterRect { StartPartnership = DateTime.Today, StartDate = DateTime.Today, EndDate = DateTime.Today }))">Добавить</button>
                 @*<button class="btn btn-primary" @onclick="(() => Refresh() )">Обновить</button>*@
             </div>
         }
