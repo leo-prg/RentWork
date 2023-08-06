@@ -27,9 +27,9 @@ namespace RentAPI2.Services
     public class UserService : IUserService
     {
 
-        private static readonly Lazy<RentModel> rm = new Lazy<RentModel>();
+        private static readonly RentModel rm = new RentModel();
 
-        private List<User> _users = rm.Value.Users.ToList();
+        private List<User> _users = rm.Users.ToList();
 
         private readonly AppSettings _appSettings;
 
@@ -40,15 +40,25 @@ namespace RentAPI2.Services
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && PwdCrypt.Decrypt(x.Password) == PwdCrypt.Decrypt(model.Password));
-
+            var user = _users.SingleOrDefault(x => x.Username == model.Username);
             // return null if user not found
-            if (user == null) return null;
+            //&& x.Password == model.Password
 
-            // authentication successful so generate jwt token
-            var token = generateJwtToken(user);
 
-            return new AuthenticateResponse(user, token);
+            if (user != null)
+            {
+                if (BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                {
+                    // authentication successful so generate jwt token
+                    var token = generateJwtToken(user);
+                    return new AuthenticateResponse(user, token);
+                }
+                else {
+                    return null;
+                }
+            }
+            else return null;
+
         }
 
         public User GetById(int id)
@@ -75,14 +85,14 @@ namespace RentAPI2.Services
   
         public List<User> ListUsers()
         {
-            return rm.Value.Users.ToList();
+            return rm.Users.ToList();
         }
         public bool NewUser(User user)
         {
             try {
-                user.Password = PwdCrypt.Encrypt(user.Password);
-                rm.Value.Users.Add(user);
-                rm.Value.SaveChanges();
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password); //PwdCrypt.Encrypt(user.Password);
+                rm.Users.Add(user);
+                rm.SaveChanges();
                 return true;
             }
             catch
@@ -95,12 +105,12 @@ namespace RentAPI2.Services
         {
             try
             {
-                var u = rm.Value.Users.Where(x=>x.Id == user.Id).First();
+                var u = rm.Users.Where(x=>x.Id == user.Id).First();
                 u.LastName = user.LastName;
                 u.FirstName = user.FirstName;
                 u.Email = user.Email;
-                u.Password = PwdCrypt.Encrypt(user.Password);
-                rm.Value.SaveChanges();
+                u.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);//PwdCrypt.Encrypt(user.Password);
+                rm.SaveChanges();
                 return true;
             }
             catch
@@ -113,9 +123,9 @@ namespace RentAPI2.Services
         {
             try
             {
-                var u = rm.Value.Users.Where(x => x.Id == id).FirstOrDefault();
-                rm.Value.Users.Remove(u);
-                rm.Value.SaveChanges();
+                var u = rm.Users.Where(x => x.Id == id).FirstOrDefault();
+                rm.Users.Remove(u);
+                rm.SaveChanges();
                 return true;
             }
             catch
