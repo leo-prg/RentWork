@@ -218,7 +218,7 @@ else
     void OpenModal(User user)
     {
         ShowModal = true;
-        user.Password = user.Password;//PwdCrypt.Decrypt(user.Password);
+        user.Password = PwdCrypt.Decrypt(user.Password);
         user.ConfirmPassword = user.Password;
         selUser = user;
     }

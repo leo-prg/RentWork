@@ -42,21 +42,14 @@ namespace RentWeb2.Services
         public async Task Initialize()
         {
             User = await _localStorageService.GetItemAsync<User>("user");
+            
+            
         }
 
         public async Task Login(string username, string password)
         {
-            //password = BCrypt.Net.BCrypt.HashPassword(password);//PwdCrypt.Encrypt(password);
-            try
-            {
-                User = await _httpService.Post<User>(ConnectAPI.apiUri + "/api/auth", new { username, password });
-            }
-            catch (System.Exception)
-            {
-                throw ;
-            }
-            
-
+            password = PwdCrypt.Encrypt(password);
+            User = await _httpService.Post<User>(ConnectAPI.apiUri+ "/api/auth", new { username, password });
             await _localStorageService.SetItemAsync("user", User);
         }
 
