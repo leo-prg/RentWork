@@ -29,19 +29,19 @@ else
         </div>
     }
 
-Ca        <div class="row row-cols-3 row-cols-md-6">
+        <div class="row row-cols-3 row-cols-md-6">
             
                 @foreach (var obj in objects)
                 {
-            <div class="col mb-5">
-                <div class="card">
-                    <img src="https://krokooo.by/images/thumbs/988/1.jpg" class="card-img-top" width="150">
+            <div class="col mb-3">
+                <div class="card h-auto" >
+                    <a href="/oareas/@obj.Id" class="stretched-link"><img src="https://krokooo.by/images/thumbs/988/1.jpg" class="card-img-top" width="150"></a>
                     <div class="card-body">
                         <h5 class="card-title">@obj.Name</h5>
-                        <p class="card-text">@obj.CNo <p /> @obj.Address</p>
+                        <p class="card-text">@obj.CNo <p/> @obj.Address</p>
+                        <button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button>
+
                     </div>
-                    <a href="/oareas/@obj.Id" class="stretched-link"></a>
-                    <button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button>
 
                 </div>
             </div>
