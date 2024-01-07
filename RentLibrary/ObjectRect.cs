@@ -16,5 +16,6 @@ namespace RentLibrary
 
         public string Lat { get; set; } // широта
         public string Lon { get; set; } // долгота
+        public string ImgUrl { get; set; } // ссылка на картинку
     }
 }

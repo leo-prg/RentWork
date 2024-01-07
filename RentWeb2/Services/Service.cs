@@ -11,6 +11,7 @@ namespace RentWeb2.Services
         private ILocalStorageService _localStorage;
 
         public bool allowEdit { get; set; }
+        public bool switchView { get; set; } // вид окна объектов истина - карточки, ложь - таблица
 
         public bool DevOrProd()
         {
@@ -26,6 +27,7 @@ namespace RentWeb2.Services
         public async Task Initialize()
         {
             allowEdit = await _localStorage.GetItemAsync<bool>("AllowEdit");
+            switchView = await _localStorage.GetItemAsync<bool>("SwitchView");
         }
     }
 }

@@ -157,6 +157,10 @@
     <Compile Include="Migrations\202210131448192_Rate-type-change.designer.cs">
       <DependentUpon>202210131448192_Rate-type-change.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202401051834090_Image Url.cs" />
+    <Compile Include="Migrations\202401051834090_Image Url.designer.cs">
+      <DependentUpon>202401051834090_Image Url.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -219,6 +223,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202210131448192_Rate-type-change.resx">
       <DependentUpon>202210131448192_Rate-type-change.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202401051834090_Image Url.resx">
+      <DependentUpon>202401051834090_Image Url.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,6 +4,8 @@
 @inject IHttpService Http
 
 
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+
 @using GoogleMapsComponents
 @using GoogleMapsComponents.Maps
 
@@ -23,334 +25,326 @@ else
 {
     @if (svc.allowEdit)
     {
-        <div>
-            <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenEdit(new ObjectRect()))">Добавить</button>
-            @*<button class="btn btn-primary" @onclick="(() => Refresh() )">Обновить</button>*@
-        </div>
+<div style="display: flex; align-items: center; height: 50px;">
+    <button class="btn btn-primary mr-3 mb-3 btn-sm" @onclick="(() => OpenEdit(new ObjectRect()))">Добавить</button>
+    <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="allowedit" checked="@svc.switchView" @onchange="@( async (ChangeEventArgs e) => { await LocalStore.SetItemAsync("SwitchView", e.Value); svc.switchView = (bool)e.Value;  StateHasChanged(); })">
+        <label class="custom-control-label" for="allowedit">Табличный режим просмотра</label>
+    </div>
+    </div>
+
+
     }
 
-        <div class="row row-cols-3 row-cols-md-6">
-            
+    @if (!svc.switchView)
+    {
+        <div class="row row-cols-2 row-cols-md-6">
+
+            @foreach (var obj in objects)
+            {
+                <div class="col mb-3">
+                    <div class="card mh-100">
+                        <a href="/oareas/@obj.Id"><img src="@obj.ImgUrl" class="card-img-top" width="150" height="150"></a>
+                        <div class="card-body">
+                            <h5 class="card-title">@obj.Name</h5>
+                            <p class="card-text">@(obj.CNo.Length > 0 ? @obj.CNo : " ") <p /> @obj.Address</p>
+                            @if (svc.allowEdit)
+                            {
+                                <button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    @if (svc.DevOrProd())
+                    {
+                        <th>ID</th>
+                    }
+                    <th>Наименование объекта</th>
+                    <th>Адрес объекта</th>
+                    <th>Инв. номер</th>
+                    @if (svc.allowEdit)
+                    {
+                        <th>Действия</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (var obj in objects)
                 {
-            <div class="col mb-3">
-                <div class="card h-auto" >
-                    <a href="/oareas/@obj.Id" class="stretched-link"><img src="https://krokooo.by/images/thumbs/988/1.jpg" class="card-img-top" width="150"></a>
-                    <div class="card-body">
-                        <h5 class="card-title">@obj.Name</h5>
-                        <p class="card-text">@obj.CNo <p/> @obj.Address</p>
-                        <button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button>
-
-                    </div>
-
-                </div>
-            </div>
-    }
-
-        </div>
-
-            <!--<div class="card mb-3" style="max-width: 400px;">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img src="https://krokooo.by/images/thumbs/988/1.jpg" width="250" height="">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">ТЦ ОМА</h5>
-                            <p class="card-text">Торговая площадь торговый центр общая площадь 2500 м<sup>2</sup></p>-->
-            @*<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>*@
-
-            <!--</div>
-                    </div>
-                </div>
-                <a href="https://krokooo.by/" class="stretched-link"></a>
-            </div>-->
-
-
-            @*<table class="table table-hover">
-                <thead>
                     <tr>
                         @if (svc.DevOrProd())
                         {
-                            <th>ID</th>
+                            <td><a>@obj.Id</a></td>
                         }
-                        <th>Наименование объекта</th>
-                        <th>Адрес объекта</th>
-                        <th>Инв. номер</th>
+                        <td><a href="/oareas/@obj.Id">@obj.Name</a></td>
+                        <td>@obj.Address</td>
+                        <td>@obj.CNo</td>
                         @if (svc.allowEdit)
                         {
-                            <th>Действия</th>
+                            <td><button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button></td>
                         }
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var obj in objects)
-                    {
-                        <tr>
-                            @if (svc.DevOrProd())
-                            {
-                                <td><a>@obj.Id</a></td>
-                            }
-                            <td><a href="/oareas/@obj.Id">@obj.Name</a></td>
-                            <td>@obj.Address</td>
-                            <td>@obj.CNo</td>
-                            @if (svc.allowEdit)
-                            {
-                                <td><button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button></td>
-                            }
-                        </tr>
 
-                    }
-                </tbody>
-            </table>*@
+                }
+            </tbody>
+        </table>
+    }
 
-
-            @if (ShowEdit)
-            {
-                <!-- This is the popup to create or edit a forecast -->
-                <div class="modal show fade" role="dialog" style="display:block">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title">Редактирование объекта</h3>
-                                <!-- Button to close the popup -->
-                                <button type="button" class="close"
-                                        @onclick="CloseEdit">
-                                    <span aria-hidden="true">X</span>
-                                </button>
+    @if (ShowEdit)
+    {
+        <!-- This is the popup to create or edit a forecast -->
+        <div class="modal show fade" role="dialog" style="display:block">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Редактирование объекта</h3>
+                        <!-- Button to close the popup -->
+                        <button type="button" class="close"
+                                @onclick="CloseEdit">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <!-- Edit form for the current forecast -->
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Наименование</span>
                             </div>
-                            <!-- Edit form for the current forecast -->
-                            <div class="modal-body">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Наименование</span>
-                                    </div>
-                                    <input type="text" class="form-control" @bind="editObject.Name">
-                                </div>
-                                <br />
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Адрес</span>
-                                    </div>
-                                    <input type="text" class="form-control" @bind="editObject.Address">
-                                </div>
-                                <br />
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Инв. номер</span>
-                                    </div>
-                                    <input type="text" class="form-control" @bind="editObject.CNo">
-                                </div>
-
-                                <br />
-                                <div>
-                                    <div><button class="btn btn-sm btn-outline-info" title="Выбрать на карте" @onclick="() => {ShowMap = true;}"><i class="oi oi-map-marker" /></button></div>
-                                </div>
-                                <br />
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Широта</span>
-                                    </div>
-                                    <input type="text" class="form-control" @bind="editObject.Lat">
-                                </div>
-                                <br />
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Долгота</span>
-                                    </div>
-                                    <input type="text" class="form-control" @bind="editObject.Lon">
-                                </div>
-                                <!-- Only show button if not a new record -->
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" @onclick="( () => Save(editObject))">Сохранить</button>
-                                <button type="button" class="btn btn-danger" @onclick="CloseEdit">Отмена</button>
-
-                            </div>
+                            <input type="text" class="form-control" @bind="editObject.Name">
                         </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Адрес</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="editObject.Address">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Инв. номер</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="editObject.CNo">
+                        </div>
+
+                        <br />
+                        <div>
+                            <div><button class="btn btn-sm btn-outline-info" title="Выбрать на карте" @onclick="() => {ShowMap = true;}"><i class="oi oi-map-marker" /></button></div>
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Широта</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="editObject.Lat">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Долгота</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="editObject.Lon">
+                        </div>
+                        <!-- Only show button if not a new record -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" @onclick="( () => Save(editObject))">Сохранить</button>
+                        <button type="button" class="btn btn-danger" @onclick="CloseEdit">Отмена</button>
+
                     </div>
                 </div>
-                <div class="modal-backdrop fade show"></div>
-            }
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
 
-            @if (ShowMap)
-            {
-                <div class="modal show fade" role="dialog" style="display:block">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Выберите местоположение объекта</h4>
-                            </div>
-                            <div class="modal-body">
-                                <GoogleMap @ref="@map1" Id="map1" Options="@mapOptions" OnAfterInit="@(async () => await OnAfterInitAsync())">
-                                </GoogleMap>
-                                <br />
-                                <p>Выбрана точка { @tmp.Lat : @tmp.Lng }</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" @onclick="()=> { editObject.Lat = tmp.Lat.ToString(); editObject.Lon = tmp.Lng.ToString(); CloseMap(); }">
-                                    Выбрать
-                                </button>
-                                <button type="button" class="btn btn-danger" @onclick="CloseMap">Отмена</button>
-                            </div>
-                        </div>
+    @if (ShowMap)
+    {
+        <div class="modal show fade" role="dialog" style="display:block">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Выберите местоположение объекта</h4>
+                    </div>
+                    <div class="modal-body">
+                        <GoogleMap @ref="@map1" Id="map1" Options="@mapOptions" OnAfterInit="@(async () => await OnAfterInitAsync())">
+                        </GoogleMap>
+                        <br />
+                        <p>Выбрана точка { @tmp.Lat : @tmp.Lng }</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" @onclick="()=> { editObject.Lat = tmp.Lat.ToString(); editObject.Lon = tmp.Lng.ToString(); CloseMap(); }">
+                            Выбрать
+                        </button>
+                        <button type="button" class="btn btn-danger" @onclick="CloseMap">Отмена</button>
                     </div>
                 </div>
-                <div class="modal-backdrop fade show"></div>
-            }
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
 
-            }
+    }
 
-            @code {
-        private ObjectRect[] objects;
+    @code {
+private ObjectRect[] objects;
 
-            bool ShowEdit = false;
+bool ShowEdit = false;
 
-            bool ShowMap = false;
+bool ShowMap = false;
 
-            private ObjectRect editObject;
-
-
-            private LatLngLiteral tmp;
-
-
-            private GoogleMap map1;
-
-            private bool DisablePoiInfoWindow { get; set; } = false;
-
-            private MapOptions mapOptions;
-
-            private List<String> _events = new List<String>();
-
-            private Stack<Marker> markers = new Stack<Marker>();
-
-            protected override async Task OnInitializedAsync()
-            {
-                await RefreshList();
-                tmp = new LatLngLiteral()
-                {
-                    Lat = 0,
-                    Lng = 0
-                };
-
-                mapOptions = new MapOptions()
-                {
-                    Zoom = 14,
-
-                    Center = new LatLngLiteral()
-                    {
-                        Lat = 52.082396,
-                        Lng = 23.696826
-                    },
-                    MapTypeId = MapTypeId.Satellite
-                };
+private ObjectRect editObject;
 
 
-            }
-
-            private async Task OnAfterInitAsync()
-            {
-                if (editObject.Lat != string.Empty && editObject.Lon != string.Empty)
-                {
-                    Double.TryParse(editObject.Lat, out double _lat);
-
-                    Double.TryParse(editObject.Lon, out double _lon);
-
-                    var place = new LatLngLiteral() { Lat = _lat, Lng = _lon };
-
-                    var mo = new MarkerOptions()
-                    {
-                        Position = place,
-                        Map = map1.InteropObject,
-                        Icon = new Icon { Url = "logo_map.png", ScaledSize = new Size { Width = 50, Height = 50 } }
-                    };
-
-                    var marker = await Marker.CreateAsync(map1.JsRuntime, mo);
-
-                    markers.Push(marker);
-                }
-
-                await map1.InteropObject.AddListener<MouseEvent>("click", async (e) => await OnClick(e));
-            }
-
-            private async Task RemoveMarker()
-            {
-                if (!markers.Any())
-                {
-                    return;
-                }
-
-                var lastMarker = markers.Pop();
-                await lastMarker.SetMap(null);
-            }
-
-            private async Task OnClick(MouseEvent e)
-            {
-                //Console.WriteLine(e.LatLng);
-
-                await RemoveMarker();
-
-                tmp = e.LatLng;
-
-                var mo = new MarkerOptions() { Position = tmp, Map = map1.InteropObject, Title = "Выбрано" };
-
-                var marker = await Marker.CreateAsync(map1.JsRuntime, mo);
-
-                markers.Push(marker);
+private LatLngLiteral tmp;
 
 
+private GoogleMap map1;
 
-                StateHasChanged();
+private bool DisablePoiInfoWindow { get; set; } = false;
 
-                if (DisablePoiInfoWindow)
-                {
-                    await e.Stop();
-                }
+private MapOptions mapOptions;
 
+private List<String> _events = new List<String>();
 
-            }
+private Stack<Marker> markers = new Stack<Marker>();
 
-            private async Task RefreshList()
-            {
-                objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
-                StateHasChanged();
-            }
+protected override async Task OnInitializedAsync()
+{
+    await RefreshList();
+    tmp = new LatLngLiteral()
+    {
+        Lat = 0,
+        Lng = 0
+    };
 
+    mapOptions = new MapOptions()
+    {
+        Zoom = 14,
 
-            void CloseEdit()
-            {
-                // Close the Popup
-                ShowEdit = false;
-            }
-
-            void CloseMap()
-            {
-                // Close the Popup
-                ShowMap = false;
-            }
-
-            void OpenEdit(ObjectRect obj)
-            {
-                editObject = obj;
-                ShowEdit = true;
-            }
-
-            async void Save(ObjectRect objectRect)
-            {
-                //Debug.WriteLine(objOld.Id);
-                //Debug.WriteLine(objNew.Name);
-                ShowEdit = false;
+        Center = new LatLngLiteral()
+        {
+            Lat = 52.082396,
+            Lng = 23.696826
+        },
+        MapTypeId = MapTypeId.Satellite
+    };
 
 
-                if (objectRect.Id > 0)
-                {
-                    await Http.Put(ConnectAPI.apiUri + "/api/Objects", objectRect);
-                }
-                else
-                {
-                    await Http.Post(ConnectAPI.apiUri + "/api/Objects", objectRect);
-                }
+}
 
-                await RefreshList();
-            }
-            }
+private async Task OnAfterInitAsync()
+{
+    if (editObject.Lat != string.Empty && editObject.Lon != string.Empty)
+    {
+        Double.TryParse(editObject.Lat, out double _lat);
+
+        Double.TryParse(editObject.Lon, out double _lon);
+
+        var place = new LatLngLiteral() { Lat = _lat, Lng = _lon };
+
+        var mo = new MarkerOptions()
+        {
+            Position = place,
+            Map = map1.InteropObject,
+            Icon = new Icon { Url = "logo_map.png", ScaledSize = new Size { Width = 50, Height = 50 } }
+        };
+
+        var marker = await Marker.CreateAsync(map1.JsRuntime, mo);
+
+        markers.Push(marker);
+    }
+
+    await map1.InteropObject.AddListener<MouseEvent>("click", async (e) => await OnClick(e));
+}
+
+private async Task RemoveMarker()
+{
+    if (!markers.Any())
+    {
+        return;
+    }
+
+    var lastMarker = markers.Pop();
+    await lastMarker.SetMap(null);
+}
+
+private async Task OnClick(MouseEvent e)
+{
+    //Console.WriteLine(e.LatLng);
+
+    await RemoveMarker();
+
+    tmp = e.LatLng;
+
+    var mo = new MarkerOptions() { Position = tmp, Map = map1.InteropObject, Title = "Выбрано" };
+
+    var marker = await Marker.CreateAsync(map1.JsRuntime, mo);
+
+    markers.Push(marker);
+
+
+
+    StateHasChanged();
+
+    if (DisablePoiInfoWindow)
+    {
+        await e.Stop();
+    }
+
+
+}
+
+private async Task RefreshList()
+{
+    objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
+    StateHasChanged();
+}
+
+
+void CloseEdit()
+{
+    // Close the Popup
+    ShowEdit = false;
+}
+
+void CloseMap()
+{
+    // Close the Popup
+    ShowMap = false;
+}
+
+void OpenEdit(ObjectRect obj)
+{
+    editObject = obj;
+    ShowEdit = true;
+}
+
+async void Save(ObjectRect objectRect)
+{
+    //Debug.WriteLine(objOld.Id);
+    //Debug.WriteLine(objNew.Name);
+    ShowEdit = false;
+
+
+    if (objectRect.Id > 0)
+    {
+        await Http.Put(ConnectAPI.apiUri + "/api/Objects", objectRect);
+    }
+    else
+    {
+        await Http.Post(ConnectAPI.apiUri + "/api/Objects", objectRect);
+    }
+
+    await RefreshList();
+}
+    }
