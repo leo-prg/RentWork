@@ -306,14 +306,21 @@ else
 
         bDates = new List<DateTime>();
         eDates = new List<DateTime>();
-        foreach (var r in rates)
-        {
-            bDates.Add(r.EndDate.AddDays(1));
-        }
-        foreach (var r in rates)
-        {
-            eDates.Add(r.StartDate.AddDays(-1));
-        }
+
+        bDates.Add(rates.LastOrDefault().EndDate.AddDays(1));
+
+        //foreach (var r in rates)
+        //{
+        //    bDates.Add(r.EndDate.AddDays(1));
+        //}
+
+
+        eDates.Add(rates.LastOrDefault().EndDate.AddDays(365));
+
+        //foreach (var r in rates)
+        //{
+        //    eDates.Add(r.StartDate.AddDays(-1));
+        //}
         areaR = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas/GetAreaById?id=" + id);
 
         StateHasChanged();

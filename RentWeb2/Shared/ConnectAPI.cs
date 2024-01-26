@@ -12,9 +12,9 @@ namespace RentWeb2.Shared
         // Server API2 Core
 
 
-        // public static string apiUri = "http://server:8077";
+         public static string apiUri = "http://server:8077";
 
-         public static string apiUri = "http://localhost:5001";
+         //public static string apiUri = "http://localhost:5001";
 
          public static string reportUri = "http://server:8055";
 
