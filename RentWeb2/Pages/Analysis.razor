@@ -3,6 +3,9 @@
 <ul class="nav nav-pills nav-fill">
 
     <li class="nav-item">
+        <a class="@(act == 3 ? "nav-link active " : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_detail" @onclick="() => { act = 3; }">Анализ изменения доходов по арендаторам</a>
+    </li>
+    <li class="nav-item">
         <a class="@(act == 0 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_rent" @onclick="() => { act = 0; }">Аренда за последние 6 месяцев</a>
     </li>
 
@@ -23,6 +26,7 @@
 
     private byte act = 99;
 
+    private string report_detail = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fАнализ+доходов+от+аренды+по+клиентам+за+период&rs:Command=Render";
     private string report_rent = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fАнализ+доходов+от+аренды&rs:Command=Render&rs:Command=ClearSession";
     private string report_rent_ext = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fРасширенный+анализ+доходов+аренды&rs:Command=Render&rs:Command=ClearSession";
     private string report_deposit = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fДоходы+от+депозитов+в+банках&rs:Command=Render&rs:Command=ClearSession";
