@@ -307,15 +307,16 @@ else
         bDates = new List<DateTime>();
         eDates = new List<DateTime>();
 
-        bDates.Add(rates.LastOrDefault().EndDate.AddDays(1));
+        if (rates.LastOrDefault() != null)
+        {
+            bDates.Add(rates.LastOrDefault().EndDate.AddDays(1));
+            eDates.Add(rates.LastOrDefault().EndDate.AddDays(365));
+        }
 
         //foreach (var r in rates)
         //{
         //    bDates.Add(r.EndDate.AddDays(1));
         //}
-
-
-        eDates.Add(rates.LastOrDefault().EndDate.AddDays(365));
 
         //foreach (var r in rates)
         //{
