@@ -13,7 +13,7 @@ namespace RentDB
         public void AddObject(ObjectRect obj)
         {
             context.Value.RentObjects.Add(new RentObject() 
-            { Name = obj.Name, Address = obj.Address, CNo = obj.CNo, Lat = obj.Lat, Lon = obj.Lon, ImgUrl = obj.ImgUrl }); ;
+            { Name = obj.Name, Address = obj.Address, CNo = obj.CNo, Lat = obj.Lat, Lon = obj.Lon, ImgUrl = obj.ImgUrl, TotalArea = obj.TotalArea }); ;
             context.Value.SaveChanges();
         }
 
@@ -34,6 +34,7 @@ namespace RentDB
             ro.Lat = newO.Lat;
             ro.Lon = newO.Lon;
             ro.ImgUrl = newO.ImgUrl;
+            ro.TotalArea = newO.TotalArea;
             context.Value.SaveChanges();
         }
 
@@ -41,7 +42,7 @@ namespace RentDB
         {
             return context.Value.RentObjects.Select(x => new ObjectRect()
             { Id = x.Id, Name = x.Name, Address = x.Address, 
-              CNo = x.CNo, Lat = x.Lat, Lon = x.Lon, ImgUrl = x.ImgUrl }).ToList();
+              CNo = x.CNo, Lat = x.Lat, Lon = x.Lon, ImgUrl = x.ImgUrl, TotalArea = x.TotalArea }).ToList();
         }
 
         public ObjectRect GetObjectById(int id)
@@ -49,7 +50,7 @@ namespace RentDB
             return context.Value.RentObjects.Where(x => x.Id == id).Select(x=>new ObjectRect()
             { 
                 Id = x.Id, Name = x.Name, Address = x.Address, 
-              CNo = x.CNo, Lat = x.Lat, Lon = x.Lon, ImgUrl = x.ImgUrl }).FirstOrDefault();
+              CNo = x.CNo, Lat = x.Lat, Lon = x.Lon, ImgUrl = x.ImgUrl, TotalArea = x.TotalArea }).FirstOrDefault();
         }
 
     }

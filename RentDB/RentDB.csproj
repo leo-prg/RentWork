@@ -161,6 +161,10 @@
     <Compile Include="Migrations\202401051834090_Image Url.designer.cs">
       <DependentUpon>202401051834090_Image Url.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202407031851331_totalArea.cs" />
+    <Compile Include="Migrations\202407031851331_totalArea.designer.cs">
+      <DependentUpon>202407031851331_totalArea.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -226,6 +230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202401051834090_Image Url.resx">
       <DependentUpon>202401051834090_Image Url.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202407031851331_totalArea.resx">
+      <DependentUpon>202407031851331_totalArea.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

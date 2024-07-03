@@ -51,7 +51,12 @@ else
                                 <a href="/oareas/@obj.Id"><img src="@obj.ImgUrl" class="card-img-top" width="150" height="150"></a>
                                 <div class="card-body">
                                     <h5 class="card-title">@obj.Name</h5>
-                                    <p class="card-text">@(obj.CNo.Length > 0 ? @obj.CNo : " ") <p /> @obj.Address</p>
+                                    <p class="card-text">@(obj.CNo.Length > 0 ? @obj.CNo : " ") <p /> @obj.Address <p />
+                                    @if (@obj.TotalArea > 0)
+                                    {
+                                         @obj.TotalArea <a>м</a><sup>2</sup>
+                                    }
+                                    </p>
                                     @if (svc.allowEdit)
                                     {
                                         <button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button>
@@ -75,6 +80,7 @@ else
                             <th>Наименование объекта</th>
                             <th>Адрес объекта</th>
                             <th>Инв. номер</th>
+                            <th>Общая площадь</th>
                             @if (svc.allowEdit)
                             {
                                 <th>Действия</th>
@@ -84,19 +90,20 @@ else
                     <tbody>
                         @foreach (var obj in objects)
                         {
-                            <tr>
-                                @if (svc.DevOrProd())
-                                {
-                                    <td><a>@obj.Id</a></td>
-                                }
-                                <td><a href="/oareas/@obj.Id">@obj.Name</a></td>
-                                <td>@obj.Address</td>
-                                <td>@obj.CNo</td>
-                                @if (svc.allowEdit)
-                                {
-                                    <td><button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button></td>
-                                }
-                            </tr>
+                        <tr>
+                            @if (svc.DevOrProd())
+                            {
+                                <td><a>@obj.Id</a></td>
+                            }
+                            <td><a href="/oareas/@obj.Id">@obj.Name</a></td>
+                            <td>@obj.Address</td>
+                            <td>@obj.CNo</td>
+                            <td>@obj.TotalArea</td>
+                            @if (svc.allowEdit)
+                            {
+                                <td><button class="btn btn-sm btn-success" @onclick="(() => OpenEdit(obj))"><i class="oi oi-pencil" /></button></td>
+                            }
+                        </tr>
 
                         }
                     </tbody>
@@ -141,25 +148,37 @@ else
                                 </div>
 
                                 <br />
-                                <div>
-                                    <div><button class="btn btn-sm btn-outline-info" title="Выбрать на карте" @onclick="() => {ShowMap = true;}"><i class="oi oi-map-marker" /></button></div>
-                                </div>
-                                <br />
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Широта</span>
+                                        <span class="input-group-text">Общая площадь</span>
                                     </div>
-                                    <input type="text" class="form-control" @bind="editObject.Lat">
-                                </div>
-                                <br />
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Долгота</span>
+                                    <input type="text" class="form-control" @bind="editObject.TotalArea">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">м<sup>2</sup></span>
                                     </div>
-                                    <input type="text" class="form-control" @bind="editObject.Lon">
                                 </div>
-                                <!-- Only show button if not a new record -->
-                            </div>
+
+                                    <br />
+                                    <div>
+                                        <div><button class="btn btn-sm btn-outline-info" title="Выбрать на карте" @onclick="() => {ShowMap = true;}"><i class="oi oi-map-marker" /></button></div>
+                                    </div>
+                                    <br />
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Широта</span>
+                                        </div>
+                                        <input type="text" class="form-control" @bind="editObject.Lat">
+                                    </div>
+                                    <br />
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Долгота</span>
+                                        </div>
+                                        <input type="text" class="form-control" @bind="editObject.Lon">
+                                    </div>
+                                    <!-- Only show button if not a new record -->
+                                </div>
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-success" @onclick="( () => Save(editObject))">Сохранить</button>
                                 <button type="button" class="btn btn-danger" @onclick="CloseEdit">Отмена</button>

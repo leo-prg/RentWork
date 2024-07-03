@@ -26,7 +26,7 @@ namespace RentDB
         public string Lon { get; set; } // долгота
 
         public string ImgUrl { get; set; } // ссылка на картинку
-
+        public float TotalArea { get; set; } // общая площадь объекта
         public RentObject()
         {
             RentLayers = new List<RentLayer>();
