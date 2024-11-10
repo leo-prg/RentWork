@@ -47,8 +47,8 @@ else
                     @foreach (var obj in objects)
                     {
                         <div class="col mb-3">
-                            <div class="card mh-100">
-                                <a href="/oareas/@obj.Id"><img src="@obj.ImgUrl" class="card-img-top" width="150" height="150"></a>
+                            <div class="card mh-100" style="border-radius:10px">
+                                <a href="/oareas/@obj.Id"><img src="@obj.ImgUrl" class="card-img-top" width="150" height="150" style="border-radius:10px"></a>
                                 <div class="card-body">
                                     <h5 class="card-title">@obj.Name</h5>
                                     <p class="card-text">@(obj.CNo.Length > 0 ? @obj.CNo : " ") <p /> @obj.Address <p />

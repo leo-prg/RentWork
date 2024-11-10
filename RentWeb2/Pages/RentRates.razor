@@ -22,7 +22,10 @@
 else
 {
 
-<h4 style="color:darkgreen">Ставки аренды: @areaR.ObjectName,  @areaR.LayerName, @areaR.AreaName - @areaR.Square м<sup>2</sup> : @areaR.RenterName</h4>
+    <h4 style="color:darkgreen">
+        Ставки аренды: @areaR.ObjectName,  @areaR.LayerName, @areaR.AreaName - @areaR.Square м
+        <sup>2</sup> : @areaR.RenterName
+    </h4>
 
     @if (svc.allowEdit)
     {
@@ -69,92 +72,100 @@ else
             {
                 @if ((DateTime.Now.Date >= rate.StartDate.Date) && (DateTime.Now.Date <= rate.EndDate.Date))
                 {
-            <tr valign="top">
-                @if (svc.DevOrProd())
-                {
-                    <td style="background-color:lightgreen">@rate.Id</td>
-                }
-                <td style="background-color: lightgreen">@rate.StartDate.ToString("dd.MM.yyyy")</td>
-                <td style="background-color: lightgreen">@rate.EndDate.ToString("dd.MM.yyyy")</td>
-                <td style="background-color: lightgreen"><span style="color:blue;font-weight:bold">@rate.Currency</span></td>
-                <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
-                @if (!rate.ForWholeArea)
-                {
-                    <td style="background-color: lightgreen">@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square), 2).ToString("F2")</td>
+                    <tr valign="top">
+                        @if (svc.DevOrProd())
+                        {
+                            <td style="background-color:lightgreen">@rate.Id</td>
+                        }
+                        <td style="background-color: lightgreen">@rate.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td style="background-color: lightgreen">@rate.EndDate.ToString("dd.MM.yyyy")</td>
+                        <td style="background-color: lightgreen">
+                            <span style="color:blue;font-weight:bold">@rate.Currency</span>
+                        </td>
+                        <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+                        @if (!rate.ForWholeArea)
+                        {
+                            <td style="background-color: lightgreen">@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square), 2).ToString("F2")</td>
+                        }
+                        else
+                        {
+                            <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+                        }
+
+                        <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
+
+                        @if (!rate.ForWholeArea)
+                        {
+                            <td style="background-color: lightgreen">@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
+                        }
+                        else
+                        {
+                            <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
+                        }
+                        <td style="background-color: lightgreen">
+                            <input type="checkbox" disabled @bind="rate.ForWholeArea">
+                        </td>
+                        <td style="background-color: lightgreen">@rate.Note</td>
+                        @if (svc.allowEdit)
+                        {
+                            <td style="background-color: lightgreen">
+                                <button class="btn btn-sm btn-success"
+                                        @onclick="(() => OpenModal(rate))">
+                                    <i class="oi oi-pencil" />
+                                </button>
+                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(rate))"><i class="oi oi-trash" /></button>
+                            </td>
+                        }
+
+                    </tr>
                 }
                 else
                 {
-                    <td style="background-color: lightgreen">@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
-                }
+                    <tr valign="top">
+                        @if (svc.DevOrProd())
+                        {
+                            <td>@rate.Id</td>
+                        }
+                        <td>@rate.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@rate.EndDate.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <span style="color:blue;font-weight:bold">@rate.Currency</span>
+                        </td>
+                        <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+                        @if (!rate.ForWholeArea)
+                        {
+                            <td>@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square), 2).ToString("F2")</td>
+                        }
+                        else
+                        {
+                            <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
+                        }
 
-                <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
+                        <td>@rate.Rate.ToString("F2")</td>
+                        @if (!rate.ForWholeArea)
+                        {
+                            <td>@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
+                        }
+                        else
+                        {
+                            <td>@rate.Rate.ToString("F2")</td>
+                        }
 
-                @if (!rate.ForWholeArea)
-                {
-                    <td style="background-color: lightgreen">@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
-                }
-                else
-                {
-                    <td style="background-color: lightgreen">@rate.Rate.ToString("F2")</td>
-                }
-                <td style="background-color: lightgreen"><input type="checkbox" disabled @bind="rate.ForWholeArea"></td>
-                <td style="background-color: lightgreen">@rate.Note</td>
-                @if (svc.allowEdit)
-                {
-                    <td style="background-color: lightgreen">
-                        <button class="btn btn-sm btn-success"
-                                @onclick="(() => OpenModal(rate))">
-                            <i class="oi oi-pencil" />
-                        </button>
-                        <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(rate))"><i class="oi oi-trash" /></button>
-                    </td>
-                }
-
-            </tr>
-                }
-                else
-                {
-        <tr valign="top">
-            @if (svc.DevOrProd())
-            {
-                <td>@rate.Id</td>
-            }
-            <td>@rate.StartDate.ToString("dd.MM.yyyy")</td>
-            <td>@rate.EndDate.ToString("dd.MM.yyyy")</td>
-            <td><span style="color:blue;font-weight:bold">@rate.Currency</span></td>
-            <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
-            @if (!rate.ForWholeArea)
-            {
-                <td>@Math.Round(Finance.WithoutVat(rate.Rate * areaR.Square), 2).ToString("F2")</td>
-            }
-            else
-            {
-                <td>@Finance.WithoutVat(rate.Rate).ToString("F2")</td>
-            }
-
-            <td>@rate.Rate.ToString("F2")</td>
-            @if (!rate.ForWholeArea)
-            {
-                <td>@Math.Round(rate.Rate * areaR.Square, 2).ToString("F2")</td>
-            }
-            else
-            {
-                <td>@rate.Rate.ToString("F2")</td>
-            }
-
-            <td><input type="checkbox" disabled @bind="rate.ForWholeArea"></td>
-            <td>@rate.Note</td>
-            @if (svc.allowEdit)
-            {
-                <td>
-                    <button class="btn btn-sm btn-success"
-                            @onclick="(() => OpenModal(rate))">
-                        <i class="oi oi-pencil" />
-                    </button>
-                    <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(rate))"><i class="oi oi-trash" /></button>
-                </td>
-            }
-        </tr>
+                        <td>
+                            <input type="checkbox" disabled @bind="rate.ForWholeArea">
+                        </td>
+                        <td>@rate.Note</td>
+                        @if (svc.allowEdit)
+                        {
+                            <td>
+                                <button class="btn btn-sm btn-success"
+                                        @onclick="(() => OpenModal(rate))">
+                                    <i class="oi oi-pencil" />
+                                </button>
+                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(rate))"><i class="oi oi-trash" /></button>
+                            </td>
+                        }
+                    </tr>
                 }
 
 
@@ -182,10 +193,10 @@ else
                         </div>
                         <input type="date" class="form-control" @bind="selRate.StartDate">
                     </div>
-                        @foreach (var z in bDates)
-                        {
-                            <button class="btn btn-sm btn-link" @onclick="() => selRate.StartDate = z">@z.ToString("dd.MM.yyyy")</button>
-                        }
+                    @foreach (var z in bDates)
+                    {
+                        <button class="btn btn-sm btn-link" @onclick="() => selRate.StartDate = z">@z.ToString("dd.MM.yyyy")</button>
+                    }
                     <br />
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -193,10 +204,10 @@ else
                         </div>
                         <input type="date" class="form-control" @bind="selRate.EndDate">
                     </div>
-                        @foreach (var x in eDates)
-                        {
-                            <button class="btn btn-sm btn-link" @onclick="() => selRate.EndDate = x">@x.ToString("dd.MM.yyyy")</button>
-                        }
+                    @foreach (var x in eDates)
+                    {
+                        <button class="btn btn-sm btn-link" @onclick="() => selRate.EndDate = x">@x.ToString("dd.MM.yyyy")</button>
+                    }
                     <br />
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -205,15 +216,7 @@ else
                         <input type="number" class="form-control" @bind="selRate.Rate">
                         <div class="input-group-append">
                             @*<span class="input-group-text">EUR</span>*@
-                            <select @bind="selRate.Currency">
-                                <option/>
-                                @foreach (var currency in Enum.GetValues(typeof(Currency)))
-                                {
-                                  #pragma warning disable CS0252
-                                    <option value="@currency" selected="@(currency == selRate.Currency)">@currency</option>
-                                   #pragma warning restore CS0252
-                                }
-                            </select>
+                           
                         </div>
                     </div>
                     <br />
