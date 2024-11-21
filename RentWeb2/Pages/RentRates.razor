@@ -216,7 +216,15 @@ else
                         <input type="number" class="form-control" @bind="selRate.Rate">
                         <div class="input-group-append">
                             @*<span class="input-group-text">EUR</span>*@
-                           
+                            <select @bind="selRate.Currency">
+                                <option />
+                                @foreach (var currency in Enum.GetValues(typeof(Currency)))
+                                {
+
+                            <option value="@currency" selected="@(currency == selRate.Currency)">@currency</option>
+
+                        }
+                            </select>
                         </div>
                     </div>
                     <br />
