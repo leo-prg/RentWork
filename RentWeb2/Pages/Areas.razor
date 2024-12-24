@@ -121,9 +121,9 @@ else
 @*preserveAspectRatio="none" preserveAspectRatio="xMinYMin scale"*@
 
 <div style="border:3px solid green;width:100%;height:80vh;overflow:scroll;">
-    <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG" height="@Height" width="@Width">
-
-        @*<polygon points="50,10 150,10 180,80 100,150 20,80" fill="lightblue" stroke="blue" stroke-width="2" />
+    <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG"  height="@Height" width="@Width">
+        <g transform="scale(@ScaleX, @ScaleY)">
+            @*<polygon points="50,10 150,10 180,80 100,150 20,80" fill="lightblue" stroke="blue" stroke-width="2" />
 
          Добавляем текст внутри полигона
          Добавляем текст внутри полигона с помощью foreignObject
@@ -135,51 +135,43 @@ else
             </body>
         </foreignObject>*@
 
-        @if (img_code.Length != 0)
-        {
-            <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
-        }
+            @if (img_code.Length != 0)
+            {
+                <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
+            }
 
-        @if (apoints != null)
-        {
-
-            @foreach (var a in apoints)
+            @if (apoints != null)
             {
 
-                @if (a.isRented)
+                @foreach (var a in apoints)
                 {
-                    <polygon points="@a.points"
-                             style="        fill:red ;
-                                    fill-opacity: 0.5;stroke-width:2;
-                                    stroke: rgb(0, 0, 255);
-                                    stroke-dasharray: 5;
-                                    stroke-dashoffset: 10;
-                                    " />
 
-                    
-                    @*<foreignObject x="@a.points.Split()[0].Split(',')[0]" y="@a.points.Split()[0].Split(',')[1]" width="100" height="100">
-                        <body xmlns="http://www.w3.org/1999/xhtml">
-                            <div style="font-size: 18px; text-align: center;">
-                                @renter.RenterName
-                            </div>
-                        </body>
-                    </foreignObject>*@
-                }
-                else
-                {
                     <polygon points="@a.points"
-                             style="        fill: lightgreen;
+                             style="fill: @(a.isRented ? "red" : "lightgreen");
                 fill-opacity: 0.5;
                 stroke-width: 2;
                 stroke: rgb(0, 0, 255);
                 stroke-dasharray: 5;
-                stroke-dashoffset: 10;
-        " />
-
-                }
+                stroke-dashoffset: 10;" />
+                @if (a.isRented)
+                {
+                @* Раскомментируйте этот блок, если потребуется добавить информацию о арендаторе *@
+                @*<foreignObject x="@a.points.Split()[0].Split(',')[0]" y="@a.points.Split()[0].Split(',')[1]" width="100" height="100">
+                <body xmlns="http://www.w3.org/1999/xhtml">
+                <div style="font-size: 18px; text-align: center;">
+                @renter.RenterName
+                </div>
+                </body>
+                </foreignObject>*@}
+                 }
             }
-        }
+        </g>
     </svg>
+    
+</div>
+<div>
+    <label for="scaleSlider">Масштаб: @ScaleX</label>
+    <input id="scaleSlider" type="range" min="1.0" max="3.0" step="1" @bind="ScaleX" />
 </div>
 
 @if (svc.allowEdit)
@@ -205,146 +197,148 @@ else
 
     @code {
 
-public class Pts
-    {
-        public bool isRented { get; set; }
-        public string points { get; set; }
-    }
-
-    List<Pts> apoints;
-
-    private IEnumerable<ObjectRect> objects;
-
-    private LayerRect[] layers;
-
-    private IEnumerable<AreaRect> areas;
-
-
-    int Width = 0;
-    int Height = 0;
-
-    string img_code = "";
-
-    public string id_layer;
-    int x;
-    int y;
-    AreaRect area = null;
-    RenterRect renter = null;
-
-    // bool isEditEnabled;
-
-    ElementReference svgMain;
-
-    string SavedObject;
-    string SavedLayer;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        SavedObject = await LocalStore.GetItemAsync<string>("Object");
-        SavedLayer = await LocalStore.GetItemAsync<string>("Layer");
-
-        objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
-
-        apoints = new List<Pts>();
-
-        if (SavedObject != null)
+        public class Pts
         {
-
-            layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + SavedObject);
+            public bool isRented { get; set; }
+            public string points { get; set; }
         }
 
-        if (SavedLayer != null)
-        {
-            img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == SavedLayer).LayerFile);
-            Height = layers.First(l => l.Id.ToString() == SavedLayer).Height;
-            Width = layers.First(l => l.Id.ToString() == SavedLayer).Width;
-            id_layer = SavedLayer;
-            areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+        List<Pts> apoints;
 
+        private IEnumerable<ObjectRect> objects;
+
+        private LayerRect[] layers;
+
+        private IEnumerable<AreaRect> areas;
+
+
+        int Width = 0;
+        int Height = 0;
+
+        string img_code = "";
+
+        public string id_layer;
+        int x;
+        int y;
+        AreaRect area = null;
+        RenterRect renter = null;
+
+        // bool isEditEnabled;
+
+        ElementReference svgMain;
+
+        string SavedObject;
+        string SavedLayer;
+
+        private double ScaleX = 1;
+        private double ScaleY => ScaleX; // Используем одинаковый масштаб по X и Y
+
+        protected override async Task OnInitializedAsync()
+        {
+
+            SavedObject = await LocalStore.GetItemAsync<string>("Object");
+            SavedLayer = await LocalStore.GetItemAsync<string>("Layer");
+
+            objects = await Http.Get<ObjectRect[]>(ConnectAPI.apiUri + "/api/Objects");
+
+            apoints = new List<Pts>();
+
+            if (SavedObject != null)
+            {
+
+                layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + SavedObject);
+            }
+
+            if (SavedLayer != null)
+            {
+                img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == SavedLayer).LayerFile);
+                Height = layers.First(l => l.Id.ToString() == SavedLayer).Height;
+                Width = layers.First(l => l.Id.ToString() == SavedLayer).Width;
+                id_layer = SavedLayer;
+                areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+
+                foreach (var a in areas)
+                {
+                    apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
+                }
+            }
+        }
+
+        async Task OnChangeObject(ChangeEventArgs e)
+        {
+
+            // Debug.WriteLine(e.Value);
+
+
+            if (e.Value.ToString().Length > 0)
+            {
+                // при смене объекта чистим все зависящие параметры
+                img_code = "";
+                layers = null;
+                areas = null;
+                area = null;
+                apoints = null;
+                layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + e.Value.ToString());
+                await LocalStore.SetItemAsync("Object", e.Value.ToString());
+            }
+            //else
+            //{
+            //    layers = null;
+            //    await LocalStore.ClearAsync();
+            //}
+            // await JsRuntime.InvokeVoidAsync("ShowAlert", "You clicked a line");
+        }
+
+
+        async Task OnChangeLayer(ChangeEventArgs e)
+        {
+
+            img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == e.Value.ToString()).LayerFile);
+            Height = layers.First(l => l.Id.ToString() == e.Value.ToString()).Height;
+            Width = layers.First(l => l.Id.ToString() == e.Value.ToString()).Width;
+            Debug.WriteLine(img_code);
+            id_layer = e.Value.ToString();
+            await LocalStore.SetItemAsync("Layer", e.Value.ToString());
+            areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
+            apoints = new List<Pts>();
             foreach (var a in areas)
             {
                 apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
             }
         }
-    }
-
-    async Task OnChangeObject(ChangeEventArgs e)
-    {
-
-        // Debug.WriteLine(e.Value);
 
 
-        if (e.Value.ToString().Length > 0)
+        async Task OnMoveSVG(MouseEventArgs e)
         {
-            // при смене объекта чистим все зависящие параметры
-            img_code = "";
-            layers = null;
-            areas = null;
-            area = null;
-            apoints = null;
-            layers = await Http.Get<LayerRect[]>(ConnectAPI.apiUri + "/api/Layers/" + e.Value.ToString());
-            await LocalStore.SetItemAsync("Object", e.Value.ToString());
-        }
-        //else
-        //{
-        //    layers = null;
-        //    await LocalStore.ClearAsync();
-        //}
-        // await JsRuntime.InvokeVoidAsync("ShowAlert", "You clicked a line");
-    }
-
-
-    async Task OnChangeLayer(ChangeEventArgs e)
-    {
-
-        img_code = "data:image/png;base64," + Convert.ToBase64String(layers.First(l => l.Id.ToString() == e.Value.ToString()).LayerFile);
-        Height = layers.First(l => l.Id.ToString() == e.Value.ToString()).Height;
-        Width = layers.First(l => l.Id.ToString() == e.Value.ToString()).Width;
-        Debug.WriteLine(img_code);
-        id_layer = e.Value.ToString();
-        await LocalStore.SetItemAsync("Layer", e.Value.ToString());
-        areas = await Http.Get<IEnumerable<AreaRect>>(ConnectAPI.apiUri + "/api/Areas/GetLayerAreas?id=" + id_layer);
-        apoints = new List<Pts>();
-        foreach (var a in areas)
-        {
-            apoints.Add(new Pts() { isRented = a.isRented, points = await GetAreaPointString(a.Id) });
-        }
-    }
-
-
-    async Task OnMoveSVG(MouseEventArgs e)
-    {
-        int[] pt = await JsRuntime.InvokeAsync<int[]>("GetRelativePos", svgMain, e);
-        x = pt[0];
-        y = pt[1];
-    }
-
-    async Task OnClick()
-    {
-        area = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas?id=" + id_layer + "&x=" + x.ToString() + "&y=" + y.ToString());
-
-        if (area != null && area.isRented)
-        {
-            renter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + area.Id.ToString());
-        }
-    }
-
-    //Координаты точек для полигона через запятую
-    private async Task<string> GetAreaPointString(int areaid)
-    {
-        string ps = "";
-
-        List<AreaPoint> areaPs = new List<AreaPoint>();
-        areaPs = await Http.Get<List<AreaPoint>>(ConnectAPI.apiUri + "/api/Areas/GetAreaPoints?id=" + areaid.ToString());
-        foreach (AreaPoint point in areaPs)
-        {
-            ps += point.PointX + "," + point.PointY + " ";
+            int[] pt = await JsRuntime.InvokeAsync<int[]>("GetRelativePos", svgMain, e);
+            x = pt[0];
+            y = pt[1];
         }
 
-        return ps.Trim();
-    }
+        async Task OnClick()
+        {
+            area = await Http.Get<AreaRect>(ConnectAPI.apiUri + "/api/Areas?id=" + id_layer + "&x=" + x.ToString() + "&y=" + y.ToString());
+
+            if (area != null && area.isRented)
+            {
+                renter = await Http.Get<RenterRect>(ConnectAPI.apiUri + "/api/Areas/" + area.Id.ToString());
+            }
+        }
+
+        //Координаты точек для полигона через запятую
+        private async Task<string> GetAreaPointString(int areaid)
+        {
+            string ps = "";
+
+            List<AreaPoint> areaPs = new List<AreaPoint>();
+            areaPs = await Http.Get<List<AreaPoint>>(ConnectAPI.apiUri + "/api/Areas/GetAreaPoints?id=" + areaid.ToString());
+            foreach (AreaPoint point in areaPs)
+            {
+                ps += point.PointX + "," + point.PointY + " ";
+            }
+
+            return ps.Trim();
+        }
 
 
     }

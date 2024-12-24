@@ -66,46 +66,22 @@ else
             @foreach (var s in staffs)
             {
 
-                @if (s.DateOfBirth.Date.Day == DateTime.Now.Date.Day && s.DateOfBirth.Date.Month == DateTime.Now.Date.Month)
+            <tr style="@((s.DateOfBirth.Date.Day == DateTime.Now.Date.Day && s.DateOfBirth.Date.Month == DateTime.Now.Date.Month) ? "font-weight: bold; background-image: url(images/birthday.jpg);" : "")">
+                <td>@s.Name</td>
+                <td>@s.DateOfBirth.ToString("d MMMM")</td>
+                <td width="200">@s.Duty</td>
+                <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
+                <td>@s.WorkPhone</td>
+                <td width="150">@s.InternalPhone</td>
+                <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
+                <td>@s.HomePhone</td>
+                @if (svc.allowEdit)
                 {
-                    <tr style="font-weight: bold; background-image: url(images/birthday.jpg);">
-                        <td>@s.Name</td>
-                        <td>@s.DateOfBirth.ToString("d MMMM")</td>
-                        <td width="200">@s.Duty</td>
-                        <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
-                        <td>@s.WorkPhone</td>
-                        <td width="150">@s.InternalPhone</td>
-                        <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
-                        <td>@s.HomePhone</td>
-                        @if (svc.allowEdit)
-                        {
-                            <td>
-                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
-                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
-                            </td>
-                        }
-                    </tr>
-                }
-                else
-                {
-                    <tr>
-                        <td>@s.Name</td>
-                        <td>@s.DateOfBirth.ToString("d MMMM")</td>
-                        <td width="200">@s.Duty</td>
-                        <td>@s.EmpDate?.ToString("dd.MM.yyyy")</td>
-                        <td>@s.WorkPhone</td>
-                        <td width="150">@s.InternalPhone</td>
-                        <td><a class="button" href="mailto:@s.Email">@s.Email</a></td>
-                        <td>@s.HomePhone</td>
-                        @if (svc.allowEdit)
-                        {
-                            <td>
-                                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
-                                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
-                            </td>
-                        }
-                    </tr>
-                }
+            <td>
+                <button class="btn btn-sm btn-success" @onclick="(() => OpenModal(s))"><i class="oi oi-pencil" /></button>
+                <button class="btn btn-sm btn-danger" @onclick="(() => Confirm(s))"><i class="oi oi-trash" /></button>
+            </td>}
+            </tr>
             }
         </tbody>
     </table>

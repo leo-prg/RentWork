@@ -136,41 +136,35 @@ else
     </div>
     <div class="child" style="border:3px solid green;width:71%;height:70vh;overflow:scroll;">
         <svg xmlns="http://www.w3.org/2000/svg" version="2.0" @ref="svgMain" @onclick="OnClick" @onmousemove="OnMoveSVG" height="@Height" width="@Width" style="@SetCursor()">
-            @if (img_code.Length != 0)
-            {
-                <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
-            }
 
-            @if (apoints != null)
-            {
+            <g transform="scale(@ScaleX, @ScaleY)">
 
-                @foreach (var a in apoints)
+                @if (img_code.Length != 0)
                 {
+                    <image x="0" y="0" href=@img_code width="@Width" height="@Height"></image>
+                }
 
-                    @if (a.isRented)
+                @if (apoints != null)
+                {
+                    @foreach (var a in apoints)
                     {
                         <polygon points="@a.points"
-                                 style="        fill: lightgreen;
-                            fill-opacity: 0.5;stroke-width:2;
-                            stroke: rgb(0, 0, 255);
-                            stroke-dasharray: 5;
-                            stroke-dashoffset: 10;
-                            " />
-                    }
-                    else
-                    {
-                        <polygon points="@a.points"
-                                 style="        fill: red;
-        fill-opacity: 0.5;
-        stroke-width: 2;
-        stroke: rgb(0, 0, 255);
-        stroke-dasharray: 5;
-        stroke-dashoffset: 10;
-" />
+                                 style="fill: @(a.isRented ? "lightgreen" : "red");
+                fill-opacity: 0.5;
+                stroke-width: 2;
+                stroke: rgb(0, 0, 255);
+                stroke-dasharray: 5;
+                stroke-dashoffset: 10;" />
                     }
                 }
-            }
+
+                </g>
         </svg>
+    </div>
+    
+    <div>
+        <label for="scaleSlider">Масштаб: @ScaleX </label>
+        <input id="scaleSlider" type="range" min="1.0" max="3.0" step="1.0" @bind="ScaleX" />
     </div>
 </div>
 
@@ -279,6 +273,10 @@ else
 
     string SavedObject;
     string SavedLayer;
+
+    private double ScaleX = 1;
+    private double ScaleY => ScaleX; // Используем одинаковый масштаб по X и Y
+
 
     // Инициализация
     protected override async Task OnInitializedAsync()
