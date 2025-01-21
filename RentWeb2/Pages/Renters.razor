@@ -25,7 +25,13 @@
 }
 else
 {
+
+    
+
+
+
     <div class="form-group">
+
         @if (svc.allowEdit)
         {
             <div>
@@ -37,6 +43,7 @@ else
             <input type="text" class="form-control mb-3" placeholder="введите строку для поиска" @bind="searchStr" @oninput="@((ChangeEventArgs __e) => Search(__e.Value.ToString()))">
             <button class="btn btn-sm btn-info" @onclick="OnShowChange">@btncap</button>
         </div>
+
     </div>
     @*<div class="form-group">
             <div class="input-group mb-3 mr-3">
@@ -74,6 +81,10 @@ else
                     Наименование арендатора
                     <span class="fa @(SetSortIcon("RenterName"))"></span>
                 </th>
+                <th @onclick="@(() => renters = Sort("UNP", renters))">
+                    УНП
+                    <span class="fa @(SetSortIcon("UNP"))"></span>
+                </th>
                 <th @onclick="@(() => renters = Sort("ContractNo", renters))">
                     Договор аренды
                     <span class="fa @(SetSortIcon("ContractNo"))"></span>
@@ -82,8 +93,9 @@ else
                     Дата начала
                     <span class="fa @(SetSortIcon("StartDate"))"></span>
                 </th>
-                <th @onclick="@(() => renters = Sort("EndDate", renters))">Дата окончания
-                <span class="fa @(SetSortIcon("EndDate"))"></span>
+                <th @onclick="@(() => renters = Sort("EndDate", renters))">
+                    Дата окончания
+                    <span class="fa @(SetSortIcon("EndDate"))"></span>
                 </th>
                 <th>Дополнительно</th>
                 @*<th>Примечание</th>*@
@@ -105,6 +117,7 @@ else
                     <td>@r.Id</td>
                 }
                 <td><a href="/renterdetails/@r.Id.ToString()">@r.RenterName</a></td>
+                <td>@r.UNP</td>
                 <td>@r.Contract</td>
                 <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
                 <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
@@ -127,11 +140,12 @@ else
                 <td>@r.Id</td>
             }
             <td><a href="/renterdetails/@r.Id.ToString()">@r.RenterName</a></td>
+            <td>@r.UNP</td>
             <td>@r.Contract</td>
             <td>@r.StartDate.ToString("dd.MM.yyyy")</td>
             <td>@r.EndDate.ToString("dd.MM.yyyy")</td>
             <td><a href="/rareas/@r.Id.ToString()">Площади</a><br /><a href="/renterfiles/@r.Id.ToString()">Документы</a></td>
-           @* <td>@r.Annotation</td>*@
+            @* <td>@r.Annotation</td>*@
             @if (svc.allowEdit)
             {
                 <td>
@@ -164,6 +178,13 @@ else
                                 <span class="input-group-text">Наименование</span>
                             </div>
                             <input type="text" class="form-control" @bind="selRenter.RenterName">
+                        </div>
+                        <br />
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">УНП</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selRenter.UNP">
                         </div>
                         <br />
                         <div class="input-group">

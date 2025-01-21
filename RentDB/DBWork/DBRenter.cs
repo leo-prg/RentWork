@@ -23,6 +23,7 @@ namespace RentDB
             context.Value.Renters.Add(new Renter()
             {
                 RenterName = renter.RenterName,
+                UNP = renter.UNP,
                 Contract = renter.Contract,
                 StartDate = renter.StartDate,
                 EndDate = renter.EndDate,
@@ -37,7 +38,7 @@ namespace RentDB
         public List<RenterRect> GetAllRenters()
         {
             return context.Value.Renters.Select(r => new RenterRect() 
-                            { Id = r.Id, RenterName = r.RenterName, Contract = r.Contract, 
+                            { Id = r.Id, RenterName = r.RenterName, UNP = r.UNP, Contract = r.Contract, 
                               StartDate = r.StartDate, EndDate = r.EndDate, 
                               ContactPerson = r.ContactPerson, ContactPhone = r.ContactPhone, Annotation = r.Annotation, StartPartnership = r.StartPartnership
                             }).OrderBy(s=>s.Id).ToList();
@@ -50,6 +51,7 @@ namespace RentDB
                 {
                     Id = x.Id,
                     RenterName = x.RenterName,
+                    UNP = x.UNP,
                     Contract = x.Contract,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
@@ -65,6 +67,7 @@ namespace RentDB
         {
             var rU = context.Value.Renters.Where(r => r.Id == oldR.Id).FirstOrDefault();
             rU.RenterName = newR.RenterName;
+            rU.UNP = newR.UNP;
             rU.Contract = newR.Contract;
             rU.StartDate = newR.StartDate;
             rU.EndDate = newR.EndDate;

@@ -19,15 +19,15 @@
 <ul class="nav nav-pills nav-fill">
 
     <li class="nav-item">
+        <a class="@(act == 1 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@bank_deposit" @onclick="() => { act = 1; }">Расчетные счета счета</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="@(act == 0 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@bank_current" @onclick="() => { act = 0; }">Платежи</a>
+    </li>
+
+    <li class="nav-item">
         <a class="@(act == 2 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@bank_credit" @onclick="() => { act = 2; }">Кредит АСБ "Беларусбанк"</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="@(act == 0 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@bank_current" @onclick="() => { act = 0; }">Рублевые счета</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="@(act == 1 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@bank_deposit" @onclick="() => { act = 1; }">Валютные счета</a>
     </li>
 
     <iframe name="mainreport" style="width:100%;  height: 90vh; border: none"></iframe>

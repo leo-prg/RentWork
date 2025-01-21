@@ -165,6 +165,10 @@
     <Compile Include="Migrations\202407031851331_totalArea.designer.cs">
       <DependentUpon>202407031851331_totalArea.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202501161303428_Add renter unp.cs" />
+    <Compile Include="Migrations\202501161303428_Add renter unp.designer.cs">
+      <DependentUpon>202501161303428_Add renter unp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -233,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202407031851331_totalArea.resx">
       <DependentUpon>202407031851331_totalArea.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202501161303428_Add renter unp.resx">
+      <DependentUpon>202501161303428_Add renter unp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

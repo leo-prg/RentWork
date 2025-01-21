@@ -34,6 +34,14 @@ else
             </dd>
 
             <dt>
+                УНП
+            </dt>
+
+            <dd>
+                @renter.UNP
+            </dd>
+
+            <dt>
                 Договор №
             </dt>
 
@@ -126,6 +134,15 @@ else
                             <input type="text" class="form-control" @bind="selRenter.RenterName">
                         </div>
                         <br />
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">УНП</span>
+                            </div>
+                            <input type="text" class="form-control" @bind="selRenter.UNP">
+                        </div>
+                        <br />
+
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Номер договора</span>

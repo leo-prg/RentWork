@@ -15,9 +15,10 @@ namespace RentDB
         public int Id { get; set; }
         [StringLength(200)]
         public string RenterName { get; set; }
+        public int UNP { get; set; }
         [StringLength(20)]
         public string Contract { get; set; }
-        
+
         public DateTime StartPartnership { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
