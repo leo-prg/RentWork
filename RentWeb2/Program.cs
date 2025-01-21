@@ -16,6 +16,7 @@ using Blazored.Toast;
 using Blazored.Modal;
 using BlazorTable;
 
+
 namespace RentWeb2
 {
     public class Program
@@ -43,6 +44,7 @@ namespace RentWeb2
                 .AddScoped<Service>()
                 .AddScoped<IHttpService, HttpService>()
                 .AddScoped<ConnectAPI>().AddScoped<IAuthenticationService, AuthenticationService>();
+
             builder.Services.AddBlazoredToast();
           //  builder.Services.AddCookies();
 
