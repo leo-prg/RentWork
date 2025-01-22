@@ -62,13 +62,12 @@ app {
 }
 
 .sidebar {
-    background-color: #063970 
+    background-color: #1861ac
     /*linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);*/
 }
 
     .sidebar .top-row {
-        background-color: rgba(0,0,0,0.4);
-       
+        background-color: #1861ac;
     }
 
     .sidebar .navbar-brand {

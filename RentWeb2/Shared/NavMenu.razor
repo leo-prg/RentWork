@@ -1,101 +1,204 @@
 ﻿@inject IAuthenticationService AuthenticationService
-<div class="top-row pl-4 navbar navbar-dark align-content-center">
-    <a class="navbar-brand" style="" href="">@CurDT</a>
+@using System.Globalization;
 
-   
-</div>
+    <div class="mt-3" style="text-align:center">
+        <h5 style="color:yellow;" href="">@dow</h5>
+    </div>
 
-<div >
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Главная
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link">
-                <span class="oi oi-key" aria-hidden="true"></span>Недвижимость
-            </NavLink>
-            <ul>
-                <li class="nav-item px-3 list-unstyled">
-                    <NavLink class="nav-link" href="orent">
-                        <span class="oi oi-briefcase" aria-hidden="true"></span>Объекты
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3 list-unstyled">
-                    <NavLink class="nav-link" href="areas">
-                        <span class="oi oi-layers" aria-hidden="true"></span>Схемы
-                    </NavLink>
-                </li>
-            </ul>
-        </li>
-
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="renters">
-                <span class="oi oi-people" aria-hidden="true"></span>Арендаторы
-            </NavLink>
-        </li>
-
-        <li class="nav-item px-3">
-            <NavLink class="nav-link">
-                <span class="oi oi-print" aria-hidden="true"></span>Отчеты
-            </NavLink>
-            <ul>
-                <li class="nav-item px-3 list-unstyled">
-                    <NavLink class="nav-link" href="reports">
-                        <span class="oi oi-pulse" aria-hidden="true"></span>
-                        Аренда
-                    </NavLink>
-                </li>
-
-                <li class="nav-item px-3 list-unstyled">
-                    <NavLink class="nav-link" href="analysis">
-                        <span class="oi oi-bar-chart" aria-hidden="true"></span>
-                        Доходы
-                    </NavLink>
-                </li>
-
-                @if (accessBank.Contains(AuthenticationService.User.Username))
-                {
-                    <li class="nav-item px-3 list-unstyled">
-                        <NavLink class="nav-link" href="bank">
-                            <span class="oi oi-dollar" aria-hidden="true"></span>
-                            Банк
-                        </NavLink>
-                    </li>
-                }
-            </ul>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link">
-                <span class="oi oi-wrench" aria-hidden="true"></span>Настройка
-            </NavLink>
-            <ul>
-                @if (accessAdmin.Contains(AuthenticationService.User.Username))
-                {
-                    <li class="nav-item px-3 list-unstyled">
-                        <NavLink class="nav-link" href="users">
-                            <span class="oi oi-shield" aria-hidden="true"></span>
-                            Пользователи
-                        </NavLink>
-                    </li>
-                }
+    <div>
+        @*<ul class="nav flex-column">
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="settings">
-                        <span class="oi oi-puzzle-piece" aria-hidden="true"></span>
-                        Параметры
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Главная
                     </NavLink>
                 </li>
-            </ul>
-        </li>
-    </ul>
-</div>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-key" aria-hidden="true"></span>Недвижимость
+                    </NavLink>
+                    <ul>
+                        <li class="nav-item px-3 list-unstyled">
+                            <NavLink class="nav-link" href="orent">
+                                <span class="oi oi-briefcase" aria-hidden="true"></span>Объекты
+                            </NavLink>
+                        </li>
+                        <li class="nav-item px-3 list-unstyled">
+                            <NavLink class="nav-link" href="areas">
+                                <span class="oi oi-layers" aria-hidden="true"></span>Схемы
+                            </NavLink>
+                        </li>
+                    </ul>
+                </li>
 
-@code {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="renters">
+                        <span class="oi oi-people" aria-hidden="true"></span>Арендаторы
+                    </NavLink>
+                </li>
 
-    private string[] accessBank = { "ivan", "leo", "tatjana", "alex"};
-    private string[] accessAdmin = { "leo" };
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-print" aria-hidden="true"></span>Отчеты
+                    </NavLink>
+                    <ul>
+                        <li class="nav-item px-3 list-unstyled">
+                            <NavLink class="nav-link" href="reports">
+                                <span class="oi oi-pulse" aria-hidden="true"></span>
+                                Аренда
+                            </NavLink>
+                        </li>
 
-    private string CurDT =  String.Format("{0:D}", DateTime.Now);
+                        <li class="nav-item px-3 list-unstyled">
+                            <NavLink class="nav-link" href="analysis">
+                                <span class="oi oi-bar-chart" aria-hidden="true"></span>
+                                Доходы
+                            </NavLink>
+                        </li>
 
-}
+                        @if (accessBank.Contains(AuthenticationService.User.Username))
+                        {
+                            <li class="nav-item px-3 list-unstyled">
+                                <NavLink class="nav-link" href="bank">
+                                    <span class="oi oi-dollar" aria-hidden="true"></span>
+                                    Банк
+                                </NavLink>
+                            </li>
+                        }
+                    </ul>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-wrench" aria-hidden="true"></span>Настройка
+                    </NavLink>
+                    <ul>
+                        @if (accessAdmin.Contains(AuthenticationService.User.Username))
+                        {
+                            <li class="nav-item px-3 list-unstyled">
+                                <NavLink class="nav-link" href="users">
+                                    <span class="oi oi-shield" aria-hidden="true"></span>
+                                    Пользователи
+                                </NavLink>
+                            </li>
+                        }
+                        <li class="nav-item px-3">
+                            <NavLink class="nav-link" href="settings">
+                                <span class="oi oi-puzzle-piece" aria-hidden="true"></span>
+                                Параметры
+                            </NavLink>
+                        </li>
+                    </ul>
+                </li>
+            </ul>*@
+
+        <ul class="nav flex-column">
+            <!-- Главная -->
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="color:whitesmoke">
+                    <span class="oi oi-home" aria-hidden="true"></span> Главная
+                </NavLink>
+            </li>
+
+            <!-- Недвижимость -->
+            <li class="nav-item px-3">
+                <label for="real-estate-toggle" class="nav-link" style="color:whitesmoke">
+                    <span class="oi oi-key" aria-hidden="true"></span> Недвижимость
+                </label>
+                <input type="checkbox" id="real-estate-toggle" class="d-none">
+                <ul class="submenu">
+                    <li class="nav-item px-3 list-unstyled">
+                        <NavLink class="nav-link" href="orent" style="color:whitesmoke">
+                            <span class="oi oi-briefcase" aria-hidden="true"></span> Объекты
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3 list-unstyled">
+                        <NavLink class="nav-link" href="areas" style="color:whitesmoke">
+                            <span class="oi oi-layers" aria-hidden="true"></span> Схемы
+                        </NavLink>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Арендаторы -->
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="renters" style="color:whitesmoke">
+                    <span class="oi oi-people" aria-hidden="true"></span> Арендаторы
+                </NavLink>
+            </li>
+
+            <!-- Отчеты -->
+            <li class="nav-item px-3">
+                <label for="reports-toggle" class="nav-link" style="color:whitesmoke">
+                    <span class="oi oi-print" aria-hidden="true"></span> Отчеты
+                </label>
+                <input type="checkbox" id="reports-toggle" class="d-none">
+                <ul class="submenu">
+                    <li class="nav-item px-3 list-unstyled">
+                        <NavLink class="nav-link" href="reports" style="color:whitesmoke">
+                            <span class="oi oi-pulse" aria-hidden="true"></span> Аренда
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3 list-unstyled">
+                        <NavLink class="nav-link" href="analysis" style="color:whitesmoke">
+                            <span class="oi oi-bar-chart" aria-hidden="true"></span> Доходы
+                        </NavLink>
+                    </li>
+                    @if (accessBank.Contains(AuthenticationService.User.Username))
+                    {
+                        <li class="nav-item px-3 list-unstyled">
+                            <NavLink class="nav-link" href="bank" style="color:whitesmoke">
+                                <span class="oi oi-dollar" aria-hidden="true"></span> Банк
+                            </NavLink>
+                        </li>
+                    }
+                </ul>
+            </li>
+
+            <!-- Настройка -->
+            <li class="nav-item px-3">
+                <label for="settings-toggle" class="nav-link" style="color:whitesmoke">
+                    <span class="oi oi-wrench" aria-hidden="true"></span> Настройка
+                </label>
+                <input type="checkbox" id="settings-toggle" class="d-none">
+                <ul class="submenu">
+                    @if (accessAdmin.Contains(AuthenticationService.User.Username))
+                    {
+                        <li class="nav-item px-3 list-unstyled">
+                            <NavLink class="nav-link" href="users" style="color:whitesmoke">
+                                <span class="oi oi-shield" aria-hidden="true"></span> Пользователи
+                            </NavLink>
+                        </li>
+                    }
+                    <li class="nav-item px-3 list-unstyled">
+                        <NavLink class="nav-link" href="settings" style="color:whitesmoke">
+                            <span class="oi oi-puzzle-piece" aria-hidden="true"></span> Параметры
+                        </NavLink>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <style>
+            .submenu {
+                display: none;
+                padding-left: 20px;
+            }
+
+            input[type="checkbox"]:checked + .submenu {
+                display: block;
+            }
+        </style>
+
+
+    </div>
+
+    @code {
+
+        private string[] accessBank = { "ivan", "leo", "tatjana", "alex" };
+        private string[] accessAdmin = { "leo" };
+
+        private string dayOfWeek = DateTime.Now.ToString("dddd", new CultureInfo("ru-RU"));
+
+        private string CurDT =   String.Format("{0:D}", DateTime.Now);
+
+        private string dow => $"{dayOfWeek}, {CurDT}";
+    }

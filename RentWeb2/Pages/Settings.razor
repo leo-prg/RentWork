@@ -7,6 +7,8 @@
 
 @inject Service svc
 
+@inject NavigationManager NavigationManager
+
 @inject IAuthenticationService AuthenticationService
 
 @using GoogleMapsComponents.Maps
@@ -14,23 +16,23 @@
 
 @if (showPwd)
 {
-    <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text">Введите пароль для разблокировки</span>
-        </div>
-        <input type="password" class="form-control" width="300" placeholder="пароль"
-               @oninput="@((ChangeEventArgs __e) => { if (__e.Value.ToString() == "200002167") { showPwd = false; showSettings = true; } })">
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Введите пароль для разблокировки</span>
     </div>
+    <input type="password" class="form-control" width="300" placeholder="пароль"
+           @oninput="@((ChangeEventArgs __e) => { if (__e.Value.ToString() == "200002167") { showPwd = false; showSettings = true; } })">
+</div>
 }
 @if (showSettings)
 {
-    <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="allowedit" checked="@svc.allowEdit" @onchange="@( async (ChangeEventArgs e) => { await LocalStore.SetItemAsync("AllowEdit", e.Value); svc.allowEdit = (bool)e.Value; })">
-        <label class="custom-control-label" for="allowedit">Включить режим редактирования данных</label>
-    </div>
+<div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="allowedit" checked="@svc.allowEdit" @onchange="@( async (ChangeEventArgs e) => { await LocalStore.SetItemAsync("AllowEdit", e.Value); svc.allowEdit = (bool)e.Value; })">
+    <label class="custom-control-label" for="allowedit">Включить режим редактирования данных</label>
+</div>
 
-    <br />
-    <button class="btn btn-danger btn-sm" @onclick="(() => ClearStorage() )">Очистить данные приложения</button>
+<br />
+<button class="btn btn-danger btn-sm" @onclick="(() => ClearStorage() )">Очистить данные приложения</button>
 
 }
 @code {
@@ -49,9 +51,9 @@
 
     private async void ClearStorage()
     {
-       
+
         await LocalStore.ClearAsync();
         sessionStorage.Clear();
-
+        NavigationManager.NavigateTo("/");
     }
 }
