@@ -54,7 +54,7 @@ else
             </div>
         </div>*@
 
-    <h5>Всего по списку <span style="color:blue">@count</span> действующих договоров</h5>
+    <h5>Всего по списку <span style="color:blue">@count</span> действующих договоров из <span style="color:blue">@count_signed</span> подписанных</h5>
 
     <style>
         tbody {
@@ -292,7 +292,7 @@ else
 
     private string searchStr = "";
 
-    private int count=0;
+    private int count=0; private int count_signed = 0;
 
     bool ShowModal = false;
     bool ShowConfirm = false;
@@ -372,6 +372,8 @@ else
 
 
         count = renters.Count(r => r.StartDate.Date < DateTime.Now.Date && r.EndDate.Date > DateTime.Now.Date);
+
+        count_signed = renters.Count(r => r.Contract.Length > 0);
 
 
         //count = 0;

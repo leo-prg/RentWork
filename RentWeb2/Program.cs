@@ -46,9 +46,10 @@ namespace RentWeb2
                 .AddScoped<ConnectAPI>().AddScoped<IAuthenticationService, AuthenticationService>();
 
             builder.Services.AddBlazoredToast();
-          //  builder.Services.AddCookies();
+            //  builder.Services.AddCookies();
 
-                      
+            
+
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

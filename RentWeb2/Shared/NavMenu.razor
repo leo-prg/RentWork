@@ -1,9 +1,11 @@
 ﻿@inject IAuthenticationService AuthenticationService
 @using System.Globalization;
 
-    <div class="mt-3" style="text-align:center">
-        <h5 style="color:yellow;" href="">@dow</h5>
-    </div>
+<div class="mt-3" style="text-align:center">
+    <h6 style="color:yellow;" href="">@dayOfWeek</h6>
+    <h6 style="color:yellow;" href="">@CurDT</h6>
+
+</div>
 
     <div>
         @*<ul class="nav flex-column">
@@ -193,12 +195,13 @@
 
     @code {
 
-        private string[] accessBank = { "ivan", "leo", "tatjana", "alex" };
+        private string[] accessBank = { "ivan", "leo", "natalia", "alex" };
         private string[] accessAdmin = { "leo" };
 
         private string dayOfWeek = DateTime.Now.ToString("dddd", new CultureInfo("ru-RU"));
 
         private string CurDT =   String.Format("{0:D}", DateTime.Now);
 
-        private string dow => $"{dayOfWeek}, {CurDT}";
+        //private string dow => $"{dayOfWeek}{Environment.NewLine}{CurDT}";
+
     }

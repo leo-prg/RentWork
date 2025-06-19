@@ -24,9 +24,9 @@
         <a class="@(act == 3 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_free" @onclick="() => { act = 3; }">Свободные площади</a>
     </li>
 
-    <li class="nav-item">
+    @*<li class="nav-item">
         <a class="@(act == 4 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_rates" @onclick="() => { act = 4; }">Понижение/повышение ставок</a>
-    </li>
+    </li>*@
 
     <li class="nav-item">
         <a class="@(act == 5 ? "nav-link active" : "nav-link")" style="margin-bottom:10px" target="mainreport" href="@report_invoices" @onclick="() => { act = 5; }">Счета</a>
@@ -47,7 +47,7 @@
     private string report = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fОбщий+отчет&rs:Command=Render";
     private string report_for_bank = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fRenterList&rs:Command=Render";
     // учет ставки за объект - понижения ставок
-    private string report_rates = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fRateReport&rs:Command=Render";
+    //private string report_rates = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2fОтчеты%2fRateReport&rs:Command=Render";
     // свободные площади
     private string report_free = ConnectAPI.reportUri + "/ReportServer/Pages/ReportViewer.aspx?%2f%d0%9e%d1%82%d1%87%d0%b5%d1%82%d1%8b%2fFreeSpaces&rs:Command=Render";
     // счета по аренде

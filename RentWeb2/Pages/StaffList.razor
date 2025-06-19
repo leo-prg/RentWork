@@ -48,8 +48,15 @@ else
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>ФИО</th>
-                <th>День рождения</th>
+                <th @onclick="@(() => staffs = Sort("Name", staffs))">
+                    ФИО
+                    <span class="fa @(SetSortIcon("Name"))"></span>
+                </th>
+                <th @onclick="@(() => staffs = Sort("DateOfBirth", staffs))">
+                    День рождения
+                    <span class="fa @(SetSortIcon("DateOfBirth"))"></span>
+                </th>
+
                 <th width="200">Должноcть</th>
                 <th>Дата приема</th>
                 <th>Телефон (раб.)</th>
@@ -67,6 +74,7 @@ else
             {
 
             <tr style="@((s.DateOfBirth.Date.Day == DateTime.Now.Date.Day && s.DateOfBirth.Date.Month == DateTime.Now.Date.Month) ? "font-weight: bold; background-image: url(images/birthday.jpg);" : "")">
+
                 <td>@s.Name</td>
                 <td>@s.DateOfBirth.ToString("d MMMM")</td>
                 <td width="200">@s.Duty</td>
@@ -200,6 +208,7 @@ else
 }
 
 @code {
+
     private IEnumerable<Staff> staffs { get; set; }
 
     private Staff selStaff;
@@ -208,6 +217,10 @@ else
 
     bool ShowModal = false;
     bool ShowConfirm = false;
+
+    private bool isSortedAscending;
+    private string activeSortColumn = null;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -265,5 +278,54 @@ else
         ShowConfirm = true;
         selStaff = staff;
         Debug.WriteLine(selStaff.Id);
+    }
+
+    public IEnumerable<T> Sort<T>(string column, IEnumerable<T> set)
+    {
+        var property = typeof(T).GetProperty(column);
+        if (property == null) return set; // Защита от ошибки при неверном имени свойства
+
+        if (column != activeSortColumn)
+        {
+            isSortedAscending = true;
+            activeSortColumn = column;
+        }
+        else
+        {
+            isSortedAscending = !isSortedAscending;
+        }
+
+        return isSortedAscending
+            ? set.OrderBy(x => ConvertValue(property.GetValue(x, null)))
+            : set.OrderByDescending(x => ConvertValue(property.GetValue(x, null)));
+    }
+
+    private object ConvertValue(object value)
+    {
+        if (value is string strValue)
+        {
+            return strValue.ToLower(new System.Globalization.CultureInfo("ru-RU")); // Учитываем русскую локаль
+        }
+        if (value is DateTime dateTimeValue)
+        {
+            return dateTimeValue; // Даты сортируются корректно как DateTime
+        }
+        return value; // Все остальные типы сортируются как есть
+    }
+
+    private string SetSortIcon(string columnName)
+    {
+        if (activeSortColumn != columnName)
+        {
+            return string.Empty;
+        }
+        if (isSortedAscending)
+        {
+            return "fa-sort-up";
+        }
+        else
+        {
+            return "fa-sort-down";
+        }
     }
 }

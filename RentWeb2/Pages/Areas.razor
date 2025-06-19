@@ -75,10 +75,11 @@ else
                 }
                 <th>Наименование</th>
                 <th>Площадь,  м<sup>2</sup></th>
-                <th>Цена за м<sup>2</sup>, EUR</th>
-                <th>Стоимость, EUR</th>
-                <th>Цена за м<sup>2</sup> с НДС, EUR</th>
-                <th>Стоимость с НДС, EUR</th>
+                <th>Валюта</th>
+                <th>Цена за м<sup>2</sup></th>
+                <th>Стоимость</th>
+                <th>Цена за м<sup>2</sup> с НДС</th>
+                <th>Стоимость с НДС</th>
                 <th>Арендуется</th>
                 <th>Дополнительно</th>
             </tr>
@@ -93,6 +94,8 @@ else
                 }
                 <td>@area.AreaName</td>
                 <td>@area.Square</td>
+                <td><span style="color:blue;font-weight:bold">@area.Currency</span></td>
+               
                 <td>@Finance.WithoutVat(area.Price).ToString("F2")</td>
                 <td>@Finance.WithoutVat(area.Cost).ToString("F2")</td>
 
